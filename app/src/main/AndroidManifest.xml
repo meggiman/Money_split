@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ch.ethz.itet.pps.pps_money_split" >
+    package="ch.ethz.itet.pps.budgetSplit">
 
     <application
         android:allowBackup="true"
@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".Main"
+            android:name="ch.ethz.itet.pps.budgetSplit.Main"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,6 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContentProvider"
+            android:authorities="ch.ethz.itet.pps_2014.money_split"
+            android:enabled="true"
+            android:exported="false"></provider>
     </application>
 
 </manifest>
