@@ -333,5 +333,41 @@ public final class budgetSplitDBContract implements BaseColumns {
         }
     }
 
+    public static abstract class tagFilter {
+        public final static String TABLE_TAG_FILTER = "tagFilter";
+        public final static String COLUMN_PARTICIPANTS_ID = "participantsId";
+        public final static String COLUMN_TAG_ID = "tagId";
+        public final static String COLUMN_SHARE_RATIO = "shareRatio";
+
+        private static final String TABLE_CREATE = "CREATE TABLE"
+                + TABLE_TAG_FILTER
+                + "("
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participant.TABLE_PARTICIPANTS + "(" + _ID + "),"
+                + "FOREIGN KEY (" + COLUMN_TAG_ID + ") REFERENCES " + tags.TABLE_TAGS + "(" + _ID + "),"
+                + COLUMN_SHARE_RATIO + " FLOAT NOT NULL CHECK (" + COLUMN_SHARE_RATIO + " >= 0 AND " + COLUMN_SHARE_RATIO + " <= 1),"
+                + "PRIMARY KEY (" + COLUMN_TAG_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
+                + ");";
+
+        /**
+         * Static Method to be called by SQLiteOpenHelper class for better readability.
+         *
+         * @param database
+         */
+        public static void onCreate(SQLiteDatabase database) {
+            database.execSQL(TABLE_CREATE);
+        }
+
+        /**
+         * Method to be implemented for future Changes in Database structure.
+         *
+         * @param database
+         * @param oldVersion
+         * @param newVersion
+         */
+        public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+
+        }
+    }
+
     // </editor-fold>
 }
