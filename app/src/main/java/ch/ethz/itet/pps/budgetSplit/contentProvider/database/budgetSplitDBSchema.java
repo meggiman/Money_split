@@ -6,10 +6,20 @@ import android.provider.BaseColumns;
 /**
  * Created by Manuel on 27.09.2014.
  */
-public final class budgetSplitDBContract implements BaseColumns {
-    public budgetSplitDBContract() {
+public final class budgetSplitDBSchema implements BaseColumns {
+
+    static final String DATABASE_NAME = "budgetSplit.db";
+    static final int DATABASE_VERSION = 1;
+
+    /**
+     * Contract class with all necessary Constants use from within and outside of the Content Provider.
+     */
+    public budgetSplitDBSchema() {
     }
 
+    /**
+     * Constants for the projects tables.
+     */
     public static abstract class projects {
         public static final String TABLE_PROJECTS = "projects";
         public static final String COLUMN_NAME = "name";
@@ -22,7 +32,7 @@ public final class budgetSplitDBContract implements BaseColumns {
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_NAME + " TEXT NOT NULL,"
                 + COLUMN_DESCRIPTION + " TEXT,"
-                + "FOREIGN KEY (" + COLUMN_OWNER + ") REFERENCES " + participant.TABLE_PARTICIPANTS + "(" + _ID + ")"
+                + "FOREIGN KEY (" + COLUMN_OWNER + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + ")"
                 + ");";
 
         /**
@@ -46,7 +56,7 @@ public final class budgetSplitDBContract implements BaseColumns {
         }
     }
 
-    public static abstract class participant {
+    public static abstract class participants {
         public static final String TABLE_PARTICIPANTS = "participants";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_UNIQUEID = "googleAccountId";
@@ -127,7 +137,7 @@ public final class budgetSplitDBContract implements BaseColumns {
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_NAME + " TEXT NOT NULL,"
                 + COLUMN_TIMESTAMP + " DATE DEFAULT CURRENT_TIMESTAMP,"
-                + "FOREIGN KEY (" + COLUMN_CREATOR + ") REFERENCES " + participant.TABLE_PARTICIPANTS + "(" + _ID + "),"
+                + "FOREIGN KEY (" + COLUMN_CREATOR + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "),"
                 + "FOREIGN KEY (" + COLUMN_PROJECT + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + _ID + ")"
                 + ");";
 
@@ -199,7 +209,7 @@ public final class budgetSplitDBContract implements BaseColumns {
         private static final String TABLE_CREATE = "CREATE TABLE"
                 + TABLE_PROJECTS_PARTICIPANTS
                 + "("
-                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participant.TABLE_PARTICIPANTS + "(" + _ID + "),"
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "),"
                 + "FOREIGN KEY (" + COLUMN_PROJECTS_ID + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + _ID + "),"
                 + "PRIMARY KEY (" + COLUMN_PROJECTS_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
                 + ");";
@@ -269,7 +279,7 @@ public final class budgetSplitDBContract implements BaseColumns {
         private static final String TABLE_CREATE = "CREATE TABLE"
                 + TABLE_ITEMS_PARTICIPANTS
                 + "("
-                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participant.TABLE_PARTICIPANTS + "(" + _ID + "),"
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "),"
                 + "FOREIGN KEY (" + COLUMN_ITEM_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + _ID + "),"
                 + "FOREIGN KEY (" + COLUMN_CURRENCY_ID + ") REFERENCES " + currencies.TABLE_CURRENCIES + "(" + _ID + "),"
                 + COLUMN_PRICE + " FLOAT NOT NULL,"
@@ -306,7 +316,7 @@ public final class budgetSplitDBContract implements BaseColumns {
         private static final String TABLE_CREATE = "CREATE TABLE"
                 + TABLE_EXCLUDE_ITEMS
                 + "("
-                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participant.TABLE_PARTICIPANTS + "(" + _ID + "),"
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "),"
                 + "FOREIGN KEY (" + COLUMN_ITEM_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + _ID + "),"
                 + COLUMN_SHARE_RATIO + " FLOAT NOT NULL CHECK (" + COLUMN_SHARE_RATIO + " >= 0 AND " + COLUMN_SHARE_RATIO + " <= 1),"
                 + "PRIMARY KEY (" + COLUMN_ITEM_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
@@ -342,7 +352,7 @@ public final class budgetSplitDBContract implements BaseColumns {
         private static final String TABLE_CREATE = "CREATE TABLE"
                 + TABLE_TAG_FILTER
                 + "("
-                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participant.TABLE_PARTICIPANTS + "(" + _ID + "),"
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "),"
                 + "FOREIGN KEY (" + COLUMN_TAG_ID + ") REFERENCES " + tags.TABLE_TAGS + "(" + _ID + "),"
                 + COLUMN_SHARE_RATIO + " FLOAT NOT NULL CHECK (" + COLUMN_SHARE_RATIO + " >= 0 AND " + COLUMN_SHARE_RATIO + " <= 1),"
                 + "PRIMARY KEY (" + COLUMN_TAG_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"

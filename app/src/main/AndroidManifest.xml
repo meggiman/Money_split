@@ -18,8 +18,8 @@
         </activity>
 
         <provider
-            android:name="ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContentProvider"
-            android:authorities="ch.ethz.itet.pps_2014.money_split"
+            android:name=".contentProvider.budgetSplitContentProvider"
+            android:authorities="ch.ethz.itet.pps_2014.budgetSplit"
             android:enabled="true"
             android:exported="false"></provider>
     </application>
