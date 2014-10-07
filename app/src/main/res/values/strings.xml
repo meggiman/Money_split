@@ -4,5 +4,7 @@
     <string name="app_name">budgetSplit</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="project_add">Neues Projekt hinzufügen</string>
+    <string name="projects">Projekte</string>
 
 </resources>

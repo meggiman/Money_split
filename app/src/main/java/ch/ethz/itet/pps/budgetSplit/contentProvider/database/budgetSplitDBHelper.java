@@ -20,8 +20,8 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase database) {
-        budgetSplitDBSchema.projects.onCreate(database);
         budgetSplitDBSchema.participants.onCreate(database);
+        budgetSplitDBSchema.projects.onCreate(database);
         budgetSplitDBSchema.items.onCreate(database);
         budgetSplitDBSchema.tags.onCreate(database);
         budgetSplitDBSchema.currencies.onCreate(database);

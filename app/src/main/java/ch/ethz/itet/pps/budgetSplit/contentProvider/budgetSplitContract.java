@@ -4,6 +4,8 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import ch.ethz.itet.pps.budgetSplit.contentProvider.database.budgetSplitDBSchema;
+
 /**
  * Created by Manuel on 29.09.2014.
  */
@@ -19,9 +21,9 @@ public class budgetSplitContract {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_PROJECTS);
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_PROJECTS;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_PROJECTS;
-        public static final String COLUMN_PROJECT_NAME = "name";
-        public static final String COLUMN_PROJECT_DESCRIPTION = "description";
-        public static final String COLUMN_PROJECT_OWNER = "owner";
+        public static final String COLUMN_PROJECT_NAME = budgetSplitDBSchema.projects.COLUMN_NAME;
+        public static final String COLUMN_PROJECT_DESCRIPTION = budgetSplitDBSchema.projects.COLUMN_DESCRIPTION;
+        public static final String COLUMN_PROJECT_OWNER = budgetSplitDBSchema.projects.COLUMN_OWNER;
         public static final String[] PROJECTION_ALL = {_ID, COLUMN_PROJECT_NAME, COLUMN_PROJECT_DESCRIPTION, COLUMN_PROJECT_OWNER};
     }
 
@@ -33,9 +35,9 @@ public class budgetSplitContract {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_PARTICIPANTS);
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_PARTICIPANTS;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_PARTICIPANTS;
-        public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_UNIQUEID = "googleAccount";
-        public static final String COLUMN_ISVIRTUAL = "isVirtual";
+        public static final String COLUMN_NAME = budgetSplitDBSchema.participants.COLUMN_NAME;
+        public static final String COLUMN_UNIQUEID = budgetSplitDBSchema.participants.COLUMN_UNIQUEID;
+        public static final String COLUMN_ISVIRTUAL = budgetSplitDBSchema.participants.COLUMN_ISVIRTUAL;
         public static final String[] PROJECTION_ALL = {_ID, COLUMN_NAME, COLUMN_UNIQUEID, COLUMN_ISVIRTUAL};
     }
 

@@ -9,8 +9,41 @@
     tools:context=".Main">
 
     <TextView
-        android:text="@string/hello_world"
+        android:text="@string/projects"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:textIsSelectable="true"
+        android:id="@+id/projectName" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewProjects"
+        android:layout_below="@+id/projectName"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:layout_above="@+id/buttonAddProject"
+        tools:listitem="@layout/projectlist_row"
+        android:choiceMode="singleChoice" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/project_add"
+        android:id="@+id/buttonAddProject"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:longClickable="false" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/projectsLoadProgressBar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
 </RelativeLayout>
