@@ -15,5 +15,6 @@
     <string name="administrator">Administrator:</string>
     <string name="Expenses">Expenses: </string>
     <string name="finalize">Finalize</string>
+    <string name="addItem">Add Item</string>
 
 </resources>

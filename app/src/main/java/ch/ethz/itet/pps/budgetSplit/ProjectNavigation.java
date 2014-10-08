@@ -155,8 +155,8 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            // Show 1 page.
+            return 1;
         }
 
         @Override
@@ -165,10 +165,6 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
             switch (position) {
                 case SECTION_OVERVIEW:
                     return getString(R.string.title_section_overview).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
         }

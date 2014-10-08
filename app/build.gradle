@@ -5,7 +5,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "ch.ethz.itet.pps.pps_money_split"
+        applicationId "ch.ethz.itet.pps.budgetSplit"
         minSdkVersion 15
         targetSdkVersion 20
         versionCode 1

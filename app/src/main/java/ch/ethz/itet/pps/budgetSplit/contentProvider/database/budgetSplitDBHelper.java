@@ -31,6 +31,8 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
         budgetSplitDBSchema.projectsParticipants.onCreate(database);
         budgetSplitDBSchema.projectsTags.onCreate(database);
         budgetSplitDBSchema.tagFilter.onCreate(database);
+
+        budgetSplitDBSchema.projects_view.onCreate(database);
     }
 
     /**
@@ -54,5 +56,7 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
         budgetSplitDBSchema.projectsParticipants.onUpgrade(database, i, i2);
         budgetSplitDBSchema.projectsTags.onUpgrade(database, i, i2);
         budgetSplitDBSchema.tagFilter.onUpgrade(database, i, i2);
+
+        budgetSplitDBSchema.projects_view.onUpgrade(database, i, i2);
     }
 }

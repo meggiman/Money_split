@@ -25,7 +25,8 @@
         android:textStyle="italic"
         android:layout_toStartOf="@+id/projectName"
         android:layout_below="@+id/projectName"
-        android:layout_toLeftOf="@+id/projectName" />
+        android:layout_toLeftOf="@+id/projectName"
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,8 +35,7 @@
         android:text="@string/participantsCount"
         android:id="@+id/textView2"
         android:layout_below="@+id/textView3"
-        android:layout_alignLeft="@+id/textView3"
-        android:layout_alignStart="@+id/textView3" />
+        android:layout_alignLeft="@+id/textView3" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,8 +44,9 @@
         android:text="#"
         android:id="@+id/CountOfParticipants"
         android:layout_toEndOf="@+id/textView2"
-        android:layout_alignBottom="@+id/textView2"
-        android:layout_toRightOf="@+id/textView2" />
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_alignBaseline="@+id/textView2"
+        android:layout_marginLeft="3dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,7 +56,11 @@
         android:id="@+id/textView3"
         android:layout_below="@+id/projectDescription"
         android:layout_alignLeft="@+id/projectDescription"
-        android:layout_alignStart="@+id/projectDescription" />
+        android:layout_alignStart="@+id/projectDescription"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginBottom="3dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,7 +69,8 @@
         android:text="Admin"
         android:id="@+id/administrator"
         android:layout_toRightOf="@id/textView3"
-        android:layout_alignBottom="@id/textView3"></TextView>
+        android:layout_alignBaseline="@+id/textView3"
+        android:layout_marginLeft="3dp"></TextView>
 
     <TextView
         android:layout_width="wrap_content"
@@ -82,16 +88,26 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Expenses"
         android:id="@+id/expenses"
-        android:layout_below="@+id/textView2"
         android:layout_toRightOf="@+id/textView5"
-        android:layout_toEndOf="@+id/projectDescription" />
+        android:layout_toEndOf="@+id/projectDescription"
+        android:layout_margin="3dp"
+        android:layout_alignBaseline="@+id/textView5" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/finalize"
         android:id="@+id/buttonFinalize"
-        android:layout_below="@+id/expenses"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="31dp" />
+        android:layout_below="@+id/textView5"
+        android:layout_marginTop="20dp"
+        android:layout_alignLeft="@+id/textView5" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/addItem"
+        android:id="@+id/button"
+        android:layout_alignBottom="@+id/buttonFinalize"
+        android:layout_toRightOf="@+id/buttonFinalize"
+        android:layout_toEndOf="@+id/buttonFinalize" />
 </RelativeLayout>

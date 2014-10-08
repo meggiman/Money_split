@@ -30,7 +30,7 @@ public class budgetSplitContentProvider extends ContentProvider {
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.participants.TABLE_PARTICIPANTS + "/#", budgetSplitContract.participants.PARTICIPANT);
 
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.tags.TABLE_TAGS, budgetSplitContract.tags.TAGS);
-        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.tags.TABLE_TAGS, budgetSplitContract.tags.TAG);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.tags.TABLE_TAGS + "/#", budgetSplitContract.tags.TAG);
     }
 
     public budgetSplitContentProvider() {
@@ -71,6 +71,11 @@ public class budgetSplitContentProvider extends ContentProvider {
                 return budgetSplitContract.tags.CONTENT_TYPE;
             case budgetSplitContract.tags.TAG:
                 return budgetSplitContract.tags.CONTENT_ITEM_TYPE;
+
+            case budgetSplitContract.projectsDetails.PROJECTS_DETAILS:
+                return budgetSplitContract.projectsDetails.CONTENT_TYPE;
+            case budgetSplitContract.projectsDetails.PROJECT_DETAILS:
+                return budgetSplitContract.projectsDetails.CONTENT_ITEM_TYPE;
 
             default:
                 throw new IllegalArgumentException("Unsupported Uri: " + uri);
@@ -193,6 +198,14 @@ public class budgetSplitContentProvider extends ContentProvider {
                 builder.setTables(budgetSplitDBSchema.tags.TABLE_TAGS);
                 builder.appendWhere(budgetSplitDBSchema.tags.TABLE_TAGS + "." + budgetSplitDBSchema._ID + " = " + uri.getLastPathSegment());
                 break;
+
+            case budgetSplitContract.projectsDetails.PROJECTS_DETAILS:
+                builder.setTables(budgetSplitContract.projectsDetails.TABLE_PROJECTS_DETAILS);
+                break;
+            case budgetSplitContract.projectsDetails.PROJECT_DETAILS:
+                builder.setTables(budgetSplitDBSchema.projects_view.VIEW_PROJECTS);
+                builder.appendWhere(budgetSplitDBSchema.projects_view.VIEW_PROJECTS + "." + budgetSplitDBSchema._ID + " = " + uri.getLastPathSegment());
+
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }

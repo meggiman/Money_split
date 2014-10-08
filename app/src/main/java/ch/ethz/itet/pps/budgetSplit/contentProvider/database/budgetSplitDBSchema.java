@@ -24,7 +24,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
         public static final String TABLE_PROJECTS = "projects";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_DESCRIPTION = "description";
-        public static final String COLUMN_OWNER = "owner";
+        public static final String COLUMN_ADMIN = "admin";
 
         private static final String TABLE_CREATE = "CREATE TABLE "
                 + TABLE_PROJECTS
@@ -32,8 +32,8 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_NAME + " TEXT NOT NULL, "
                 + COLUMN_DESCRIPTION + " TEXT, "
-                + COLUMN_OWNER + " INTEGER NOT NULL, "
-                + " FOREIGN KEY (" + COLUMN_OWNER + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + ")"
+                + COLUMN_ADMIN + " INTEGER NOT NULL, "
+                + " FOREIGN KEY (" + COLUMN_ADMIN + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + ")"
                 + ");";
 
         /**
@@ -60,7 +60,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
     public static abstract class participants {
         public static final String TABLE_PARTICIPANTS = "participants";
         public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_UNIQUEID = "googleAccountId";
+        public static final String COLUMN_UNIQUEID = "uniqueId";
         public static final String COLUMN_ISVIRTUAL = "isVirtual";
 
         private static final String TABLE_CREATE = "CREATE TABLE "
@@ -281,7 +281,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
         public static final String COLUMN_ITEM_ID = "itemId";
         public static final String COLUMN_PARTICIPANTS_ID = "participantsId";
         public static final String COLUMN_CURRENCY_ID = "currencyId";
-        public static final String COLUMN_PRICE = "price";
+        public static final String COLUMN_AMOUNT_PAYED = "amountPayed";
 
         private static final String TABLE_CREATE = "CREATE TABLE "
                 + TABLE_ITEMS_PARTICIPANTS
@@ -289,7 +289,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + COLUMN_PARTICIPANTS_ID + " INTEGER NOT NULL, "
                 + COLUMN_ITEM_ID + " INTEGER NOT NULL, "
                 + COLUMN_CURRENCY_ID + " INTEGER NOT NULL, "
-                + COLUMN_PRICE + " FLOAT NOT NULL, "
+                + COLUMN_AMOUNT_PAYED + " FLOAT NOT NULL, "
                 + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "), "
                 + "FOREIGN KEY (" + COLUMN_ITEM_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + _ID + "), "
                 + "FOREIGN KEY (" + COLUMN_CURRENCY_ID + ") REFERENCES " + currencies.TABLE_CURRENCIES + "(" + _ID + "), "
@@ -394,4 +394,66 @@ public final class budgetSplitDBSchema implements BaseColumns {
     }
 
     // </editor-fold>
+
+
+    public static abstract class projects_view implements BaseColumns {
+        public static final String VIEW_PROJECTS = "viewProjects";
+        public static final String COLUMN_PROJECT_NAME = "projectName";
+        public static final String COLUMN_PROJECT_DESCRIPTION = "projectDescription";
+        public static final String COLUMN_PROJECT_ADMIN_ID = "projectAdminId";
+        public static final String COLUMN_PROJECT_ADMIN_NAME = "projectAdminName";
+        public static final String COLUMN_PROJECT_ADMIN_UNIQUEID = "projectAdminUniqueId";
+        public static final String COLUMN_NR_OF_PARTICIPANTS = "projectCountParticipants";
+        public static final String COLUMN_NR_OF_ITEMS = "projectCountItems";
+
+        private static final String VIEW_SUBSELECT_COUNT_PARTICIPANTS = "SELECT "
+                + projectsParticipants.COLUMN_PROJECTS_ID + ", "
+                + "COUNT(" + projectsParticipants.COLUMN_PARTICIPANTS_ID + ") AS " + COLUMN_NR_OF_PARTICIPANTS
+                + " FROM " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS
+                + " GROUP BY " + projectsParticipants.COLUMN_PROJECTS_ID;
+        private static final String VIEW_SUBSELECT_COUNT_ITEMS = "SELECT "
+                + items.COLUMN_PROJECT + ", "
+                + "COUNT(" + _ID + ") AS " + COLUMN_NR_OF_ITEMS
+                + " FROM " + items.TABLE_ITEMS
+                + " GROUP BY " + items.COLUMN_PROJECT;
+
+        private static final String VIEW_SELECT = "SELECT "
+                + projects.TABLE_PROJECTS + "." + _ID + ", "
+                + projects.TABLE_PROJECTS + "." + projects.COLUMN_NAME + " AS " + COLUMN_PROJECT_NAME + ", "
+                + projects.COLUMN_DESCRIPTION + " AS " + COLUMN_PROJECT_DESCRIPTION + ", "
+                + projects.COLUMN_ADMIN + " AS " + COLUMN_PROJECT_ADMIN_ID + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_PROJECT_ADMIN_NAME + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_UNIQUEID + " AS " + COLUMN_PROJECT_ADMIN_UNIQUEID + ", "
+                + " FROM " + projects.TABLE_PROJECTS
+                + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + projects.TABLE_PROJECTS + "." + projects.COLUMN_ADMIN + " = " + participants.TABLE_PARTICIPANTS + "." + _ID
+                + " LEFT OUTER JOIN (" + VIEW_SUBSELECT_COUNT_ITEMS + ") AS 'sub1' ON " + projects.TABLE_PROJECTS + "." + _ID + " = sub1." + _ID
+                + " LEFT OUTER JOIN (" + VIEW_SUBSELECT_COUNT_PARTICIPANTS + ") AS 'sub2' ON " + projects.TABLE_PROJECTS + "." + _ID + " = sub2." + _ID
+                + ";";
+        private static final String VIEW_CREATE = "CREATE VIEW "
+                + VIEW_PROJECTS
+                + " AS "
+                + VIEW_SELECT;
+
+        /**
+         * Static Method to be called by SQLiteOpenHelper class for better readability.
+         *
+         * @param database
+         */
+        public static void onCreate(SQLiteDatabase database) {
+            database.execSQL(VIEW_CREATE);
+        }
+
+        /**
+         * Method to be implemented for future Changes in Database structure.
+         *
+         * @param database
+         * @param oldVersion
+         * @param newVersion
+         */
+        public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+
+        }
+    }
+
+
 }
