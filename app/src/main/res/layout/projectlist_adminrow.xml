@@ -12,8 +12,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_weight="1.22"
-        android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="Name"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="25dp" />
 
     <TextView
         android:id="@+id/projectowner"
@@ -22,7 +23,23 @@
         android:layout_alignBottom="@+id/projectName"
         android:layout_centerHorizontal="true"
         android:layout_weight="1"
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:text="Description"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="18dp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_action_half_important"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_action_person"
+        android:visibility="invisible" />
+
 
 </LinearLayout>

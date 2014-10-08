@@ -1,25 +1,22 @@
 package ch.ethz.itet.pps.budgetSplit;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
@@ -34,14 +31,46 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
     SimpleCursorAdapter simpleCursorAdapter;
 
 
+    /**
+     * Method deciding if ListView item is Admin/Virtual -> opened after creating new element
+     * --> Needs to get the information if "this" is the owner of specific list Item (Admin)
+     * and needs to get the information if the list item is owned by a virtual user
+     */
+
+    ImageView adm = (ImageView) findViewById(R.id.imageView);
+    ImageView vrt = (ImageView) findViewById(R.id.imageView);
+
+    private static void setAdminVirtual(boolean admin, boolean virtual, ImageView iadmin, ImageView ivirtual) {
+
+        if (admin == true) {
+            iadmin.setVisibility(View.VISIBLE);
+        }
+        if (virtual == true) {
+            ivirtual.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // Add Listeners to GUI-Elements
         Button addProjectButton = (Button) findViewById(R.id.buttonAddProject);
-        addProjectButton.setOnClickListener(this);
+
+        //Implementing on click funktion of "addProjectButton"
+        addProjectButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent intentAddProject = new Intent("android.intent.action.NEWPROJECT");
+                startActivity(intentAddProject);
+            }
+        });
+
         ListView listView = (ListView) findViewById(R.id.listViewProjects);
 
         //Initialize Loader
@@ -85,6 +114,9 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
             myresult.moveToNext();
             String name2 = myresult.getString(0);
         }
+
+        //set to predestined value --> needs to get those from content provider
+        setAdminVirtual(true, true, adm, vrt);
     }
 
 

@@ -4,14 +4,32 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import ch.ethz.itet.pps.budgetSplit.*;
+import android.view.View;
+import android.widget.Button;
 
 public class NewProject extends Activity {
+
+    //declarations:
+
+    Button createNewContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_project);
+
+        createNewContact = (Button) findViewById(R.id.button_create_contact);
+        createNewContact.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+
+                //Link to the create Contact menu
+            }
+        });
+
+
+
+
     }
 
 
