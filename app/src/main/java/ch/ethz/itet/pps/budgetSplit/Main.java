@@ -92,7 +92,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -100,9 +100,14 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()){
+            case R.id.mainScreenContacts:
+                // What should "Contacts" do
+                break;
+
+            case R.id.MainScreenSettings:
+                // What should "Settings" do
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
