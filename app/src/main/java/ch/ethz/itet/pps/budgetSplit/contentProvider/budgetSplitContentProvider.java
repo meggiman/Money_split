@@ -262,7 +262,31 @@ public class budgetSplitContentProvider extends ContentProvider {
         }
         if (updateCount > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
+            notifyViews(uri);
         }
         return updateCount;
+    }
+
+    /**
+     * Determines which SQLite Views will change depending on the changed Table behind the Uri and notifies them.
+     *
+     * @param uri the Uri of the Table which was changed.
+     */
+    void notifyViews(Uri uri) {
+        switch (sUriMatcher.match(uri)) {
+            case budgetSplitContract.projects.PROJECTS:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetails.CONTENT_URI, null);
+                break;
+            case budgetSplitContract.projects.PROJECT:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetails.CONTENT_URI, null);
+                break;
+
+            case budgetSplitContract.participants.PARTICIPANTS:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetails.CONTENT_URI, null);
+                break;
+            case budgetSplitContract.participants.PARTICIPANT:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetails.CONTENT_URI, null);
+                break;
+        }
     }
 }

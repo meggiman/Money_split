@@ -110,4 +110,12 @@
         android:layout_alignBottom="@+id/buttonFinalize"
         android:layout_toRightOf="@+id/buttonFinalize"
         android:layout_toEndOf="@+id/buttonFinalize" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/projectOverviewProgressBar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
 </RelativeLayout>
