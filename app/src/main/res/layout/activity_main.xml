@@ -25,7 +25,7 @@
         android:layout_alignParentEnd="false"
         android:layout_alignParentStart="false"
         android:layout_above="@+id/buttonAddProject"
-        tools:listitem="@layout/projectlist_row"
+        tools:listitem="@layout/activity_main_projectlist_row"
         android:choiceMode="singleChoice" />
 
     <Button

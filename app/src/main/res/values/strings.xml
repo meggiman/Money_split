@@ -19,4 +19,8 @@
     <string name="username">Username</string>
     <string name="username_summary">Choose your name to be used by Budget Split</string>
     <string name="enter_username">Enter your Name.</string>
+    <string name="date_added">Date</string>
+    <string name="item_name">Item</string>
+    <string name="creator">Creator</string>
+    <string name="price">Price</string>
 </resources>

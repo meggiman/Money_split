@@ -1,6 +1,5 @@
 package ch.ethz.itet.pps.budgetSplit;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -10,16 +9,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
@@ -50,7 +45,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         //Create empty Cursor Adapter and attach it to the listview
         String[] fromColumns = {budgetSplitContract.projects.COLUMN_PROJECT_NAME, budgetSplitContract.projects.COLUMN_PROJECT_OWNER};
         int[] toViews = {R.id.projectName, R.id.projectowner};
-        simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.projectlist_row, null, fromColumns, toViews, 0);
+        simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.activity_main_projectlist_row, null, fromColumns, toViews, 0);
         listView.setAdapter(simpleCursorAdapter);
 
         //Debug

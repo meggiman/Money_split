@@ -33,9 +33,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/participantsCount"
-        android:id="@+id/textView2"
-        android:layout_below="@+id/textView3"
-        android:layout_alignLeft="@+id/textView3" />
+        android:id="@+id/textViewCreator"
+        android:layout_below="@+id/textViewPrice"
+        android:layout_alignLeft="@+id/textViewPrice" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,9 +43,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="#"
         android:id="@+id/CountOfParticipants"
-        android:layout_toEndOf="@+id/textView2"
-        android:layout_toRightOf="@+id/textView2"
-        android:layout_alignBaseline="@+id/textView2"
+        android:layout_toEndOf="@+id/textViewCreator"
+        android:layout_toRightOf="@+id/textViewCreator"
+        android:layout_alignBaseline="@+id/textViewCreator"
         android:layout_marginLeft="3dp" />
 
     <TextView
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/administrator"
-        android:id="@+id/textView3"
+        android:id="@+id/textViewPrice"
         android:layout_below="@+id/projectDescription"
         android:layout_alignLeft="@+id/projectDescription"
         android:layout_alignStart="@+id/projectDescription"
@@ -68,8 +68,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Admin"
         android:id="@+id/administrator"
-        android:layout_toRightOf="@id/textView3"
-        android:layout_alignBaseline="@+id/textView3"
+        android:layout_toRightOf="@id/textViewPrice"
+        android:layout_alignBaseline="@+id/textViewPrice"
         android:layout_marginLeft="3dp"></TextView>
 
     <TextView
@@ -78,9 +78,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/Expenses"
         android:id="@+id/textView5"
-        android:layout_below="@+id/textView2"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_alignStart="@+id/textView2" />
+        android:layout_below="@+id/textViewCreator"
+        android:layout_alignLeft="@+id/textViewCreator"
+        android:layout_alignStart="@+id/textViewCreator" />
 
     <TextView
         android:layout_width="wrap_content"
