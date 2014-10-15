@@ -53,6 +53,20 @@ public class budgetSplitContract {
         public static final String[] PROJECTION_ALL = {_ID, COLUMN_NAME};
     }
 
+    public static final class currencies implements BaseColumns {
+        static final String TABLE_CURRENCIES = "currencies";
+        static final int CURRENCIES = 110;
+        static final int CURRENCY = 111;
+
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_CURRENCIES);
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_CURRENCIES;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_CURRENCIES;
+        public static final String COLUMN_NAME = budgetSplitDBSchema.tags.COLUMN_NAME;
+        public static final String COLUMN_CURRENCY_CODE = budgetSplitDBSchema.currencies.COLUMN_CURRENCY_CODE;
+        public static final String COLUMN_EXCHANGE_RATE = budgetSplitDBSchema.currencies.COLUMN_EXCHANGE_RATE;
+        public static final String[] PROJECTION_ALL = {_ID, COLUMN_NAME, COLUMN_CURRENCY_CODE, COLUMN_EXCHANGE_RATE};
+    }
+
     public static final class items implements BaseColumns {
         static final String TABLE_ITEMS = "items";
         static final int ITEMS = 60;

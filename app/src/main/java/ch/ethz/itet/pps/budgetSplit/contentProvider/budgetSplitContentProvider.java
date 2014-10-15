@@ -101,6 +101,12 @@ public class budgetSplitContentProvider extends ContentProvider {
             case budgetSplitContract.tags.TAG:
                 return budgetSplitContract.tags.CONTENT_ITEM_TYPE;
 
+            //Get Type of Table currencies
+            case budgetSplitContract.currencies.CURRENCIES:
+                return budgetSplitContract.currencies.CONTENT_TYPE;
+            case budgetSplitContract.currencies.CURRENCY:
+                return budgetSplitContract.currencies.CONTENT_ITEM_TYPE;
+
             //Get Type of Table items
             case budgetSplitContract.items.ITEMS:
                 return budgetSplitContract.items.CONTENT_TYPE;
@@ -202,6 +208,19 @@ public class budgetSplitContentProvider extends ContentProvider {
                 deletedCount = db.delete(budgetSplitDBSchema.tags.TABLE_TAGS, whereString, selectionArgs);
                 break;
 
+            //Delete Rows in Table currencies
+            case budgetSplitContract.currencies.CURRENCIES:
+                deletedCount = db.delete(budgetSplitDBSchema.currencies.TABLE_CURRENCIES, selection, selectionArgs);
+                break;
+            case budgetSplitContract.currencies.CURRENCY:
+                idString = uri.getLastPathSegment();
+                whereString = budgetSplitDBSchema.currencies._ID + " = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                deletedCount = db.delete(budgetSplitDBSchema.currencies.TABLE_CURRENCIES, whereString, selectionArgs);
+                break;
+
             //Delete Rows in Table items
             case budgetSplitContract.items.ITEMS:
                 deletedCount = db.delete(budgetSplitDBSchema.tags.TABLE_TAGS, selection, selectionArgs);
@@ -297,6 +316,13 @@ public class budgetSplitContentProvider extends ContentProvider {
                 notifyViews(uri);
                 return getUriForId(uri, id);
 
+            //Insert into currencies-Table
+            case budgetSplitContract.currencies.CURRENCIES:
+                db = dbHelper.getWritableDatabase();
+                id = db.insert(budgetSplitContract.currencies.TABLE_CURRENCIES, null, values);
+                notifyViews(uri);
+                return getUriForId(uri, id);
+
             //Insert into items-Table
             case budgetSplitContract.items.ITEMS:
                 db = dbHelper.getWritableDatabase();
@@ -376,6 +402,15 @@ public class budgetSplitContentProvider extends ContentProvider {
             case budgetSplitContract.tags.TAG:
                 builder.setTables(budgetSplitDBSchema.tags.TABLE_TAGS);
                 builder.appendWhere(budgetSplitDBSchema.tags.TABLE_TAGS + "." + budgetSplitDBSchema.tags._ID + " = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table currencies
+            case budgetSplitContract.currencies.CURRENCIES:
+                builder.setTables(budgetSplitDBSchema.currencies.TABLE_CURRENCIES);
+                break;
+            case budgetSplitContract.currencies.CURRENCY:
+                builder.setTables(budgetSplitDBSchema.currencies.TABLE_CURRENCIES);
+                builder.appendWhere(budgetSplitDBSchema.currencies.TABLE_CURRENCIES + "." + budgetSplitDBSchema.currencies._ID + " = " + uri.getLastPathSegment());
                 break;
 
             //Query Table items
@@ -497,6 +532,19 @@ public class budgetSplitContentProvider extends ContentProvider {
                     whereString += " AND " + selection;
                 }
                 updateCount = db.update(budgetSplitDBSchema.tags.TABLE_TAGS, values, whereString, selectionArgs);
+                break;
+
+            //update rows in Table tags
+            case budgetSplitContract.currencies.CURRENCIES:
+                updateCount = db.update(budgetSplitDBSchema.currencies.TABLE_CURRENCIES, values, selection, selectionArgs);
+                break;
+            case budgetSplitContract.currencies.CURRENCY:
+                idString = uri.getLastPathSegment();
+                whereString = budgetSplitDBSchema.currencies._ID + " = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                updateCount = db.update(budgetSplitDBSchema.currencies.TABLE_CURRENCIES, values, whereString, selectionArgs);
                 break;
 
             //update rows in Table items
