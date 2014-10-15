@@ -6,7 +6,7 @@ import android.provider.BaseColumns;
 /**
  * Created by Manuel on 27.09.2014.
  */
-public final class budgetSplitDBSchema implements BaseColumns {
+public final class budgetSplitDBSchema {
 
     static final String DATABASE_NAME = "budgetSplit.db";
     static final int DATABASE_VERSION = 1;
@@ -20,7 +20,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
     /**
      * Constants for the projects tables.
      */
-    public static abstract class projects {
+    public static abstract class projects implements BaseColumns {
         public static final String TABLE_PROJECTS = "projects";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_DESCRIPTION = "description";
@@ -33,7 +33,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + COLUMN_NAME + " TEXT NOT NULL, "
                 + COLUMN_DESCRIPTION + " TEXT, "
                 + COLUMN_ADMIN + " INTEGER NOT NULL, "
-                + " FOREIGN KEY (" + COLUMN_ADMIN + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + ")"
+                + " FOREIGN KEY (" + COLUMN_ADMIN + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + ") ON DELETE RESTRICTS ON UPDATE CASCADE"
                 + ");";
 
         /**
@@ -57,7 +57,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
         }
     }
 
-    public static abstract class participants {
+    public static abstract class participants implements BaseColumns {
         public static final String TABLE_PARTICIPANTS = "participants";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_UNIQUEID = "uniqueId";
@@ -93,7 +93,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
         }
     }
 
-    public static abstract class tags {
+    public static abstract class tags implements BaseColumns {
         public static final String TABLE_TAGS = "tags";
         public static final String COLUMN_NAME = "name";
 
@@ -125,7 +125,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
         }
     }
 
-    public static abstract class items {
+    public static abstract class items implements BaseColumns {
         public static final String TABLE_ITEMS = "items";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_TIMESTAMP = "timestamp";
@@ -140,8 +140,8 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + COLUMN_TIMESTAMP + " DATE DEFAULT CURRENT_TIMESTAMP, "
                 + COLUMN_CREATOR + " INTEGER NOT NULL, "
                 + COLUMN_PROJECT + " INTEGER NOT NULL, "
-                + "FOREIGN KEY (" + COLUMN_CREATOR + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "),"
-                + "FOREIGN KEY (" + COLUMN_PROJECT + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + _ID + ")"
+                + "FOREIGN KEY (" + COLUMN_CREATOR + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + ") ON UPDATE CASCADE ON DELETE RESTRICT,"
+                + "FOREIGN KEY (" + COLUMN_PROJECT + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + _ID + ") ON DELETE CASCADE ON UPDATE CASCADE"
                 + ");";
 
         /**
@@ -165,7 +165,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
         }
     }
 
-    public static abstract class currencies {
+    public static abstract class currencies implements BaseColumns {
         public static final String TABLE_CURRENCIES = "currencies";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_CURRENCY_CODE = "currencyCode";
@@ -214,8 +214,8 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + "("
                 + COLUMN_PARTICIPANTS_ID + " INTEGER NOT NULL, "
                 + COLUMN_PROJECTS_ID + " INTEGER NOT NULL, "
-                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "), "
-                + "FOREIGN KEY (" + COLUMN_PROJECTS_ID + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + _ID + "), "
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + participants._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "FOREIGN KEY (" + COLUMN_PROJECTS_ID + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + projects._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "PRIMARY KEY (" + COLUMN_PROJECTS_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
                 + ");";
 
@@ -250,8 +250,8 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + "("
                 + COLUMN_TAGS_ID + " INTEGER NOT NULL, "
                 + COLUMN_PROJECTS_ID + " INTEGER NOT NULL, "
-                + "FOREIGN KEY (" + COLUMN_TAGS_ID + ") REFERENCES " + tags.TABLE_TAGS + "(" + _ID + "), "
-                + "FOREIGN KEY (" + COLUMN_PROJECTS_ID + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + _ID + "), "
+                + "FOREIGN KEY (" + COLUMN_TAGS_ID + ") REFERENCES " + tags.TABLE_TAGS + "(" + tags._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "FOREIGN KEY (" + COLUMN_PROJECTS_ID + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + tags._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "PRIMARY KEY (" + COLUMN_PROJECTS_ID + ", " + COLUMN_TAGS_ID + ")"
                 + ");";
 
@@ -290,9 +290,9 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + COLUMN_ITEM_ID + " INTEGER NOT NULL, "
                 + COLUMN_CURRENCY_ID + " INTEGER NOT NULL, "
                 + COLUMN_AMOUNT_PAYED + " FLOAT NOT NULL, "
-                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "), "
-                + "FOREIGN KEY (" + COLUMN_ITEM_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + _ID + "), "
-                + "FOREIGN KEY (" + COLUMN_CURRENCY_ID + ") REFERENCES " + currencies.TABLE_CURRENCIES + "(" + _ID + "), "
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + participants._ID + ") ON UPDATE CASCADE ON DELETE RESTRICT, "
+                + "FOREIGN KEY (" + COLUMN_ITEM_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + items._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "FOREIGN KEY (" + COLUMN_CURRENCY_ID + ") REFERENCES " + currencies.TABLE_CURRENCIES + "(" + currencies._ID + "), ON UPDATE CASCADE ON DELETE RESTRICT"
                 + "PRIMARY KEY (" + COLUMN_ITEM_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
                 + ");";
 
@@ -329,8 +329,8 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + COLUMN_PARTICIPANTS_ID + " INTEGER NOT NULL, "
                 + COLUMN_ITEM_ID + " INTEGER NOT NULL, "
                 + COLUMN_SHARE_RATIO + " FLOAT NOT NULL CHECK (" + COLUMN_SHARE_RATIO + " >= 0 AND " + COLUMN_SHARE_RATIO + " <= 1), "
-                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "), "
-                + "FOREIGN KEY (" + COLUMN_ITEM_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + _ID + "), "
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + participants._ID + "), ON UPDATE CASCADE ON DELETE CASCADE"
+                + "FOREIGN KEY (" + COLUMN_ITEM_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + items._ID + "), ON UPDATE CASCADE ON DELETE CASCADE"
                 + "PRIMARY KEY (" + COLUMN_ITEM_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
                 + ");";
 
@@ -367,8 +367,8 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + COLUMN_PARTICIPANTS_ID + " INTEGER NOT NULL, "
                 + COLUMN_TAG_ID + " INTEGER NOT NULL, "
                 + COLUMN_SHARE_RATIO + " FLOAT NOT NULL CHECK (" + COLUMN_SHARE_RATIO + " >= 0 AND " + COLUMN_SHARE_RATIO + " <= 1), "
-                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + "), "
-                + "FOREIGN KEY (" + COLUMN_TAG_ID + ") REFERENCES " + tags.TABLE_TAGS + "(" + _ID + "), "
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + participants._ID + "), ON UPDATE CASCADE ON DELETE CASCADE"
+                + "FOREIGN KEY (" + COLUMN_TAG_ID + ") REFERENCES " + tags.TABLE_TAGS + "(" + tags._ID + "), ON UPDATE CASCADE ON DELETE RESTRICT"
                 + "PRIMARY KEY (" + COLUMN_TAG_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
                 + ");";
 
@@ -424,6 +424,8 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + projects.COLUMN_ADMIN + " AS " + COLUMN_PROJECT_ADMIN_ID + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_PROJECT_ADMIN_NAME + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_UNIQUEID + " AS " + COLUMN_PROJECT_ADMIN_UNIQUEID + ", "
+                + "sub1." + COLUMN_NR_OF_ITEMS + ", "
+                + "sub2." + COLUMN_NR_OF_PARTICIPANTS
                 + " FROM " + projects.TABLE_PROJECTS
                 + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + projects.TABLE_PROJECTS + "." + projects.COLUMN_ADMIN + " = " + participants.TABLE_PARTICIPANTS + "." + _ID
                 + " LEFT OUTER JOIN (" + VIEW_SUBSELECT_COUNT_ITEMS + ") AS 'sub1' ON " + projects.TABLE_PROJECTS + "." + _ID + " = sub1." + _ID
@@ -431,6 +433,59 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + ";";
         private static final String VIEW_CREATE = "CREATE VIEW "
                 + VIEW_PROJECTS
+                + " AS "
+                + VIEW_SELECT;
+
+        /**
+         * Static Method to be called by SQLiteOpenHelper class for better readability.
+         *
+         * @param database
+         */
+        public static void onCreate(SQLiteDatabase database) {
+            database.execSQL(VIEW_CREATE);
+        }
+
+        /**
+         * Method to be implemented for future Changes in Database structure.
+         *
+         * @param database
+         * @param oldVersion
+         * @param newVersion
+         */
+        public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+
+        }
+    }
+
+    public static abstract class items_view implements BaseColumns {
+        public static final String VIEW_ITEMS = "viewItems";
+        public static final String COLUMN_ITEM_NAME = "itemName";
+        public static final String COLUMN_ITEM_TIMESTAMP = "itemTimestamp";
+        public static final String COLUMN_ITEM_DATE_ADDED = "itemDateAdded";
+        public static final String COLUMN_ITEM_TIME_ADDED = "itemTimeAdded";
+        public static final String COLUMN_ITEM_CREATOR_ID = "itemCreatorId";
+        public static final String COLUMN_ITEM_CREATOR_NAME = "itemCreatorName";
+        public static final String COLUMN_ITEM_PRICE = "itemPrice";
+
+        private static final String VIEW_SELECT = "SELECT "
+                + items.TABLE_ITEMS + "." + _ID + ", "
+                + items.TABLE_ITEMS + "." + items.COLUMN_NAME + " AS " + COLUMN_ITEM_NAME + ", "
+                + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + " AS " + COLUMN_ITEM_TIMESTAMP + ", "
+                + "strftime('%d.%m.%Y', " + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + ", localtime) AS " + COLUMN_ITEM_DATE_ADDED + ", "
+                + "strftime('%H:%M', " + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + ", localtime) AS " + COLUMN_ITEM_TIME_ADDED + ", "
+                + items.TABLE_ITEMS + "." + items.COLUMN_CREATOR + " AS " + COLUMN_ITEM_CREATOR_ID + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_ITEM_CREATOR_NAME + ", "
+                + "sum(" + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_AMOUNT_PAYED + "*" + currencies.TABLE_CURRENCIES + "." + currencies.COLUMN_EXCHANGE_RATE + ") AS " + COLUMN_ITEM_PRICE
+                + " FROM " + items.TABLE_ITEMS
+                + " LEFT OUTER JOIN " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + " ON " + items.TABLE_ITEMS + "." + _ID + " = " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_ITEM_ID
+                + " LEFT OUTER JOIN " + currencies.TABLE_CURRENCIES + " ON " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_CURRENCY_ID + " = " + currencies.TABLE_CURRENCIES + "." + _ID
+                + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + items.TABLE_ITEMS + "." + items.COLUMN_CREATOR + " = " + participants.TABLE_PARTICIPANTS + "." + _ID
+                + " GROUP BY " + items.TABLE_ITEMS + "." + _ID
+                + ";";
+
+
+        private static final String VIEW_CREATE = "CREATE VIEW "
+                + VIEW_ITEMS
                 + " AS "
                 + VIEW_SELECT;
 

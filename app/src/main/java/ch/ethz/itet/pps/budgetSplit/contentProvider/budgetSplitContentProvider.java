@@ -11,8 +11,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import java.sql.SQLException;
-
 import ch.ethz.itet.pps.budgetSplit.contentProvider.database.budgetSplitDBHelper;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.database.budgetSplitDBSchema;
 
@@ -26,11 +24,32 @@ public class budgetSplitContentProvider extends ContentProvider {
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projects.TABLE_PROJECTS, budgetSplitContract.projects.PROJECTS);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projects.TABLE_PROJECTS + "/#", budgetSplitContract.projects.PROJECT);
 
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projectParticipants.TABLE_PROJECT_PARTICIPANTS, budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projectParticipants.TABLE_PROJECT_PARTICIPANTS + "/#", budgetSplitContract.projectParticipants.PROJECT_PARTICIPANT);
+
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.participants.TABLE_PARTICIPANTS, budgetSplitContract.participants.PARTICIPANTS);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.participants.TABLE_PARTICIPANTS + "/#", budgetSplitContract.participants.PARTICIPANT);
 
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.tags.TABLE_TAGS, budgetSplitContract.tags.TAGS);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.tags.TABLE_TAGS + "/#", budgetSplitContract.tags.TAG);
+
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.items.TABLE_ITEMS, budgetSplitContract.items.ITEMS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.items.TABLE_ITEMS + "/#", budgetSplitContract.items.ITEM);
+
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "/#", budgetSplitContract.itemsParticipants.ITEM_PARTICIPANTS);
+
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.excludeItems.TABLE_EXCLUDE_ITEMS, budgetSplitContract.excludeItems.EXCLUDE_ITEMS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.excludeItems.TABLE_EXCLUDE_ITEMS + "/#", budgetSplitContract.excludeItems.EXCLUDE_ITEM);
+
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.tagFilter.TABLE_TAG_FILTER, budgetSplitContract.tagFilter.TAGS_FILTER);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.tagFilter.TABLE_TAG_FILTER + "/#", budgetSplitContract.tagFilter.TAG_FILTER);
+
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projectsDetailsRO.TABLE_PROJECTS_DETAILS_RO, budgetSplitContract.projectsDetailsRO.PROJECTS_DETAILS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projectsDetailsRO.TABLE_PROJECTS_DETAILS_RO + "/#", budgetSplitContract.projectsDetailsRO.PROJECT_DETAILS);
+
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsDetailsRO.TABLE_ITEMS_DETAILS_RO, budgetSplitContract.itemsDetailsRO.ITEMS_DETAILS_RO);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsDetailsRO.TABLE_ITEMS_DETAILS_RO + "/#", budgetSplitContract.itemsDetailsRO.ITEM_DETAILS_RO);
     }
 
     public budgetSplitContentProvider() {
@@ -57,31 +76,71 @@ public class budgetSplitContentProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         switch (sUriMatcher.match(uri)) {
+
+            //Get Type of Table projects
             case budgetSplitContract.projects.PROJECTS:
                 return budgetSplitContract.projects.CONTENT_TYPE;
             case budgetSplitContract.projects.PROJECT:
                 return budgetSplitContract.projects.CONTENT_ITEM_TYPE;
 
+            //Get Type of Table projectParticipants
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
+                return budgetSplitContract.projectParticipants.CONTENT_TYPE;
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANT:
+                return budgetSplitContract.projectParticipants.CONTENT_ITEM_TYPE;
+
+            //Get Type of Table participants
             case budgetSplitContract.participants.PARTICIPANTS:
                 return budgetSplitContract.participants.CONTENT_TYPE;
             case budgetSplitContract.participants.PARTICIPANT:
                 return budgetSplitContract.participants.CONTENT_ITEM_TYPE;
 
+            //Get Type of Table tags
             case budgetSplitContract.tags.TAGS:
                 return budgetSplitContract.tags.CONTENT_TYPE;
             case budgetSplitContract.tags.TAG:
                 return budgetSplitContract.tags.CONTENT_ITEM_TYPE;
 
-            case budgetSplitContract.projectsDetails.PROJECTS_DETAILS:
-                return budgetSplitContract.projectsDetails.CONTENT_TYPE;
-            case budgetSplitContract.projectsDetails.PROJECT_DETAILS:
-                return budgetSplitContract.projectsDetails.CONTENT_ITEM_TYPE;
+            //Get Type of Table items
+            case budgetSplitContract.items.ITEMS:
+                return budgetSplitContract.items.CONTENT_TYPE;
+            case budgetSplitContract.items.ITEM:
+                return budgetSplitContract.items.CONTENT_ITEM_TYPE;
+
+            //Get Type of Table itemsParticipants
+            case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
+                return budgetSplitContract.itemsParticipants.CONTENT_TYPE;
+            case budgetSplitContract.itemsParticipants.ITEM_PARTICIPANTS:
+                return budgetSplitContract.itemsParticipants.CONTENT_ITEM_TYPE;
+
+            //Get Type of Table excludeItems
+            case budgetSplitContract.excludeItems.EXCLUDE_ITEMS:
+                return budgetSplitContract.excludeItems.CONTENT_TYPE;
+            case budgetSplitContract.excludeItems.EXCLUDE_ITEM:
+                return budgetSplitContract.excludeItems.CONTENT_ITEM_TYPE;
+
+            //Get Type of Table tagFilter
+            case budgetSplitContract.tagFilter.TAGS_FILTER:
+                return budgetSplitContract.tagFilter.CONTENT_TYPE;
+            case budgetSplitContract.tagFilter.TAG_FILTER:
+                return budgetSplitContract.tagFilter.CONTENT_ITEM_TYPE;
+
+            //Get Type of Table projectDetailsRO
+            case budgetSplitContract.projectsDetailsRO.PROJECTS_DETAILS:
+                return budgetSplitContract.projectsDetailsRO.CONTENT_TYPE;
+            case budgetSplitContract.projectsDetailsRO.PROJECT_DETAILS:
+                return budgetSplitContract.projectsDetailsRO.CONTENT_ITEM_TYPE;
+
+            //Get Type of Table itemsDetailsRO
+            case budgetSplitContract.itemsDetailsRO.ITEMS_DETAILS_RO:
+                return budgetSplitContract.itemsDetailsRO.CONTENT_TYPE;
+            case budgetSplitContract.itemsDetailsRO.ITEM_DETAILS_RO:
+                return budgetSplitContract.itemsDetailsRO.CONTENT_ITEM_TYPE;
 
             default:
                 throw new IllegalArgumentException("Unsupported Uri: " + uri);
         }
     }
-
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
@@ -90,46 +149,117 @@ public class budgetSplitContentProvider extends ContentProvider {
         String idString;
         String whereString;
         switch (sUriMatcher.match(uri)) {
+
+            //Delete Rows in Table project
             case budgetSplitContract.projects.PROJECTS:
                 deletedCount = db.delete(budgetSplitDBSchema.projects.TABLE_PROJECTS, selection, selectionArgs);
                 break;
             case budgetSplitContract.projects.PROJECT:
                 idString = uri.getLastPathSegment();
-                whereString = budgetSplitDBSchema._ID + " = " + idString;
+                whereString = budgetSplitDBSchema.projects._ID + " = " + idString;
                 if (!TextUtils.isEmpty(selection)) {
                     whereString += " AND " + selection;
                 }
                 deletedCount = db.delete(budgetSplitDBSchema.projects.TABLE_PROJECTS, whereString, selectionArgs);
                 break;
 
+            //Delete Rows in Table projectParticipants
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
+                deletedCount = db.delete(budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS, selection, selectionArgs);
+                break;
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANT:
+                idString = uri.getLastPathSegment();
+                whereString = "rowid" + " = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                deletedCount = db.delete(budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS, whereString, selectionArgs);
+                break;
+
+            //Delete Rows in Table participants
             case budgetSplitContract.participants.PARTICIPANTS:
                 deletedCount = db.delete(budgetSplitDBSchema.participants.TABLE_PARTICIPANTS, selection, selectionArgs);
                 break;
             case budgetSplitContract.participants.PARTICIPANT:
                 idString = uri.getLastPathSegment();
-                whereString = budgetSplitDBSchema._ID + " = " + idString;
+                whereString = budgetSplitDBSchema.participants._ID + " = " + idString;
                 if (!TextUtils.isEmpty(selection)) {
                     whereString += " AND " + selection;
                 }
                 deletedCount = db.delete(budgetSplitDBSchema.participants.TABLE_PARTICIPANTS, whereString, selectionArgs);
                 break;
 
+            //Delete Rows in Table tags
             case budgetSplitContract.tags.TAGS:
                 deletedCount = db.delete(budgetSplitDBSchema.tags.TABLE_TAGS, selection, selectionArgs);
                 break;
             case budgetSplitContract.tags.TAG:
                 idString = uri.getLastPathSegment();
-                whereString = budgetSplitDBSchema._ID + " = " + idString;
+                whereString = budgetSplitDBSchema.tags._ID + " = " + idString;
                 if (!TextUtils.isEmpty(selection)) {
                     whereString += " AND " + selection;
                 }
                 deletedCount = db.delete(budgetSplitDBSchema.tags.TABLE_TAGS, whereString, selectionArgs);
                 break;
+
+            //Delete Rows in Table items
+            case budgetSplitContract.items.ITEMS:
+                deletedCount = db.delete(budgetSplitDBSchema.tags.TABLE_TAGS, selection, selectionArgs);
+                break;
+            case budgetSplitContract.items.ITEM:
+                idString = uri.getLastPathSegment();
+                whereString = budgetSplitDBSchema.items._ID + " = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                deletedCount = db.delete(budgetSplitDBSchema.items.TABLE_ITEMS, whereString, selectionArgs);
+                break;
+
+            //Delete Rows in Table itemsParticipants
+            case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
+                deletedCount = db.delete(budgetSplitDBSchema.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, selection, selectionArgs);
+                break;
+            case budgetSplitContract.itemsParticipants.ITEM_PARTICIPANTS:
+                idString = uri.getLastPathSegment();
+                whereString = "rowid = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                deletedCount = db.delete(budgetSplitDBSchema.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, whereString, selectionArgs);
+                break;
+
+            //Delete Rows in Table excludeItems
+            case budgetSplitContract.excludeItems.EXCLUDE_ITEMS:
+                deletedCount = db.delete(budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS, selection, selectionArgs);
+                break;
+            case budgetSplitContract.excludeItems.EXCLUDE_ITEM:
+                idString = uri.getLastPathSegment();
+                whereString = "rowid = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                deletedCount = db.delete(budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS, whereString, selectionArgs);
+                break;
+
+            //Delete Rows in Table tagFilter
+            case budgetSplitContract.tagFilter.TAGS_FILTER:
+                deletedCount = db.delete(budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER, selection, selectionArgs);
+                break;
+            case budgetSplitContract.tagFilter.TAG_FILTER:
+                idString = uri.getLastPathSegment();
+                whereString = "rowid = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                deletedCount = db.delete(budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER, whereString, selectionArgs);
+                break;
+
             default:
                 throw new IllegalArgumentException("Invalid Uri for delete: " + uri);
         }
         if (deletedCount > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
+            notifyViews(uri);
         }
         return deletedCount;
     }
@@ -143,18 +273,56 @@ public class budgetSplitContentProvider extends ContentProvider {
             case budgetSplitContract.projects.PROJECTS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.projects.TABLE_PROJECTS, null, values);
+                notifyViews(uri);
+                return getUriForId(uri, id);
+
+            //Insert into ProjectParticipants-Table
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
+                db = dbHelper.getWritableDatabase();
+                id = db.insert(budgetSplitContract.projectParticipants.TABLE_PROJECT_PARTICIPANTS, null, values);
+                notifyViews(uri);
                 return getUriForId(uri, id);
 
             //Insert into Participants-Table
             case budgetSplitContract.participants.PARTICIPANTS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.participants.TABLE_PARTICIPANTS, null, values);
+                notifyViews(uri);
                 return getUriForId(uri, id);
 
             //Insert into Tags-Table
             case budgetSplitContract.tags.TAGS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.tags.TABLE_TAGS, null, values);
+                notifyViews(uri);
+                return getUriForId(uri, id);
+
+            //Insert into items-Table
+            case budgetSplitContract.items.ITEMS:
+                db = dbHelper.getWritableDatabase();
+                id = db.insert(budgetSplitContract.items.TABLE_ITEMS, null, values);
+                notifyViews(uri);
+                return getUriForId(uri, id);
+
+            //Insert into Tags-Table
+            case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
+                db = dbHelper.getWritableDatabase();
+                id = db.insert(budgetSplitContract.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, null, values);
+                notifyViews(uri);
+                return getUriForId(uri, id);
+
+            //Insert into Tags-Table
+            case budgetSplitContract.excludeItems.EXCLUDE_ITEMS:
+                db = dbHelper.getWritableDatabase();
+                id = db.insert(budgetSplitContract.excludeItems.TABLE_EXCLUDE_ITEMS, null, values);
+                notifyViews(uri);
+                return getUriForId(uri, id);
+
+            //Insert into tagFilter-Table
+            case budgetSplitContract.tagFilter.TAGS_FILTER:
+                db = dbHelper.getWritableDatabase();
+                id = db.insert(budgetSplitContract.tagFilter.TABLE_TAG_FILTER, null, values);
+                notifyViews(uri);
                 return getUriForId(uri, id);
             default:
                 throw new IllegalArgumentException("Unsupported Uri for insertion: " + uri);
@@ -174,37 +342,94 @@ public class budgetSplitContentProvider extends ContentProvider {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
         switch (sUriMatcher.match(uri)) {
-
+            //Query Table project
             case budgetSplitContract.projects.PROJECTS:
                 builder.setTables(budgetSplitDBSchema.projects.TABLE_PROJECTS);
                 break;
             case budgetSplitContract.projects.PROJECT:
                 builder.setTables(budgetSplitDBSchema.projects.TABLE_PROJECTS);
-                builder.appendWhere(budgetSplitDBSchema.projects.TABLE_PROJECTS + "." + budgetSplitDBSchema._ID + " = " + uri.getLastPathSegment());
+                builder.appendWhere(budgetSplitDBSchema.projects.TABLE_PROJECTS + "." + budgetSplitDBSchema.projects._ID + " = " + uri.getLastPathSegment());
                 break;
 
+            //Query Table projectParticipants
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
+                builder.setTables(budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS);
+                break;
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANT:
+                builder.setTables(budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS);
+                builder.appendWhere("rowid = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table participants
             case budgetSplitContract.participants.PARTICIPANTS:
                 builder.setTables(budgetSplitDBSchema.participants.TABLE_PARTICIPANTS);
                 break;
             case budgetSplitContract.participants.PARTICIPANT:
                 builder.setTables(budgetSplitDBSchema.participants.TABLE_PARTICIPANTS);
-                builder.appendWhere(budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema._ID + " = " + uri.getLastPathSegment());
+                builder.appendWhere(budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " = " + uri.getLastPathSegment());
                 break;
 
+            //Query Table tags
             case budgetSplitContract.tags.TAGS:
                 builder.setTables(budgetSplitDBSchema.tags.TABLE_TAGS);
                 break;
             case budgetSplitContract.tags.TAG:
                 builder.setTables(budgetSplitDBSchema.tags.TABLE_TAGS);
-                builder.appendWhere(budgetSplitDBSchema.tags.TABLE_TAGS + "." + budgetSplitDBSchema._ID + " = " + uri.getLastPathSegment());
+                builder.appendWhere(budgetSplitDBSchema.tags.TABLE_TAGS + "." + budgetSplitDBSchema.tags._ID + " = " + uri.getLastPathSegment());
                 break;
 
-            case budgetSplitContract.projectsDetails.PROJECTS_DETAILS:
-                builder.setTables(budgetSplitContract.projectsDetails.TABLE_PROJECTS_DETAILS);
+            //Query Table items
+            case budgetSplitContract.items.ITEMS:
+                builder.setTables(budgetSplitDBSchema.items.TABLE_ITEMS);
                 break;
-            case budgetSplitContract.projectsDetails.PROJECT_DETAILS:
+            case budgetSplitContract.items.ITEM:
+                builder.setTables(budgetSplitDBSchema.items.TABLE_ITEMS);
+                builder.appendWhere(budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items._ID + " = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table itemsParticipants
+            case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
+                builder.setTables(budgetSplitDBSchema.itemsParticipants.TABLE_ITEMS_PARTICIPANTS);
+                break;
+            case budgetSplitContract.itemsParticipants.ITEM_PARTICIPANTS:
+                builder.setTables(budgetSplitDBSchema.itemsParticipants.TABLE_ITEMS_PARTICIPANTS);
+                builder.appendWhere("rowid = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table exclude_items
+            case budgetSplitContract.excludeItems.EXCLUDE_ITEMS:
+                builder.setTables(budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS);
+                break;
+            case budgetSplitContract.excludeItems.EXCLUDE_ITEM:
+                builder.setTables(budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS);
+                builder.appendWhere("rowid = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table tagsFilter
+            case budgetSplitContract.tagFilter.TAGS_FILTER:
+                builder.setTables(budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER);
+                break;
+            case budgetSplitContract.tagFilter.TAG_FILTER:
+                builder.setTables(budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER);
+                builder.appendWhere("rowid = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table projectDetailsRO
+            case budgetSplitContract.projectsDetailsRO.PROJECTS_DETAILS:
+                builder.setTables(budgetSplitContract.projectsDetailsRO.TABLE_PROJECTS_DETAILS_RO);
+                break;
+            case budgetSplitContract.projectsDetailsRO.PROJECT_DETAILS:
                 builder.setTables(budgetSplitDBSchema.projects_view.VIEW_PROJECTS);
-                builder.appendWhere(budgetSplitDBSchema.projects_view.VIEW_PROJECTS + "." + budgetSplitDBSchema._ID + " = " + uri.getLastPathSegment());
+                builder.appendWhere(budgetSplitDBSchema.projects_view.VIEW_PROJECTS + "." + budgetSplitDBSchema.projects_view._ID + " = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table itemsDetailsRO
+            case budgetSplitContract.itemsDetailsRO.ITEMS_DETAILS_RO:
+                builder.setTables(budgetSplitDBSchema.items_view.VIEW_ITEMS);
+                break;
+            case budgetSplitContract.itemsDetailsRO.ITEM_DETAILS_RO:
+                builder.setTables(budgetSplitDBSchema.items_view.VIEW_ITEMS);
+                builder.appendWhere(budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view._ID + " = " + uri.getLastPathSegment());
 
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
@@ -222,41 +447,110 @@ public class budgetSplitContentProvider extends ContentProvider {
         String idString;
         String whereString;
         switch (sUriMatcher.match(uri)) {
+            //update rows in Table project
             case budgetSplitContract.projects.PROJECTS:
                 updateCount = db.update(budgetSplitDBSchema.projects.TABLE_PROJECTS, values, selection, selectionArgs);
                 break;
             case budgetSplitContract.projects.PROJECT:
                 idString = uri.getLastPathSegment();
-                whereString = budgetSplitDBSchema._ID + " = " + idString;
+                whereString = budgetSplitDBSchema.projects._ID + " = " + idString;
                 if (!TextUtils.isEmpty(selection)) {
                     whereString += " AND " + selection;
                 }
                 updateCount = db.update(budgetSplitDBSchema.projects.TABLE_PROJECTS, values, whereString, selectionArgs);
                 break;
 
+            //update rows in Table projectParticipants
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
+                updateCount = db.update(budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS, values, selection, selectionArgs);
+                break;
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANT:
+                idString = uri.getLastPathSegment();
+                whereString = "rowid = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                updateCount = db.update(budgetSplitDBSchema.projects.TABLE_PROJECTS, values, whereString, selectionArgs);
+                break;
+
+            //update rows in Table participants
             case budgetSplitContract.participants.PARTICIPANTS:
                 updateCount = db.update(budgetSplitDBSchema.participants.TABLE_PARTICIPANTS, values, selection, selectionArgs);
                 break;
             case budgetSplitContract.participants.PARTICIPANT:
                 idString = uri.getLastPathSegment();
-                whereString = budgetSplitDBSchema._ID + " = " + idString;
+                whereString = budgetSplitDBSchema.participants._ID + " = " + idString;
                 if (!TextUtils.isEmpty(selection)) {
                     whereString += " AND " + selection;
                 }
                 updateCount = db.update(budgetSplitDBSchema.participants.TABLE_PARTICIPANTS, values, whereString, selectionArgs);
                 break;
 
+            //update rows in Table tags
             case budgetSplitContract.tags.TAGS:
                 updateCount = db.update(budgetSplitDBSchema.tags.TABLE_TAGS, values, selection, selectionArgs);
                 break;
             case budgetSplitContract.tags.TAG:
                 idString = uri.getLastPathSegment();
-                whereString = budgetSplitDBSchema._ID + " = " + idString;
+                whereString = budgetSplitDBSchema.tags._ID + " = " + idString;
                 if (!TextUtils.isEmpty(selection)) {
                     whereString += " AND " + selection;
                 }
                 updateCount = db.update(budgetSplitDBSchema.tags.TABLE_TAGS, values, whereString, selectionArgs);
                 break;
+
+            //update rows in Table items
+            case budgetSplitContract.items.ITEMS:
+                updateCount = db.update(budgetSplitDBSchema.items.TABLE_ITEMS, values, selection, selectionArgs);
+                break;
+            case budgetSplitContract.items.ITEM:
+                idString = uri.getLastPathSegment();
+                whereString = budgetSplitDBSchema.items._ID + " = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                updateCount = db.update(budgetSplitDBSchema.items.TABLE_ITEMS, values, whereString, selectionArgs);
+                break;
+
+            //update rows in Table itemsParticipants
+            case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
+                updateCount = db.update(budgetSplitDBSchema.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, values, selection, selectionArgs);
+                break;
+            case budgetSplitContract.itemsParticipants.ITEM_PARTICIPANTS:
+                idString = uri.getLastPathSegment();
+                whereString = "rowid = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                updateCount = db.update(budgetSplitDBSchema.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, values, whereString, selectionArgs);
+                break;
+
+            //update rows in Table excludeItems
+            case budgetSplitContract.excludeItems.EXCLUDE_ITEMS:
+                updateCount = db.update(budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS, values, selection, selectionArgs);
+                break;
+            case budgetSplitContract.excludeItems.EXCLUDE_ITEM:
+                idString = uri.getLastPathSegment();
+                whereString = "rowid = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                updateCount = db.update(budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS, values, whereString, selectionArgs);
+                break;
+
+            //update rows in Table tagFilter
+            case budgetSplitContract.tagFilter.TAGS_FILTER:
+                updateCount = db.update(budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS, values, selection, selectionArgs);
+                break;
+            case budgetSplitContract.tagFilter.TAG_FILTER:
+                idString = uri.getLastPathSegment();
+                whereString = "rowid = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                updateCount = db.update(budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER, values, whereString, selectionArgs);
+                break;
+
             default:
                 throw new IllegalArgumentException("Invalid Uri for upadate: " + uri);
         }
@@ -275,17 +569,44 @@ public class budgetSplitContentProvider extends ContentProvider {
     void notifyViews(Uri uri) {
         switch (sUriMatcher.match(uri)) {
             case budgetSplitContract.projects.PROJECTS:
-                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetails.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
                 break;
             case budgetSplitContract.projects.PROJECT:
-                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetails.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
                 break;
 
             case budgetSplitContract.participants.PARTICIPANTS:
-                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetails.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
                 break;
             case budgetSplitContract.participants.PARTICIPANT:
-                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetails.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                break;
+
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                break;
+            case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANT:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                break;
+
+            case budgetSplitContract.items.ITEMS:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                break;
+            case budgetSplitContract.items.ITEM:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                break;
+
+            case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                break;
+            case budgetSplitContract.itemsParticipants.ITEM_PARTICIPANTS:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
                 break;
         }
     }

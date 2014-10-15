@@ -33,6 +33,16 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
         budgetSplitDBSchema.tagFilter.onCreate(database);
 
         budgetSplitDBSchema.projects_view.onCreate(database);
+        budgetSplitDBSchema.items_view.onCreate(database);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            //Enables Foreign Key support.
+            db.execSQL("PRAGMA foreign_keys=0N;");
+        }
     }
 
     /**
@@ -58,5 +68,6 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
         budgetSplitDBSchema.tagFilter.onUpgrade(database, i, i2);
 
         budgetSplitDBSchema.projects_view.onUpgrade(database, i, i2);
+        budgetSplitDBSchema.items_view.onUpgrade(database, i, i2);
     }
 }

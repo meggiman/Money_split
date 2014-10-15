@@ -15,11 +15,9 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ProjectItems extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String PROJECT_CONTENT_URI = "projectContentUri";
 
-    // TODO: Rename and change types of parameters
     private Uri contentUri;
 
 
@@ -30,7 +28,6 @@ public class ProjectItems extends Fragment {
      * @param projectContentUri Parameter 1.
      * @return A new instance of fragment ProjectItems.
      */
-    // TODO: Rename and change types and number of parameters
     public static ProjectItems newInstance(Uri projectContentUri) {
         ProjectItems fragment = new ProjectItems();
         Bundle args = new Bundle();

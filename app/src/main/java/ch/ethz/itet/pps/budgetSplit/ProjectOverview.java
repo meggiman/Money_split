@@ -6,7 +6,6 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -73,12 +72,12 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
         ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.projectOverviewProgressBar);
         progressBar.setVisibility(View.VISIBLE);
         final String[] PROJECTION = {
-                budgetSplitContract.projectsDetails._ID,
-                budgetSplitContract.projectsDetails.COLUMN_PROJECT_NAME,
-                budgetSplitContract.projectsDetails.COLUMN_PROJECT_DESCRIPTION,
-                budgetSplitContract.projectsDetails.COLUMN_PROJECT_ADMIN_NAME,
-                budgetSplitContract.projectsDetails.COLUMN_NR_OF_PARTICIPANTS,
-                budgetSplitContract.projectsDetails.COLUMN_NR_OF_ITEMS};
+                budgetSplitContract.projectsDetailsRO._ID,
+                budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_NAME,
+                budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_DESCRIPTION,
+                budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_NAME,
+                budgetSplitContract.projectsDetailsRO.COLUMN_NR_OF_PARTICIPANTS,
+                budgetSplitContract.projectsDetailsRO.COLUMN_NR_OF_ITEMS};
 
         return new CursorLoader(getActivity(), projectUri, PROJECTION, null, null, null);
     }
@@ -92,11 +91,11 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
         //Refresh Data of GUI Elements
         if (cursor.getColumnCount() == 1) {
             cursor.moveToFirst();
-            String projectName = cursor.getString(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetails.COLUMN_PROJECT_NAME));
-            String projectDescription = cursor.getString(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetails.COLUMN_PROJECT_DESCRIPTION));
-            String projectAdminName = cursor.getString(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetails.COLUMN_PROJECT_ADMIN_NAME));
-            int nrOfParticipants = cursor.getInt(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetails.COLUMN_NR_OF_PARTICIPANTS));
-            int nrOfItems = cursor.getInt(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetails.COLUMN_NR_OF_ITEMS));
+            String projectName = cursor.getString(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_NAME));
+            String projectDescription = cursor.getString(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_DESCRIPTION));
+            String projectAdminName = cursor.getString(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_NAME));
+            int nrOfParticipants = cursor.getInt(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetailsRO.COLUMN_NR_OF_PARTICIPANTS));
+            int nrOfItems = cursor.getInt(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetailsRO.COLUMN_NR_OF_ITEMS));
 
             ((TextView) getView().findViewById(R.id.projectName)).setText(projectName);
             ((TextView) getView().findViewById(R.id.projectDescription)).setText(projectDescription);
