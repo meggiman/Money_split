@@ -240,19 +240,19 @@ public final class budgetSplitDBSchema {
         }
     }
 
-    public static abstract class projectsTags {
-        public static final String TABLE_PROJECTS_TAGS = "projectsTags";
-        public static final String COLUMN_PROJECTS_ID = "projectsId";
+    public static abstract class itemsTags {
+        public static final String TABLE_ITEMS_TAGS = "itemsTags";
+        public static final String COLUMN_ITEMS_ID = "itemsId";
         public static final String COLUMN_TAGS_ID = "tagsId";
 
         private static final String TABLE_CREATE = "CREATE TABLE "
-                + TABLE_PROJECTS_TAGS
+                + TABLE_ITEMS_TAGS
                 + "("
                 + COLUMN_TAGS_ID + " INTEGER NOT NULL, "
-                + COLUMN_PROJECTS_ID + " INTEGER NOT NULL, "
+                + COLUMN_ITEMS_ID + " INTEGER NOT NULL, "
                 + "FOREIGN KEY (" + COLUMN_TAGS_ID + ") REFERENCES " + tags.TABLE_TAGS + "(" + tags._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
-                + "FOREIGN KEY (" + COLUMN_PROJECTS_ID + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + tags._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
-                + "PRIMARY KEY (" + COLUMN_PROJECTS_ID + ", " + COLUMN_TAGS_ID + ")"
+                + "FOREIGN KEY (" + COLUMN_ITEMS_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + items._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "PRIMARY KEY (" + COLUMN_ITEMS_ID + ", " + COLUMN_TAGS_ID + ")"
                 + ");";
 
         /**

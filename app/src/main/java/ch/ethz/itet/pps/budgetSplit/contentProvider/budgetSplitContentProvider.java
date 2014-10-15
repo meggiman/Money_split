@@ -101,6 +101,12 @@ public class budgetSplitContentProvider extends ContentProvider {
             case budgetSplitContract.tags.TAG:
                 return budgetSplitContract.tags.CONTENT_ITEM_TYPE;
 
+            //Get Type of Table itemsTags
+            case budgetSplitContract.itemsTags.ITEMSTAGS:
+                return budgetSplitContract.itemsTags.CONTENT_TYPE;
+            case budgetSplitContract.itemsTags.ITEMTAGS:
+                return budgetSplitContract.itemsTags.CONTENT_ITEM_TYPE;
+
             //Get Type of Table currencies
             case budgetSplitContract.currencies.CURRENCIES:
                 return budgetSplitContract.currencies.CONTENT_TYPE;
@@ -206,6 +212,19 @@ public class budgetSplitContentProvider extends ContentProvider {
                     whereString += " AND " + selection;
                 }
                 deletedCount = db.delete(budgetSplitDBSchema.tags.TABLE_TAGS, whereString, selectionArgs);
+                break;
+
+            //Delete Rows in Table itemsTags
+            case budgetSplitContract.itemsTags.ITEMSTAGS:
+                deletedCount = db.delete(budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS, selection, selectionArgs);
+                break;
+            case budgetSplitContract.itemsTags.ITEMTAGS:
+                idString = uri.getLastPathSegment();
+                whereString = "rowid = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                deletedCount = db.delete(budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS, whereString, selectionArgs);
                 break;
 
             //Delete Rows in Table currencies
@@ -316,6 +335,13 @@ public class budgetSplitContentProvider extends ContentProvider {
                 notifyViews(uri);
                 return getUriForId(uri, id);
 
+            //Insert into itemsTags-Table
+            case budgetSplitContract.itemsTags.ITEMSTAGS:
+                db = dbHelper.getWritableDatabase();
+                id = db.insert(budgetSplitContract.itemsTags.TABLE_ITEMS_TAGS, null, values);
+                notifyViews(uri);
+                return getUriForId(uri, id);
+
             //Insert into currencies-Table
             case budgetSplitContract.currencies.CURRENCIES:
                 db = dbHelper.getWritableDatabase();
@@ -402,6 +428,15 @@ public class budgetSplitContentProvider extends ContentProvider {
             case budgetSplitContract.tags.TAG:
                 builder.setTables(budgetSplitDBSchema.tags.TABLE_TAGS);
                 builder.appendWhere(budgetSplitDBSchema.tags.TABLE_TAGS + "." + budgetSplitDBSchema.tags._ID + " = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table tags
+            case budgetSplitContract.itemsTags.ITEMSTAGS:
+                builder.setTables(budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS);
+                break;
+            case budgetSplitContract.itemsTags.ITEMTAGS:
+                builder.setTables(budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS);
+                builder.appendWhere("rowid = " + uri.getLastPathSegment());
                 break;
 
             //Query Table currencies
@@ -534,7 +569,20 @@ public class budgetSplitContentProvider extends ContentProvider {
                 updateCount = db.update(budgetSplitDBSchema.tags.TABLE_TAGS, values, whereString, selectionArgs);
                 break;
 
-            //update rows in Table tags
+            //update rows in Table itemsTags
+            case budgetSplitContract.itemsTags.ITEMSTAGS:
+                updateCount = db.update(budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS, values, selection, selectionArgs);
+                break;
+            case budgetSplitContract.itemsTags.ITEMTAGS:
+                idString = uri.getLastPathSegment();
+                whereString = "rowid = " + idString;
+                if (!TextUtils.isEmpty(selection)) {
+                    whereString += " AND " + selection;
+                }
+                updateCount = db.update(budgetSplitDBSchema.tags.TABLE_TAGS, values, whereString, selectionArgs);
+                break;
+
+            //update rows in Table currencies
             case budgetSplitContract.currencies.CURRENCIES:
                 updateCount = db.update(budgetSplitDBSchema.currencies.TABLE_CURRENCIES, values, selection, selectionArgs);
                 break;
@@ -654,6 +702,13 @@ public class budgetSplitContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
                 break;
             case budgetSplitContract.itemsParticipants.ITEM_PARTICIPANTS:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                break;
+
+            case budgetSplitContract.itemsTags.ITEMSTAGS:
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                break;
+            case budgetSplitContract.itemsTags.ITEMTAGS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
                 break;
         }
