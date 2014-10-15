@@ -56,29 +56,13 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         Uri newparticipanturi;
         try {
             newparticipanturi = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, participant);
+            ContentValues project = new ContentValues();
+            project.put(budgetSplitContract.projects.COLUMN_PROJECT_NAME, "Testprojekt");
+            project.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, newparticipanturi.getLastPathSegment());
+            getContentResolver().insert(budgetSplitContract.projects.CONTENT_URI, project);
         } catch (SQLiteConstraintException e) {
             //Value already exists.
             return;
-        }
-        Cursor cursor = getContentResolver().query(newparticipanturi, new String[]{budgetSplitContract.participants._ID}, null, null, null);
-
-        if (cursor.getColumnCount() > 0) {
-            cursor.moveToFirst();
-            int id = cursor.getInt(0);
-
-            ContentValues project = new ContentValues();
-            project.put(budgetSplitContract.projects.COLUMN_PROJECT_NAME, "Testprojekt");
-            project.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, id);
-            getContentResolver().insert(budgetSplitContract.projects.CONTENT_URI, project);
-        }
-
-        String[] projection = {budgetSplitContract.participants.COLUMN_NAME, budgetSplitContract.participants._ID};
-        Cursor myresult = getContentResolver().query(budgetSplitContract.participants.CONTENT_URI, projection, null, null, null);
-        if (myresult.getColumnCount() > 0) {
-            myresult.moveToFirst();
-            String name = myresult.getString(0);
-            myresult.moveToNext();
-            String name2 = myresult.getString(0);
         }
     }
 

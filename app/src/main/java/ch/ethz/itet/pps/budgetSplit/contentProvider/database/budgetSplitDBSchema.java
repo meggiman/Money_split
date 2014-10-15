@@ -33,7 +33,7 @@ public final class budgetSplitDBSchema {
                 + COLUMN_NAME + " TEXT NOT NULL, "
                 + COLUMN_DESCRIPTION + " TEXT, "
                 + COLUMN_ADMIN + " INTEGER NOT NULL, "
-                + " FOREIGN KEY (" + COLUMN_ADMIN + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + ") ON DELETE RESTRICTS ON UPDATE CASCADE"
+                + " FOREIGN KEY (" + COLUMN_ADMIN + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + ") ON DELETE RESTRICT ON UPDATE CASCADE"
                 + ");";
 
         /**
@@ -292,7 +292,7 @@ public final class budgetSplitDBSchema {
                 + COLUMN_AMOUNT_PAYED + " FLOAT NOT NULL, "
                 + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + participants._ID + ") ON UPDATE CASCADE ON DELETE RESTRICT, "
                 + "FOREIGN KEY (" + COLUMN_ITEM_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + items._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
-                + "FOREIGN KEY (" + COLUMN_CURRENCY_ID + ") REFERENCES " + currencies.TABLE_CURRENCIES + "(" + currencies._ID + "), ON UPDATE CASCADE ON DELETE RESTRICT"
+                + "FOREIGN KEY (" + COLUMN_CURRENCY_ID + ") REFERENCES " + currencies.TABLE_CURRENCIES + "(" + currencies._ID + ") ON UPDATE CASCADE ON DELETE RESTRICT "
                 + "PRIMARY KEY (" + COLUMN_ITEM_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
                 + ");";
 
@@ -329,8 +329,8 @@ public final class budgetSplitDBSchema {
                 + COLUMN_PARTICIPANTS_ID + " INTEGER NOT NULL, "
                 + COLUMN_ITEM_ID + " INTEGER NOT NULL, "
                 + COLUMN_SHARE_RATIO + " FLOAT NOT NULL CHECK (" + COLUMN_SHARE_RATIO + " >= 0 AND " + COLUMN_SHARE_RATIO + " <= 1), "
-                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + participants._ID + "), ON UPDATE CASCADE ON DELETE CASCADE"
-                + "FOREIGN KEY (" + COLUMN_ITEM_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + items._ID + "), ON UPDATE CASCADE ON DELETE CASCADE"
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + participants._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "FOREIGN KEY (" + COLUMN_ITEM_ID + ") REFERENCES " + items.TABLE_ITEMS + "(" + items._ID + ") ON UPDATE CASCADE ON DELETE CASCADE "
                 + "PRIMARY KEY (" + COLUMN_ITEM_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
                 + ");";
 
@@ -367,8 +367,8 @@ public final class budgetSplitDBSchema {
                 + COLUMN_PARTICIPANTS_ID + " INTEGER NOT NULL, "
                 + COLUMN_TAG_ID + " INTEGER NOT NULL, "
                 + COLUMN_SHARE_RATIO + " FLOAT NOT NULL CHECK (" + COLUMN_SHARE_RATIO + " >= 0 AND " + COLUMN_SHARE_RATIO + " <= 1), "
-                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + participants._ID + "), ON UPDATE CASCADE ON DELETE CASCADE"
-                + "FOREIGN KEY (" + COLUMN_TAG_ID + ") REFERENCES " + tags.TABLE_TAGS + "(" + tags._ID + "), ON UPDATE CASCADE ON DELETE RESTRICT"
+                + "FOREIGN KEY (" + COLUMN_PARTICIPANTS_ID + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + participants._ID + ") ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "FOREIGN KEY (" + COLUMN_TAG_ID + ") REFERENCES " + tags.TABLE_TAGS + "(" + tags._ID + ") ON UPDATE CASCADE ON DELETE RESTRICT "
                 + "PRIMARY KEY (" + COLUMN_TAG_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
                 + ");";
 
@@ -428,8 +428,8 @@ public final class budgetSplitDBSchema {
                 + "sub2." + COLUMN_NR_OF_PARTICIPANTS
                 + " FROM " + projects.TABLE_PROJECTS
                 + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + projects.TABLE_PROJECTS + "." + projects.COLUMN_ADMIN + " = " + participants.TABLE_PARTICIPANTS + "." + _ID
-                + " LEFT OUTER JOIN (" + VIEW_SUBSELECT_COUNT_ITEMS + ") AS 'sub1' ON " + projects.TABLE_PROJECTS + "." + _ID + " = sub1." + _ID
-                + " LEFT OUTER JOIN (" + VIEW_SUBSELECT_COUNT_PARTICIPANTS + ") AS 'sub2' ON " + projects.TABLE_PROJECTS + "." + _ID + " = sub2." + _ID
+                + " LEFT OUTER JOIN (" + VIEW_SUBSELECT_COUNT_ITEMS + ") AS 'sub1' ON " + projects.TABLE_PROJECTS + "." + _ID + " = sub1." + items.COLUMN_PROJECT
+                + " LEFT OUTER JOIN (" + VIEW_SUBSELECT_COUNT_PARTICIPANTS + ") AS 'sub2' ON " + projects.TABLE_PROJECTS + "." + _ID + " = sub2." + projectsParticipants.COLUMN_PROJECTS_ID
                 + ";";
         private static final String VIEW_CREATE = "CREATE VIEW "
                 + VIEW_PROJECTS
@@ -471,8 +471,8 @@ public final class budgetSplitDBSchema {
                 + items.TABLE_ITEMS + "." + _ID + ", "
                 + items.TABLE_ITEMS + "." + items.COLUMN_NAME + " AS " + COLUMN_ITEM_NAME + ", "
                 + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + " AS " + COLUMN_ITEM_TIMESTAMP + ", "
-                + "strftime('%d.%m.%Y', " + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + ", localtime) AS " + COLUMN_ITEM_DATE_ADDED + ", "
-                + "strftime('%H:%M', " + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + ", localtime) AS " + COLUMN_ITEM_TIME_ADDED + ", "
+                + "strftime('%d.%m.%Y', " + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + ", 'localtime') AS " + COLUMN_ITEM_DATE_ADDED + ", "
+                + "strftime('%H:%M', " + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + ", 'localtime') AS " + COLUMN_ITEM_TIME_ADDED + ", "
                 + items.TABLE_ITEMS + "." + items.COLUMN_CREATOR + " AS " + COLUMN_ITEM_CREATOR_ID + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_ITEM_CREATOR_NAME + ", "
                 + "sum(" + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_AMOUNT_PAYED + "*" + currencies.TABLE_CURRENCIES + "." + currencies.COLUMN_EXCHANGE_RATE + ") AS " + COLUMN_ITEM_PRICE

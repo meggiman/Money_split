@@ -41,7 +41,7 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
         super.onOpen(db);
         if (!db.isReadOnly()) {
             //Enables Foreign Key support.
-            db.execSQL("PRAGMA foreign_keys=0N;");
+            db.execSQL("PRAGMA foreign_keys=ON");
         }
     }
 
