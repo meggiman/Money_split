@@ -30,26 +30,9 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
     //Adapter to fill the listview with Data
     SimpleCursorAdapter simpleCursorAdapter;
 
-
-    /**
-     * Method deciding if ListView item is Admin/Virtual -> opened after creating new element
-     * --> Needs to get the information if "this" is the owner of specific list Item (Admin)
-     * and needs to get the information if the list item is owned by a virtual user
-     */
-
-    ImageView adm = (ImageView) findViewById(R.id.imageView);
-    ImageView vrt = (ImageView) findViewById(R.id.imageView);
-
-    private static void setAdminVirtual(boolean admin, boolean virtual, ImageView iadmin, ImageView ivirtual) {
-
-        if (admin == true) {
-            iadmin.setVisibility(View.VISIBLE);
-        }
-        if (virtual == true) {
-            ivirtual.setVisibility(View.VISIBLE);
-        }
-    }
-
+    //Inicializing the button and listview (local inicialization in onCreate produced a crash)
+    Button addProjectButton;
+    ListView listView;
 
 
     @Override
@@ -59,19 +42,19 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
 
 
         // Add Listeners to GUI-Elements
-        Button addProjectButton = (Button) findViewById(R.id.buttonAddProject);
+        addProjectButton = (Button) findViewById(R.id.buttonAddProject);
 
         //Implementing on click funktion of "addProjectButton"
         addProjectButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent intentAddProject = new Intent("android.intent.action.NEWPROJECT");
+                Intent intentAddProject = new Intent(Main.this, NewProject.class);
                 startActivity(intentAddProject);
             }
         });
 
-        ListView listView = (ListView) findViewById(R.id.listViewProjects);
+        listView = (ListView) findViewById(R.id.listViewProjects);
 
         //Initialize Loader
         getLoaderManager().initLoader(URL_LOADER_PROJECTS, null, this);
@@ -83,7 +66,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         listView.setAdapter(simpleCursorAdapter);
 
         //Debug
-        ContentValues participant = new ContentValues();
+      /*  ContentValues participant = new ContentValues();
         participant.put(budgetSplitContract.participants.COLUMN_NAME, "Manuel Eggimann");
         participant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
         participant.put(budgetSplitContract.participants.COLUMN_UNIQUEID, "manuel.eggimann@gmail.com");
@@ -114,9 +97,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
             myresult.moveToNext();
             String name2 = myresult.getString(0);
         }
-
-        //set to predestined value --> needs to get those from content provider
-        setAdminVirtual(true, true, adm, vrt);
+        */
     }
 
 
@@ -148,6 +129,9 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.buttonAddProject:
+                Intent intentAddProject = new Intent("android.intent.action.NEWPROJECT");
+                startActivity(intentAddProject);
+                break;
 
         }
     }

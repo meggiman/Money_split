@@ -68,7 +68,7 @@ public final class budgetSplitDBSchema implements BaseColumns {
                 + "("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_NAME + " TEXT NOT NULL, "
-                + COLUMN_UNIQUEID + " TEXT NOT NULL UNIQUE, "
+                + COLUMN_UNIQUEID + " TEXT UNIQUE, "
                 + COLUMN_ISVIRTUAL + " INTEGER DEFAULT 0"
                 + ");";
 

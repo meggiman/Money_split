@@ -30,7 +30,7 @@
         android:layout_alignParentStart="false"
         android:layout_below="@+id/projectName"
         android:choiceMode="singleChoice"
-        tools:listitem="@layout/projectlist_adminrow" />
+        tools:listitem="@layout/projectlist_row" />
 
     <Button
         android:id="@+id/buttonAddProject"

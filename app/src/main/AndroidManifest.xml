@@ -29,9 +29,18 @@
             android:label="@string/title_activity_new_project"
             android:parentActivityName=".Main">
             <action android:name="android.intent.action.NEWPROJECT" />
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ethz.itet.pps.budgetSplit.Main" />
+        </activity>
+        <activity
+            android:name=".NewContact"
+            android:label="@string/title_activity_new_contact"
+            android:parentActivityName=".NewProject">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.itet.pps.budgetSplit.NewProject" />
         </activity>
     </application>
 

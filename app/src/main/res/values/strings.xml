@@ -14,7 +14,17 @@
     <string name="name">Name:</string>
     <string name="create_contact">Create Contact</string>
     <string name="participants">Members:</string>
-    <string name="done">OK</string>
+    <string name="done">Create</string>
     <string name="x">X</string>
+    <string name="search_bluetooth">Connect Via Bluetooth</string>
+
+    <string-array name="new_project_contact_array">
+        <item>+ Contact</item>
+        <item>Manuel</item>
+        <item>Chrissy</item>
+        <item>Jeffrey</item>
+    </string-array>
+
+    <string name="title_activity_new_contact">NewContact</string>
 
 </resources>

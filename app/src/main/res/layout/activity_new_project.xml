@@ -14,8 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/space"
-        android:layout_toRightOf="@+id/space"
+        android:layout_centerHorizontal="true"
+        android:layout_toEndOf="@+id/new_project_name_text"
         android:text="@string/createNewProject"
         android:textSize="25dp" />
 
@@ -32,9 +32,9 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/spinner"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/editText2"
         android:text="@string/description"
         android:textSize="20dp" />
 
@@ -52,13 +52,13 @@
         android:inputType="textPersonName" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/contacts_spinner"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText2"
-        android:layout_alignStart="@+id/editText2"
+        android:layout_alignEnd="@+id/editText2"
+        android:layout_alignRight="@+id/editText2"
         android:layout_below="@+id/editText2"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="61dp"
         android:spinnerMode="dropdown" />
 
     <EditText
@@ -71,22 +71,14 @@
         android:layout_marginTop="42dp"
         android:layout_toEndOf="@+id/textView3" />
 
-    <Button
-        android:id="@+id/button_create_contact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/button2"
-        android:text="@string/create_contact" />
-
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/spinner"
+        android:layout_alignTop="@+id/contacts_spinner"
+        android:layout_toStartOf="@+id/editText2"
         android:text="@string/participants"
         android:textSize="20dp" />
 
@@ -94,21 +86,11 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/editText2"
-        android:layout_alignRight="@+id/editText2"
-        android:layout_below="@+id/spinner"
-        android:layout_marginTop="44dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_toEndOf="@+id/space"
+        android:layout_toStartOf="@+id/contacts_spinner"
         android:text="@string/done" />
-
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/x"
-        android:textAlignment="center" />
 
     <Space
         android:id="@+id/space"
@@ -117,6 +99,15 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/new_project_window_title" />
+
+    <ProgressBar
+        android:id="@+id/new_projects_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/contacts_spinner"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
 
 </RelativeLayout>
