@@ -5,7 +5,11 @@
         android:title="@string/username"
         android:summary="@string/username_summary"
         android:dialogTitle="@string/username"
-        android:dialogMessage="@string/enter_username"></EditTextPreference>
+        android:dialogMessage="@string/enter_username" />
+    <ListPreference
+        android:key="@string/pref_default_currency"
+        android:summary="Set the default currency to use for new items"
+        android:title="@string/default_currency" />
 
 
 </PreferenceScreen>

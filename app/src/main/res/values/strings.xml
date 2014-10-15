@@ -23,4 +23,9 @@
     <string name="item_name">Item</string>
     <string name="creator">Creator</string>
     <string name="price">Price</string>
+    <string name="add_new_item">Add new Item</string>
+    <string name="title_activity_add_new_item">Add new item</string>
+    <string name="default_currency">Default Currency</string>
+    <string name="pref_default_currency">defaultCurrency</string>
+
 </resources>
