@@ -3,6 +3,7 @@ package ch.ethz.itet.pps.budgetSplit;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -40,10 +41,12 @@ public class NewContact extends Activity {
             public void onClick(View view) {
                 if (newContactName.getText() != null) {
                     ContentValues newContactParticipant = new ContentValues();
-                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, newContactName.toString());
+                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, newContactName.getText().toString());
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
                     nameUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
                 }
+                Intent intentBluetooth = new Intent(NewContact.this, NewProject.class);
+                startActivity(intentBluetooth);
             }
         });
     }

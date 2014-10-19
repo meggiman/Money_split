@@ -17,6 +17,7 @@
     <string name="done">Create</string>
     <string name="x">X</string>
     <string name="search_bluetooth">Connect Via Bluetooth</string>
+    <string name="create_contact2">+ Contact</string>
 
     <string-array name="new_project_contact_array">
         <item>+ Contact</item>

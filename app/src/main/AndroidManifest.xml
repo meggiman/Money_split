@@ -27,8 +27,9 @@
             android:name=".NewProject"
             android:exported="true"
             android:label="@string/title_activity_new_project"
-            android:parentActivityName=".Main">
-            <action android:name="android.intent.action.NEWPROJECT" />
+            android:parentActivityName=".Main"
+            android:windowSoftInputMode="adjustPan">
+        <action android:name="android.intent.action.NEWPROJECT" />
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -41,6 +42,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ethz.itet.pps.budgetSplit.NewProject" />
+            <action android:name="android.intent.action.NEWCONTACT" />
         </activity>
     </application>
 
