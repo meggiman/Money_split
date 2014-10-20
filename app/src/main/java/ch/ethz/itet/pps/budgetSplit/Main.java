@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
@@ -28,16 +30,31 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
     //Adapter to fill the listview with Data
     SimpleCursorAdapter simpleCursorAdapter;
 
+    //Inicializing the button and listview (local inicialization in onCreate produced a crash)
+    Button addProjectButton;
+    ListView listView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // Add Listeners to GUI-Elements
-        Button addProjectButton = (Button) findViewById(R.id.buttonAddProject);
-        addProjectButton.setOnClickListener(this);
-        ListView listView = (ListView) findViewById(R.id.listViewProjects);
+        addProjectButton = (Button) findViewById(R.id.buttonAddProject);
+
+        //Implementing on click funktion of "addProjectButton"
+        addProjectButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent intentAddProject = new Intent(Main.this, NewProject.class);
+                startActivity(intentAddProject);
+            }
+        });
+
+        listView = (ListView) findViewById(R.id.listViewProjects);
 
         //Initialize Loader
         getLoaderManager().initLoader(URL_LOADER_PROJECTS, null, this);
@@ -45,25 +62,42 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         //Create empty Cursor Adapter and attach it to the listview
         String[] fromColumns = {budgetSplitContract.projects.COLUMN_PROJECT_NAME, budgetSplitContract.projects.COLUMN_PROJECT_OWNER};
         int[] toViews = {R.id.projectName, R.id.projectowner};
-        simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.activity_main_projectlist_row, null, fromColumns, toViews, 0);
+        simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.projectlist_row, null, fromColumns, toViews, 0);
         listView.setAdapter(simpleCursorAdapter);
 
         //Debug
-        ContentValues participant = new ContentValues();
+      /*  ContentValues participant = new ContentValues();
         participant.put(budgetSplitContract.participants.COLUMN_NAME, "Manuel Eggimann");
         participant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
         participant.put(budgetSplitContract.participants.COLUMN_UNIQUEID, "manuel.eggimann@gmail.com");
         Uri newparticipanturi;
         try {
             newparticipanturi = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, participant);
-            ContentValues project = new ContentValues();
-            project.put(budgetSplitContract.projects.COLUMN_PROJECT_NAME, "Testprojekt");
-            project.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, newparticipanturi.getLastPathSegment());
-            getContentResolver().insert(budgetSplitContract.projects.CONTENT_URI, project);
         } catch (SQLiteConstraintException e) {
             //Value already exists.
             return;
         }
+        Cursor cursor = getContentResolver().query(newparticipanturi, new String[]{budgetSplitContract.participants._ID}, null, null, null);
+
+        if (cursor.getColumnCount() > 0) {
+            cursor.moveToFirst();
+            int id = cursor.getInt(0);
+
+            ContentValues project = new ContentValues();
+            project.put(budgetSplitContract.projects.COLUMN_PROJECT_NAME, "Testprojekt");
+            project.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, id);
+            getContentResolver().insert(budgetSplitContract.projects.CONTENT_URI, project);
+        }
+
+        String[] projection = {budgetSplitContract.participants.COLUMN_NAME, budgetSplitContract.participants._ID};
+        Cursor myresult = getContentResolver().query(budgetSplitContract.participants.CONTENT_URI, projection, null, null, null);
+        if (myresult.getColumnCount() > 0) {
+            myresult.moveToFirst();
+            String name = myresult.getString(0);
+            myresult.moveToNext();
+            String name2 = myresult.getString(0);
+        }
+        */
     }
 
 
@@ -71,7 +105,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -79,9 +113,14 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()){
+            case R.id.mainScreenContacts:
+                // What should "Contacts" do
+                break;
+
+            case R.id.MainScreenSettings:
+                // What should "Settings" do
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -90,6 +129,9 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.buttonAddProject:
+                Intent intentAddProject = new Intent("android.intent.action.NEWPROJECT");
+                startActivity(intentAddProject);
+                break;
 
         }
     }
