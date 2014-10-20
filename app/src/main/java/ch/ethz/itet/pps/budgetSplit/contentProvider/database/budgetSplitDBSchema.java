@@ -1,6 +1,7 @@
 package ch.ethz.itet.pps.budgetSplit.contentProvider.database;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.print.PageRange;
 import android.provider.BaseColumns;
 
 /**
@@ -68,7 +69,7 @@ public final class budgetSplitDBSchema {
                 + "("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_NAME + " TEXT NOT NULL, "
-                + COLUMN_UNIQUEID + " TEXT NOT NULL UNIQUE, "
+                + COLUMN_UNIQUEID + " INTEGER NOT NULL UNIQUE, "
                 + COLUMN_ISVIRTUAL + " INTEGER DEFAULT 0"
                 + ");";
 
@@ -486,6 +487,105 @@ public final class budgetSplitDBSchema {
 
         private static final String VIEW_CREATE = "CREATE VIEW "
                 + VIEW_ITEMS
+                + " AS "
+                + VIEW_SELECT;
+
+        /**
+         * Static Method to be called by SQLiteOpenHelper class for better readability.
+         *
+         * @param database
+         */
+        public static void onCreate(SQLiteDatabase database) {
+            database.execSQL(VIEW_CREATE);
+        }
+
+        /**
+         * Method to be implemented for future Changes in Database structure.
+         *
+         * @param database
+         * @param oldVersion
+         * @param newVersion
+         */
+        public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+
+        }
+    }
+
+    public static abstract class itemsTags_view implements BaseColumns {
+        public static final String VIEW_ITEMS_TAGS = "viewItemsTags";
+        public static final String COLUMN_ITEM_ID = itemsTags.COLUMN_ITEMS_ID;
+        public static final String COLUMN_ITEM_NAME = "itemName";
+        public static final String COLUMN_TAG_ID = itemsTags.COLUMN_TAGS_ID;
+        public static final String COLUMN_TAG_NAME = "tagName";
+
+        private static final String VIEW_SELECT = "SELECT "
+                + itemsTags.TABLE_ITEMS_TAGS + ".rowid AS " + _ID + ", "
+                + itemsTags.TABLE_ITEMS_TAGS + "." + itemsTags.COLUMN_ITEMS_ID + " AS " + COLUMN_ITEM_ID + ", "
+                + items.TABLE_ITEMS + "." + items.COLUMN_NAME + " AS " + COLUMN_ITEM_NAME + ", "
+                + itemsTags.TABLE_ITEMS_TAGS + "." + itemsTags.COLUMN_TAGS_ID + " AS " + COLUMN_TAG_ID + ", "
+                + tags.TABLE_TAGS + "." + tags.COLUMN_NAME + " AS " + COLUMN_TAG_NAME
+                + " FROM " + itemsTags.TABLE_ITEMS_TAGS
+                + " LEFT OUTER JOIN " + items.TABLE_ITEMS + " ON " + itemsTags.TABLE_ITEMS_TAGS + "." + itemsTags.COLUMN_ITEMS_ID + " = " + items.TABLE_ITEMS + "." + items._ID
+                + " LEFT OUTER JOIN " + tags.TABLE_TAGS + " ON " + itemsTags.TABLE_ITEMS_TAGS + "." + itemsTags.COLUMN_TAGS_ID + " = " + tags.TABLE_TAGS + "." + tags._ID
+                + ";";
+        private static final String VIEW_CREATE = "CREATE VIEW "
+                + VIEW_ITEMS_TAGS
+                + " AS "
+                + VIEW_SELECT;
+
+        /**
+         * Static Method to be called by SQLiteOpenHelper class for better readability.
+         *
+         * @param database
+         */
+        public static void onCreate(SQLiteDatabase database) {
+            database.execSQL(VIEW_CREATE);
+        }
+
+        /**
+         * Method to be implemented for future Changes in Database structure.
+         *
+         * @param database
+         * @param oldVersion
+         * @param newVersion
+         */
+        public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+
+        }
+    }
+
+    public static abstract class itemsParticipants_view implements BaseColumns {
+        public static final String VIEW_ITEMS_PARTICIPANTS = "viewItemsParticipants";
+        public static final String COLUMN_ITEM_ID = "itemId";
+        public static final String COLUMN_ITEM_NAME = "itemName";
+        public static final String COLUMN_PARTICIPANT_ID = "participantId";
+        public static final String COLUMN_PARTICIPANT_NAME = "participantName";
+        public static final String COLUMN_PARTICIPANT_UNIQUE_ID = "participantUniqueId";
+        public static final String COLUMN_PARTICIPANT_IS_VIRTUAL = "participantIsVirtual";
+        public static final String COLUMN_CURRENCY_ID = "currencyId";
+        public static final String COLUMN_CURRENCY_CODE = "currencyCode";
+        public static final String COLUMN_AMOUNT_PAYED = "amountPayed";
+        public static final String COLUMN_CURRENCY_EXCHANGE_RATE = "currencyExchangeRate";
+
+        private static final String VIEW_SELECT = "SELECT "
+                + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + ".rowid AS " + _ID + ", "
+                + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_ITEM_ID + " AS " + COLUMN_ITEM_ID + ", "
+                + items.TABLE_ITEMS + "." + items.COLUMN_NAME + " AS " + COLUMN_ITEM_NAME + ", "
+                + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID + " AS " + COLUMN_PARTICIPANT_ID + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_PARTICIPANT_NAME + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_UNIQUEID + " AS " + COLUMN_PARTICIPANT_UNIQUE_ID + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_ISVIRTUAL + " AS " + COLUMN_PARTICIPANT_IS_VIRTUAL + ", "
+                + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_CURRENCY_ID + " AS " + COLUMN_CURRENCY_ID + ", "
+                + currencies.TABLE_CURRENCIES + "." + currencies.COLUMN_CURRENCY_CODE + " AS " + COLUMN_CURRENCY_CODE + ", "
+                + currencies.TABLE_CURRENCIES + "." + currencies.COLUMN_EXCHANGE_RATE + " AS " + COLUMN_CURRENCY_EXCHANGE_RATE + ", "
+                + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_AMOUNT_PAYED + " AS " + COLUMN_AMOUNT_PAYED
+                + " FROM " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS
+                + " LEFT OUTER JOIN " + items.TABLE_ITEMS + " ON " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_ITEM_ID + " = " + items.TABLE_ITEMS + "." + items._ID
+                + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID + " = " + participants.TABLE_PARTICIPANTS + "." + participants._ID
+                + " LEFT OUTER JOIN " + currencies.TABLE_CURRENCIES + " ON " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_CURRENCY_ID + " = " + currencies.TABLE_CURRENCIES + "." + currencies._ID
+                + ";";
+        private static final String VIEW_CREATE = "CREATE VIEW "
+                + VIEW_ITEMS_PARTICIPANTS
                 + " AS "
                 + VIEW_SELECT;
 

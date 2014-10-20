@@ -27,5 +27,9 @@
     <string name="title_activity_add_new_item">Add new item</string>
     <string name="default_currency">Default Currency</string>
     <string name="pref_default_currency">defaultCurrency</string>
+    <string name="choose_creator">Choose Creator</string>
+    <string name="value">value</string>
+    <string name="pref_userName">userName</string>
+    <string name="tags">Tags</string>
 
 </resources>

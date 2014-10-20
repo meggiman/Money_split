@@ -192,4 +192,54 @@ public class budgetSplitContract {
         public static final String COLUMN_ITEM_PRICE = budgetSplitDBSchema.items_view.COLUMN_ITEM_PRICE;
         public static final String[] PROJECTION_ALL = {_ID, COLUMN_ITEM_NAME, COLUMN_ITEM_TIMESTAMP, COLUMN_ITEM_DATE_ADDED, COLUMN_TIME_ADDED, COLUMN_CREATOR_ID, COLUMN_CREATOR_NAME, COLUMN_ITEM_PRICE};
     }
+
+
+    public static final class itemsTagsDetailsRO implements BaseColumns {
+        static final String TABLE_ITEMS_TAGS_DETAILS_RO = "itemsTagsDetailsRo";
+        static final String TABLE_ITEM_TAGS_DETAILS_RO = TABLE_ITEMS_TAGS_DETAILS_RO + "/item";
+        static final String TABLE_ITEMS_TAG_DETAILS_RO = TABLE_ITEMS_TAGS_DETAILS_RO + "/tag";
+        static final int ITEMS_TAGS_DETAILS = 130;
+        static final int ITEM_TAGS_DETAILS = 131;
+        static final int ITEMS_TAG_DETAILS = 132;
+
+        public static final Uri CONTENT_URI_ALL = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_ITEMS_TAGS_DETAILS_RO);
+        public static final Uri CONTENT_URI_SINGLE_ITEM = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_ITEM_TAGS_DETAILS_RO);
+        public static final Uri CONTENT_URI_SINGLE_TAG = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_ITEMS_TAG_DETAILS_RO);
+
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_ITEMS_TAGS_DETAILS_RO;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_ITEMS_TAGS_DETAILS_RO;
+        public static final String COLUMN_ITEM_ID = budgetSplitDBSchema.itemsTags_view.COLUMN_ITEM_ID;
+        public static final String COLUMN_ITEM_NAME = budgetSplitDBSchema.itemsTags_view.COLUMN_ITEM_NAME;
+        public static final String COLUMN_TAG_ID = budgetSplitDBSchema.itemsTags_view.COLUMN_TAG_ID;
+        public static final String COLUMN_TAG_NAME = budgetSplitDBSchema.itemsTags_view.COLUMN_TAG_NAME;
+        public static final String[] PROJECTION_ALL = {_ID, COLUMN_ITEM_ID, COLUMN_ITEM_NAME, COLUMN_TAG_ID, COLUMN_TAG_NAME};
+    }
+
+    public static final class itemsParticipantsDetailsRO implements BaseColumns {
+        static final String TABLE_ITEMS_PARTICIPANTS_DETAILS_RO = "itemsParticipantsDetailsRO";
+        static final String TABLE_ITEM_PARTICIPANTS_DETAILS_RO = TABLE_ITEMS_PARTICIPANTS_DETAILS_RO + "/item";
+        static final String TABLE_ITEMS_PARTICIPANT_DETAILS_RO = TABLE_ITEMS_PARTICIPANTS_DETAILS_RO + "/tag";
+        static final int ITEMS_PARTICIPANTS_DETAILS = 140;
+        static final int ITEM_PARTICIPANTS_DETAILS = 141;
+        static final int ITEMS_PARTICIPANT_DETAILS = 142;
+
+        public static final Uri CONTENT_URI_ALL = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_ITEMS_PARTICIPANTS_DETAILS_RO);
+        public static final Uri CONTENT_URI_SINGLE_ITEM = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_ITEM_PARTICIPANTS_DETAILS_RO);
+        public static final Uri CONTENT_URI_SINGLE_PARTICIPANT = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_ITEMS_PARTICIPANT_DETAILS_RO);
+
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_ITEMS_PARTICIPANTS_DETAILS_RO;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_ITEMS_PARTICIPANTS_DETAILS_RO;
+        public static final String COLUMN_ITEM_ID = budgetSplitDBSchema.itemsTags_view.COLUMN_ITEM_ID;
+        public static final String COLUMN_ITEM_NAME = budgetSplitDBSchema.itemsTags_view.COLUMN_ITEM_NAME;
+        public static final String COLUMN_PARTICIPANT_ID = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_ID;
+        public static final String COLUMN_PARTICIPANT_NAME = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_NAME;
+        public static final String COLUMN_PARTICIPANT_UNIQUE_ID = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_UNIQUE_ID;
+        public static final String COLUMN_PARTICIPANT_IS_VIRTUAL = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_IS_VIRTUAL;
+        public static final String COLUMN_CURRENCY_ID = budgetSplitDBSchema.itemsParticipants_view.COLUMN_CURRENCY_ID;
+        public static final String COLUMN_CURRENCY_CODE = budgetSplitDBSchema.itemsParticipants_view.COLUMN_CURRENCY_CODE;
+        public static final String COLUMN_CURRENCY_EXCHANGE_RATE = budgetSplitDBSchema.itemsParticipants_view.COLUMN_CURRENCY_EXCHANGE_RATE;
+        public static final String COLUMN_AMOUNT_PAYED = budgetSplitDBSchema.itemsParticipants_view.COLUMN_AMOUNT_PAYED;
+        public static final String[] PROJECTION_ALL = {_ID, COLUMN_ITEM_ID, COLUMN_ITEM_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_CURRENCY_ID, COLUMN_CURRENCY_CODE, COLUMN_CURRENCY_EXCHANGE_RATE, COLUMN_AMOUNT_PAYED};
+    }
+
 }

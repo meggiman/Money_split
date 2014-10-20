@@ -14,7 +14,7 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Uses the static Methods out of the nested classes in @see budgetSplitDBSchema to create the Database.
+     * Uses the static Methods out of the nested classes in {@link ch.ethz.itet.pps.budgetSplit.contentProvider.database.budgetSplitDBSchema}  to create the Database.
      *
      * @param database The database.
      */
@@ -34,6 +34,8 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
 
         budgetSplitDBSchema.projects_view.onCreate(database);
         budgetSplitDBSchema.items_view.onCreate(database);
+        budgetSplitDBSchema.itemsTags_view.onCreate(database);
+        budgetSplitDBSchema.itemsParticipants_view.onCreate(database);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Uses the static Methods out of the nested classes in @see budgetSplitDBSchema to upgrade the Database.
+     * Uses the static Methods out of the nested classes in {@link ch.ethz.itet.pps.budgetSplit.contentProvider.database.budgetSplitDBSchema} to upgrade the Database.
      * Don't forget to implement those Methods if you're upgrading the database structure.
      *
      * @param database The database.
@@ -69,5 +71,7 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
 
         budgetSplitDBSchema.projects_view.onUpgrade(database, i, i2);
         budgetSplitDBSchema.items_view.onUpgrade(database, i, i2);
+        budgetSplitDBSchema.itemsTags_view.onUpgrade(database, i, i2);
+        budgetSplitDBSchema.itemsParticipants_view.onUpgrade(database, i, i2);
     }
 }

@@ -50,6 +50,14 @@ public class budgetSplitContentProvider extends ContentProvider {
 
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsDetailsRO.TABLE_ITEMS_DETAILS_RO, budgetSplitContract.itemsDetailsRO.ITEMS_DETAILS_RO);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsDetailsRO.TABLE_ITEMS_DETAILS_RO + "/#", budgetSplitContract.itemsDetailsRO.ITEM_DETAILS_RO);
+
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsTagsDetailsRO.TABLE_ITEMS_TAGS_DETAILS_RO, budgetSplitContract.itemsTagsDetailsRO.ITEMS_TAGS_DETAILS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsTagsDetailsRO.TABLE_ITEM_TAGS_DETAILS_RO + "/#", budgetSplitContract.itemsTagsDetailsRO.ITEM_TAGS_DETAILS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsTagsDetailsRO.TABLE_ITEMS_TAG_DETAILS_RO + "/#", budgetSplitContract.itemsTagsDetailsRO.ITEMS_TAG_DETAILS);
+
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsParticipantsDetailsRO.TABLE_ITEMS_PARTICIPANTS_DETAILS_RO, budgetSplitContract.itemsParticipantsDetailsRO.ITEMS_PARTICIPANTS_DETAILS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsParticipantsDetailsRO.TABLE_ITEM_PARTICIPANTS_DETAILS_RO + "/#", budgetSplitContract.itemsParticipantsDetailsRO.ITEM_PARTICIPANTS_DETAILS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsParticipantsDetailsRO.TABLE_ITEMS_PARTICIPANT_DETAILS_RO + "/#", budgetSplitContract.itemsParticipantsDetailsRO.ITEMS_PARTICIPANT_DETAILS);
     }
 
     public budgetSplitContentProvider() {
@@ -500,6 +508,33 @@ public class budgetSplitContentProvider extends ContentProvider {
             case budgetSplitContract.itemsDetailsRO.ITEM_DETAILS_RO:
                 builder.setTables(budgetSplitDBSchema.items_view.VIEW_ITEMS);
                 builder.appendWhere(budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view._ID + " = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table itemsTagsDetailsRO
+            case budgetSplitContract.itemsTagsDetailsRO.ITEMS_TAGS_DETAILS:
+                builder.setTables(budgetSplitDBSchema.itemsTags_view.VIEW_ITEMS_TAGS);
+                break;
+            case budgetSplitContract.itemsTagsDetailsRO.ITEM_TAGS_DETAILS:
+                builder.setTables(budgetSplitDBSchema.itemsTags_view.VIEW_ITEMS_TAGS);
+                builder.appendWhere(budgetSplitDBSchema.itemsTags_view.VIEW_ITEMS_TAGS + "." + budgetSplitDBSchema.itemsTags_view.COLUMN_ITEM_ID + " = " + uri.getLastPathSegment());
+                break;
+            case budgetSplitContract.itemsTagsDetailsRO.ITEMS_TAG_DETAILS:
+                builder.setTables(budgetSplitDBSchema.itemsTags_view.VIEW_ITEMS_TAGS);
+                builder.appendWhere(budgetSplitDBSchema.itemsTags_view.VIEW_ITEMS_TAGS + "." + budgetSplitDBSchema.itemsTags_view.COLUMN_TAG_ID + " = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table itemsParticipantDetailsRO
+            case budgetSplitContract.itemsParticipantsDetailsRO.ITEMS_PARTICIPANTS_DETAILS:
+                builder.setTables(budgetSplitDBSchema.itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS);
+                break;
+            case budgetSplitContract.itemsParticipantsDetailsRO.ITEM_PARTICIPANTS_DETAILS:
+                builder.setTables(budgetSplitDBSchema.itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS);
+                builder.appendWhere(budgetSplitDBSchema.itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + budgetSplitDBSchema.itemsParticipants_view.COLUMN_ITEM_ID + " = " + uri.getLastPathSegment());
+                break;
+            case budgetSplitContract.itemsParticipantsDetailsRO.ITEMS_PARTICIPANT_DETAILS:
+                builder.setTables(budgetSplitDBSchema.itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS);
+                builder.appendWhere(budgetSplitDBSchema.itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_ID + " = " + uri.getLastPathSegment());
+                break;
 
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
@@ -700,16 +735,27 @@ public class budgetSplitContentProvider extends ContentProvider {
 
             case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_ALL, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_SINGLE_PARTICIPANT, null);
                 break;
             case budgetSplitContract.itemsParticipants.ITEM_PARTICIPANTS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_ALL, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_SINGLE_PARTICIPANT, null);
                 break;
 
             case budgetSplitContract.itemsTags.ITEMSTAGS:
-                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_ALL, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_TAG, null);
                 break;
             case budgetSplitContract.itemsTags.ITEMTAGS:
-                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_ALL, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_ALL, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_TAG, null);
                 break;
         }
     }

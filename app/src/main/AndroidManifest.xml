@@ -25,8 +25,16 @@
 
         <activity
             android:name=".ProjectNavigation"
-            android:label="@string/title_activity_project_navigation"
-            android:exported="true"></activity>
+            android:exported="true"
+            android:label="@string/title_activity_project_navigation" />
+        <activity
+            android:name=".add_new_item"
+            android:label="@string/title_activity_add_new_item"
+            android:parentActivityName=".ProjectNavigation">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.itet.pps.budgetSplit.ProjectNavigation" />
+        </activity>
     </application>
 
 </manifest>

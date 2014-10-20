@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference
-        android:key="userName"
+        android:key="@string/pref_userName"
         android:title="@string/username"
         android:summary="@string/username_summary"
         android:dialogTitle="@string/username"
