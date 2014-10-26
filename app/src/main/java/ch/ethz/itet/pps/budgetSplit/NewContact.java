@@ -1,11 +1,8 @@
 package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,7 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import ch.ethz.itet.pps.budgetSplit.R;
+
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 public class NewContact extends Activity {
@@ -23,8 +20,6 @@ public class NewContact extends Activity {
     Button newContactBluetooth;
     EditText newContactName;
     Uri nameUri;
-    // helping item for virtual contact google ids.
-    int counter = 1;
 
 
     @Override
@@ -39,12 +34,15 @@ public class NewContact extends Activity {
         newContactBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int counter = GlobalStuffHelper.getCounter();
                 if (newContactName.getText() != null) {
                     ContentValues newContactParticipant = new ContentValues();
+                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_UNIQUEID, counter);
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, newContactName.getText().toString());
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
                     nameUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
                 }
+                GlobalStuffHelper.raiseCounterByOne();
                 Intent intentBluetooth = new Intent(NewContact.this, NewProject.class);
                 startActivity(intentBluetooth);
             }

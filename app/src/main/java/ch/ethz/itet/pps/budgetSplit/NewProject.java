@@ -33,6 +33,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
     Button createNewContact;
     Spinner contactsSpinner;
     ListView contactsProjectList;
+    Cursor adminCursor;
     SimpleCursorAdapter contactsCursorAdapter;
     EditText projectName;
     EditText projectDescription;
@@ -99,23 +100,34 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
         // initialize input TextViews
         projectName = (EditText) findViewById(R.id.editText);
         projectDescription = (EditText) findViewById(R.id.editText2);
-        final String ownName = new String("Chrissy"); // how to get own name?
-
-
+       
 
         createNewProject.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
 
                 if (projectName.getText() != null) {
+
+
+                    // load your own Information for the project owner data
+                    String[] adminProjection = {budgetSplitContract.participants._ID};
+                    adminCursor = getContentResolver().query(GlobalStuffHelper.getUriAtPosition(0), adminProjection, null, null, null);
+                    adminCursor.getColumnName(0);
+
+                    // create new Project in Database
                     ContentValues projectValues = new ContentValues();
                     projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_NAME, projectName.getText().toString());
-                    projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_DESCRIPTION, projectDescription.toString());
-                    projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, ownName);
+                    projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_DESCRIPTION, projectDescription.getText().toString());
+                    projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, adminCursor.getColumnName(0));
                     projectUri = getContentResolver().insert(budgetSplitContract.projects.CONTENT_URI, projectValues);
+
+                    //save the uri in a Global Array for the main Listview
+                    GlobalStuffHelper.addUri(projectUri);
+
+                    Intent intentNewProject = new Intent(NewProject.this, Main.class);
+                    startActivity(intentNewProject);
                 }
-                Intent intentNewProject = new Intent(NewProject.this, Main.class);
-                startActivity(intentNewProject);
+
             }
 
         });

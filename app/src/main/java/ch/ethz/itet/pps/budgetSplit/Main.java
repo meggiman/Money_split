@@ -2,19 +2,22 @@ package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.database.CharArrayBuffer;
+import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
@@ -44,6 +47,32 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         // Add Listeners to GUI-Elements
         addProjectButton = (Button) findViewById(R.id.buttonAddProject);
 
+        listView = (ListView) findViewById(R.id.listViewProjects);
+
+        // Implement Clickable Listview Items
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                Intent overwiewIntent = new Intent(Main.this, ProjectNavigation.class);
+
+                // get project Uri
+                Uri projectUri = GlobalStuffHelper.getUriAtPosition(position);
+
+                // query for project name
+                String[] projection = {budgetSplitContract.projects.COLUMN_PROJECT_NAME};
+                Cursor projectCursor = getContentResolver().query(projectUri, projection, null, null, null);
+
+
+                overwiewIntent.putExtra("projectContentUri", projectUri);
+                overwiewIntent.putExtra("projectTitle", projectCursor.getColumnName(0));
+                startActivity(overwiewIntent);
+            }
+        });
+
+
+
+
         //Implementing on click funktion of "addProjectButton"
         addProjectButton.setOnClickListener(new View.OnClickListener() {
 
@@ -54,7 +83,15 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
             }
         });
 
-        listView = (ListView) findViewById(R.id.listViewProjects);
+        //Initialize Yourself as Contact (Name = Chrissy --> needs to be in the settings later)
+        Uri yourUri;
+
+        ContentValues newContactParticipant = new ContentValues();
+        newContactParticipant.put(budgetSplitContract.participants.COLUMN_UNIQUEID, "christelle.gloor@gmail.com");
+        newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, "Christelle Gloor");
+        newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
+        yourUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
+        GlobalStuffHelper.addUri(yourUri);
 
         //Initialize Loader
         getLoaderManager().initLoader(URL_LOADER_PROJECTS, null, this);
@@ -62,8 +99,9 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         //Create empty Cursor Adapter and attach it to the listview
         String[] fromColumns = {budgetSplitContract.projects.COLUMN_PROJECT_NAME, budgetSplitContract.projects.COLUMN_PROJECT_OWNER};
         int[] toViews = {R.id.projectName, R.id.projectowner};
-        simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.projectlist_row, null, fromColumns, toViews, 0);
+        simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.activity_main_projectlist_row, null, fromColumns, toViews, 0);
         listView.setAdapter(simpleCursorAdapter);
+
 
         //Debug
       /*  ContentValues participant = new ContentValues();
@@ -132,6 +170,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
                 Intent intentAddProject = new Intent("android.intent.action.NEWPROJECT");
                 startActivity(intentAddProject);
                 break;
+
 
         }
     }

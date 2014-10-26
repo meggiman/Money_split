@@ -20,6 +20,15 @@ import android.view.ViewGroup;
 public class ProjectNavigation extends Activity implements ActionBar.TabListener {
 
     /**
+     * Extra messages to use for Intent to start this Activity.
+     */
+    public final static String EXTRA_CONTENT_URI = "projectContentUri"; // Information mitgegeben mit Intent
+    public final static String EXTRA_PROJECT_TITLE = "projectTitle";
+    /**
+     * Integer constants to identify the sections of our SectionAdapter
+     */
+    private final static int SECTION_OVERVIEW = 0;
+    /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
      * {@link FragmentPagerAdapter} derivative, which will keep every
@@ -28,28 +37,14 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
      * {@link android.support.v13.app.FragmentStatePagerAdapter}.
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-
     /**
      * Uri of the Project that is loaded at the moment.
      */
     Uri projectContentUri;
-
-    /**
-     * Extra messages to use for Intent to start this Activity.
-     */
-    public final static String EXTRA_CONTENT_URI = "projectContentUri";
-    public final static String EXTRA_PROJECT_TITLE = "projectTitle";
-
-    /**
-     * Integer constants to identify the sections of our SectionAdapter
-     */
-    private final static int SECTION_OVERVIEW = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
