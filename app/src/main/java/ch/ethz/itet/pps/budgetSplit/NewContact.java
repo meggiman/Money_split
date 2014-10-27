@@ -34,15 +34,14 @@ public class NewContact extends Activity {
         newContactBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int counter = GlobalStuffHelper.getCounter();
+
                 if (newContactName.getText() != null) {
                     ContentValues newContactParticipant = new ContentValues();
-                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_UNIQUEID, counter);
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, newContactName.getText().toString());
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
                     nameUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
                 }
-                GlobalStuffHelper.raiseCounterByOne();
+
                 Intent intentBluetooth = new Intent(NewContact.this, NewProject.class);
                 startActivity(intentBluetooth);
             }

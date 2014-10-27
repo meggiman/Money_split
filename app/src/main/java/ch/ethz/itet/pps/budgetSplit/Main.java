@@ -3,16 +3,19 @@ package ch.ethz.itet.pps.budgetSplit;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +24,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
+
+import javax.microedition.khronos.opengles.GL10Ext;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -57,15 +62,17 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
                 Intent overwiewIntent = new Intent(Main.this, ProjectNavigation.class);
 
                 // get project Uri
-                Uri projectUri = GlobalStuffHelper.getUriAtPosition(position);
-
+                Cursor projectCursor = (Cursor) adapterView.getItemAtPosition(position);
+                if (projectCursor.getColumnCount() < 1) {
+                    throw new IllegalArgumentException("No project does exist.");
+                }
+                long projectId = projectCursor.getLong(projectCursor.getColumnIndex(budgetSplitContract.projects._ID));
+                String projectTitle = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projects.COLUMN_PROJECT_NAME));
+                Uri projectUri = ContentUris.withAppendedId(budgetSplitContract.projects.CONTENT_URI, projectId);
                 // query for project name
-                String[] projection = {budgetSplitContract.projects.COLUMN_PROJECT_NAME};
-                Cursor projectCursor = getContentResolver().query(projectUri, projection, null, null, null);
 
-
-                overwiewIntent.putExtra("projectContentUri", projectUri);
-                overwiewIntent.putExtra("projectTitle", projectCursor.getColumnName(0));
+                overwiewIntent.putExtra(ProjectNavigation.EXTRA_CONTENT_URI, projectUri);
+                overwiewIntent.putExtra(ProjectNavigation.EXTRA_PROJECT_TITLE, projectTitle);
                 startActivity(overwiewIntent);
             }
         });
@@ -83,15 +90,6 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
             }
         });
 
-        //Initialize Yourself as Contact (Name = Chrissy --> needs to be in the settings later)
-        Uri yourUri;
-
-        ContentValues newContactParticipant = new ContentValues();
-        newContactParticipant.put(budgetSplitContract.participants.COLUMN_UNIQUEID, "christelle.gloor@gmail.com");
-        newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, "Christelle Gloor");
-        newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
-        yourUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
-        GlobalStuffHelper.addUri(yourUri);
 
         //Initialize Loader
         getLoaderManager().initLoader(URL_LOADER_PROJECTS, null, this);
@@ -103,39 +101,17 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         listView.setAdapter(simpleCursorAdapter);
 
 
-        //Debug
-      /*  ContentValues participant = new ContentValues();
-        participant.put(budgetSplitContract.participants.COLUMN_NAME, "Manuel Eggimann");
-        participant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
-        participant.put(budgetSplitContract.participants.COLUMN_UNIQUEID, "manuel.eggimann@gmail.com");
-        Uri newparticipanturi;
-        try {
-            newparticipanturi = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, participant);
-        } catch (SQLiteConstraintException e) {
-            //Value already exists.
-            return;
-        }
-        Cursor cursor = getContentResolver().query(newparticipanturi, new String[]{budgetSplitContract.participants._ID}, null, null, null);
+        // Starting First Screen
 
-        if (cursor.getColumnCount() > 0) {
-            cursor.moveToFirst();
-            int id = cursor.getInt(0);
-
-            ContentValues project = new ContentValues();
-            project.put(budgetSplitContract.projects.COLUMN_PROJECT_NAME, "Testprojekt");
-            project.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, id);
-            getContentResolver().insert(budgetSplitContract.projects.CONTENT_URI, project);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (preferences.contains(getString(R.string.pref_not_first_started))) {
+            Intent firstScreenIntent = new Intent(this, FirstScreen.class);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(getString(R.string.pref_not_first_started), true);
+            startActivity(firstScreenIntent);
         }
 
-        String[] projection = {budgetSplitContract.participants.COLUMN_NAME, budgetSplitContract.participants._ID};
-        Cursor myresult = getContentResolver().query(budgetSplitContract.participants.CONTENT_URI, projection, null, null, null);
-        if (myresult.getColumnCount() > 0) {
-            myresult.moveToFirst();
-            String name = myresult.getString(0);
-            myresult.moveToNext();
-            String name2 = myresult.getString(0);
-        }
-        */
+
     }
 
 

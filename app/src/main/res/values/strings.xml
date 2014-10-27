@@ -43,5 +43,9 @@
     <string name="search_bluetooth">Connect Via Bluetooth</string>
     <string name="create_contact2">+ Contact</string>
     <string name="title_activity_new_contact">NewContact</string>
+    <string name="title_activity_first_screen">FirstScreen</string>
+    <string name="pref_not_first_started">pref_notFirstStarted</string>
+    <string name="pref_user_id">pref_user_id</string>
+    <string name="welcome_text">Hello There! Welcome to BudgetSplit. Please enter your username:</string>
 
 </resources>

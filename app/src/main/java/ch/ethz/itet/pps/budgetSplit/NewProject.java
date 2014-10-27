@@ -6,9 +6,11 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,7 +102,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
         // initialize input TextViews
         projectName = (EditText) findViewById(R.id.editText);
         projectDescription = (EditText) findViewById(R.id.editText2);
-       
+
 
         createNewProject.setOnClickListener(new View.OnClickListener() {
 
@@ -110,20 +112,16 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
 
 
                     // load your own Information for the project owner data
-                    String[] adminProjection = {budgetSplitContract.participants._ID};
-                    adminCursor = getContentResolver().query(GlobalStuffHelper.getUriAtPosition(0), adminProjection, null, null, null);
-                    adminCursor.getColumnName(0);
+
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    long adminId = preferences.getLong(getString(R.string.pref_user_id), -1);
 
                     // create new Project in Database
                     ContentValues projectValues = new ContentValues();
                     projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_NAME, projectName.getText().toString());
                     projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_DESCRIPTION, projectDescription.getText().toString());
-                    projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, adminCursor.getColumnName(0));
+                    projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, adminId);
                     projectUri = getContentResolver().insert(budgetSplitContract.projects.CONTENT_URI, projectValues);
-
-                    //save the uri in a Global Array for the main Listview
-                    GlobalStuffHelper.addUri(projectUri);
-
                     Intent intentNewProject = new Intent(NewProject.this, Main.class);
                     startActivity(intentNewProject);
                 }
