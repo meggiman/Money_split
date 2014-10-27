@@ -167,7 +167,7 @@ public class budgetSplitContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    synchronized public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int deletedCount = 0;
         String idString;
@@ -315,7 +315,7 @@ public class budgetSplitContentProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    synchronized public Uri insert(Uri uri, ContentValues values) {
         SQLiteDatabase db;
         long id;
         switch (sUriMatcher.match(uri)) {
@@ -549,7 +549,7 @@ public class budgetSplitContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection,
+    synchronized public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int updateCount = 0;
