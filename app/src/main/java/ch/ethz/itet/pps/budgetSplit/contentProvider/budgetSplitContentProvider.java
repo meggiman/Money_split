@@ -1,8 +1,11 @@
 package ch.ethz.itet.pps.budgetSplit.contentProvider;
 
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +13,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+
+import java.util.ArrayList;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.database.budgetSplitDBHelper;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.database.budgetSplitDBSchema;
@@ -19,6 +24,7 @@ public class budgetSplitContentProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     private budgetSplitDBHelper dbHelper;
+    private final ThreadLocal<Boolean> misInBatchMode = new ThreadLocal<Boolean>();
 
     static {
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projects.TABLE_PROJECTS, budgetSplitContract.projects.PROJECTS);
@@ -307,7 +313,7 @@ public class budgetSplitContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Invalid Uri for delete: " + uri);
         }
-        if (deletedCount > 0) {
+        if (deletedCount > 0 && !isInBatchMode()) {
             getContext().getContentResolver().notifyChange(uri, null);
             notifyViews(uri);
         }
@@ -689,11 +695,36 @@ public class budgetSplitContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Invalid Uri for upadate: " + uri);
         }
-        if (updateCount > 0) {
+        if (updateCount > 0 && !isInBatchMode()) {
             getContext().getContentResolver().notifyChange(uri, null);
             notifyViews(uri);
         }
         return updateCount;
+    }
+
+    @Override
+    synchronized public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations) throws OperationApplicationException {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        misInBatchMode.set(true);
+        db.beginTransaction();
+        try {
+            final ContentProviderResult[] results = super.applyBatch(operations);
+            db.setTransactionSuccessful();
+            getContext().getContentResolver().notifyChange(budgetSplitContract.CONTENT_URI, null);
+            return results;
+        } finally {
+            misInBatchMode.remove();
+            db.endTransaction();
+        }
+    }
+
+    /**
+     * Used to determine whether ContentProvider is in BatchMode.
+     *
+     * @return true if in BatchMode, otherwise false.
+     */
+    private boolean isInBatchMode() {
+        return misInBatchMode.get() != null && misInBatchMode.get();
     }
 
     /**
