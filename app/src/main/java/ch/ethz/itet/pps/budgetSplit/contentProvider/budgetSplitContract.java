@@ -189,8 +189,10 @@ public class budgetSplitContract {
         public static final String COLUMN_TIME_ADDED = budgetSplitDBSchema.items_view.COLUMN_ITEM_TIME_ADDED;
         public static final String COLUMN_CREATOR_ID = budgetSplitDBSchema.items_view.COLUMN_ITEM_CREATOR_ID;
         public static final String COLUMN_CREATOR_NAME = budgetSplitDBSchema.items_view.COLUMN_ITEM_CREATOR_NAME;
+        public static final String COLUMN_CREATOR_IS_VIRTUAL = budgetSplitDBSchema.items_view.COLUMN_ITEM_CREATOR_IS_VIRTUAL;
+        public static final String COLUMN_CREATOR_UNIQUE_ID = budgetSplitDBSchema.items_view.COLUMN_ITEM_CREATOR_UNIQUE_ID;
         public static final String COLUMN_ITEM_PRICE = budgetSplitDBSchema.items_view.COLUMN_ITEM_PRICE;
-        public static final String[] PROJECTION_ALL = {_ID, COLUMN_ITEM_NAME, COLUMN_ITEM_TIMESTAMP, COLUMN_ITEM_DATE_ADDED, COLUMN_TIME_ADDED, COLUMN_CREATOR_ID, COLUMN_CREATOR_NAME, COLUMN_ITEM_PRICE};
+        public static final String[] PROJECTION_ALL = {_ID, COLUMN_ITEM_NAME, COLUMN_ITEM_TIMESTAMP, COLUMN_ITEM_DATE_ADDED, COLUMN_TIME_ADDED, COLUMN_CREATOR_ID, COLUMN_CREATOR_NAME, COLUMN_CREATOR_IS_VIRTUAL, COLUMN_CREATOR_UNIQUE_ID, COLUMN_ITEM_PRICE};
     }
 
 

@@ -466,6 +466,8 @@ public final class budgetSplitDBSchema {
         public static final String COLUMN_ITEM_TIME_ADDED = "itemTimeAdded";
         public static final String COLUMN_ITEM_CREATOR_ID = "itemCreatorId";
         public static final String COLUMN_ITEM_CREATOR_NAME = "itemCreatorName";
+        public static final String COLUMN_ITEM_CREATOR_IS_VIRTUAL = "itemCreatorIsVirtual";
+        public static final String COLUMN_ITEM_CREATOR_UNIQUE_ID = "itemCreatorUniqueId";
         public static final String COLUMN_ITEM_PRICE = "itemPrice";
 
         private static final String VIEW_SELECT = "SELECT "
@@ -476,6 +478,8 @@ public final class budgetSplitDBSchema {
                 + "strftime('%H:%M', " + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + ", 'localtime') AS " + COLUMN_ITEM_TIME_ADDED + ", "
                 + items.TABLE_ITEMS + "." + items.COLUMN_CREATOR + " AS " + COLUMN_ITEM_CREATOR_ID + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_ITEM_CREATOR_NAME + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_ISVIRTUAL + " AS " + COLUMN_ITEM_CREATOR_IS_VIRTUAL + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_UNIQUEID + " AS " + COLUMN_ITEM_CREATOR_UNIQUE_ID + ", "
                 + "sum(" + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_AMOUNT_PAYED + "*" + currencies.TABLE_CURRENCIES + "." + currencies.COLUMN_EXCHANGE_RATE + ") AS " + COLUMN_ITEM_PRICE
                 + " FROM " + items.TABLE_ITEMS
                 + " LEFT OUTER JOIN " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + " ON " + items.TABLE_ITEMS + "." + _ID + " = " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_ITEM_ID
