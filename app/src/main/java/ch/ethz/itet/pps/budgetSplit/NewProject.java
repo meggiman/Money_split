@@ -44,7 +44,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
     Uri projectUri;
 
 
-    AdapterView.OnItemSelectedListener onSpinner =   new AdapterView.OnItemSelectedListener() {
+    AdapterView.OnItemSelectedListener onSpinner = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -114,6 +114,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
                     // load your own Information for the project owner data
 
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
                     long adminId = preferences.getLong(getString(R.string.pref_user_id), -1);
 
 

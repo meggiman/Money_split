@@ -35,18 +35,17 @@ public class SettingsFragment extends PreferenceFragment {
         //Populate ListPreference defaultCurrency with data from database.
         String[] projection = {budgetSplitContract.currencies.COLUMN_NAME, budgetSplitContract.currencies.COLUMN_CURRENCY_CODE};
         Cursor cursor = getActivity().getContentResolver().query(budgetSplitContract.currencies.CONTENT_URI, projection, null, null, budgetSplitContract.currencies.COLUMN_NAME);
-        if (cursor.getColumnCount() > 0) {
-            String[] currencies = new String[cursor.getColumnCount()];
-            String[] currencyCodes = new String[cursor.getColumnCount()];
+
+        String[] currencies = new String[cursor.getCount()];
+        String[] currencyCodes = new String[cursor.getCount()];
+        if (cursor.getCount() > 0) {
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 currencies[cursor.getPosition()] = cursor.getString(0);
                 currencyCodes[cursor.getPosition()] = cursor.getString(1);
             }
-            ListPreference defaultCurrency = (ListPreference) findPreference(getResources().getString(R.string.pref_default_currency));
-            defaultCurrency.setEntries(currencies);
-            defaultCurrency.setEntryValues(currencyCodes);
-
-
         }
+        ListPreference defaultCurrency = (ListPreference) findPreference(getResources().getString(R.string.pref_default_currency));
+        defaultCurrency.setEntries(currencies);
+        defaultCurrency.setEntryValues(currencyCodes);
     }
 }

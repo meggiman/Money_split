@@ -89,7 +89,7 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
         progressBar.setVisibility(View.GONE);
 
         //Refresh Data of GUI Elements
-        if (cursor.getColumnCount() == 1) {
+        if (cursor.getCount() == 1) {
             cursor.moveToFirst();
             String projectName = cursor.getString(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_NAME));
             String projectDescription = cursor.getString(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_DESCRIPTION));

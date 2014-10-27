@@ -64,7 +64,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
 
                 // get project Uri
                 Cursor projectCursor = (Cursor) adapterView.getItemAtPosition(position);
-                if (projectCursor.getColumnCount() < 1) {
+                if (projectCursor.getCount() < 1) {
                     throw new IllegalArgumentException("No project does exist.");
                 }
                 long projectId = projectCursor.getLong(projectCursor.getColumnIndex(budgetSplitContract.projects._ID));
@@ -79,14 +79,12 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         });
 
 
-
-
-        //Implementing on click funktion of "addProjectButton"
+        //Implementing on click function of "addProjectButton"
         addProjectButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent intentAddProject = new Intent(Main.this, NewProject.class);
+                Intent intentAddProject = new Intent(getBaseContext(), NewProject.class);
                 startActivity(intentAddProject);
             }
         });
@@ -132,7 +130,8 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
                 break;
 
             case R.id.MainScreenSettings:
-                // What should "Settings" do
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -31,42 +31,13 @@ public class FirstScreen extends Activity {
 
     ContentValues newContactParticipant;
     String hashStringHex = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_screen);
 
-
-        // Load Google ID
-        Pattern emailPattern = Patterns.EMAIL_ADDRESS;
-        Account[] accounts = AccountManager.get(this).getAccountsByType("com.google");
-        String googleAccountName = "";
-        MessageDigest md;
-        byte[] hashedAccountNameBytes;
-        for (int i = 0; !emailPattern.matcher(accounts[i].name).matches() || i >= accounts.length; i++) {
-            googleAccountName = accounts[i].name;
-        }
-        try {
-            // Hash Google id
-            md = MessageDigest.getInstance("SHA-256");
-            md.update(googleAccountName.getBytes("UTF-8"));
-            hashedAccountNameBytes = md.digest();
-            StringBuffer buffer = new StringBuffer();
-            for (int i = 0; i < hashedAccountNameBytes.length; i++) {
-                buffer.append(Integer.toString((hashedAccountNameBytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            hashStringHex = buffer.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        // Store Hashed Google Id as Unique_ID
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(getString(R.string.pref_user_unique_id), hashStringHex);
-
+        //Initialize Views
         Button btnOK = (Button) findViewById(R.id.buttonOk);
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,15 +49,48 @@ public class FirstScreen extends Activity {
 
                 // Load inputet User name and UniqueID into Database
                 if (usernameEditText.getText().length() > 0) {
+
+
+                    // Load Google ID
+                    Pattern emailPattern = Patterns.EMAIL_ADDRESS;
+                    Account[] accounts = AccountManager.get(getApplicationContext()).getAccountsByType("com.google");
+                    String googleAccountName = "";
+                    MessageDigest md;
+                    byte[] hashedAccountNameBytes;
+                    for (int i = 0; !emailPattern.matcher(accounts[i].name).matches() || i >= accounts.length; i++) {
+                        googleAccountName = accounts[i].name;
+                    }
+                    try {
+                        // Hash Google id
+                        md = MessageDigest.getInstance("SHA-256");
+                        md.update(googleAccountName.getBytes("UTF-8"));
+                        hashedAccountNameBytes = md.digest();
+                        StringBuffer buffer = new StringBuffer();
+                        for (int i = 0; i < hashedAccountNameBytes.length; i++) {
+                            buffer.append(Integer.toString((hashedAccountNameBytes[i] & 0xff) + 0x100, 16).substring(1));
+                        }
+                        hashStringHex = buffer.toString();
+
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
+                    //Save Data to database
                     newContactParticipant = new ContentValues();
-                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_UNIQUEID, 1234567890987654321L);//hashStringHex
+                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_UNIQUEID, hashStringHex);//hashStringHex
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, usernameEditText.getText().toString());
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
                     Uri yourUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
                     long userId = ContentUris.parseId(yourUri);
-                    editor.putString(getString(R.string.pref_user_id), Long.toString(userId));
+
+                    // Store all values to respective sharedPreferences-Keys.
+                    editor.putString(getString(R.string.pref_user_unique_id), hashStringHex);
+                    editor.putLong(getString(R.string.pref_user_id), userId);
                     editor.putString(getString(R.string.pref_userName), usernameEditText.getText().toString());
                     editor.putBoolean(getString(R.string.pref_not_first_started), true);
+                    editor.commit();
 
                     // Start Main Activity
                     Intent mainActivity = new Intent(FirstScreen.this, Main.class);

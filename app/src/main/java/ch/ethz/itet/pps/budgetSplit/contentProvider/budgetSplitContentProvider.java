@@ -36,6 +36,10 @@ public class budgetSplitContentProvider extends ContentProvider {
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.items.TABLE_ITEMS, budgetSplitContract.items.ITEMS);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.items.TABLE_ITEMS + "/#", budgetSplitContract.items.ITEM);
 
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.currencies.TABLE_CURRENCIES, budgetSplitContract.currencies.CURRENCIES);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.currencies.TABLE_CURRENCIES + "/#", budgetSplitContract.currencies.CURRENCY);
+
+
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "/#", budgetSplitContract.itemsParticipants.ITEM_PARTICIPANTS);
 
