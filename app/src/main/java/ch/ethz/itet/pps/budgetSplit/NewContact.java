@@ -41,9 +41,7 @@ public class NewContact extends Activity {
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
                     nameUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
                 }
-
-                Intent intentBluetooth = new Intent(NewContact.this, NewProject.class);
-                startActivity(intentBluetooth);
+                finish();
             }
         });
     }

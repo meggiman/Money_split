@@ -124,8 +124,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
                     projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_DESCRIPTION, projectDescription.getText().toString());
                     projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, adminId);
                     projectUri = getContentResolver().insert(budgetSplitContract.projects.CONTENT_URI, projectValues);
-                    Intent intentNewProject = new Intent(NewProject.this, Main.class);
-                    startActivity(intentNewProject);
+                    finish();
                 }
 
             }
@@ -137,7 +136,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
             public void onClick(View view) {
 
                 Intent intentNewContact = new Intent(NewProject.this, NewContact.class);
-                startActivity(intentNewContact);
+                startActivityForResult(intentNewContact, 0);
 
             }
         });

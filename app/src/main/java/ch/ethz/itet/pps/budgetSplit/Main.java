@@ -69,7 +69,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
                 }
                 long projectId = projectCursor.getLong(projectCursor.getColumnIndex(budgetSplitContract.projects._ID));
                 String projectTitle = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projects.COLUMN_PROJECT_NAME));
-                Uri projectUri = ContentUris.withAppendedId(budgetSplitContract.projects.CONTENT_URI, projectId);
+                Uri projectUri = ContentUris.withAppendedId(budgetSplitContract.projectsDetailsRO.CONTENT_URI, projectId);
                 // query for project name
 
                 overwiewIntent.putExtra(ProjectNavigation.EXTRA_CONTENT_URI, projectUri);

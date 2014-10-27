@@ -32,8 +32,7 @@
         <activity
             android:name=".add_new_item"
             android:label="@string/title_activity_add_new_item"
-            android:parentActivityName=".ProjectNavigation"
-            android:noHistory="true">
+            android:parentActivityName=".ProjectNavigation">
         <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ethz.itet.pps.budgetSplit.ProjectNavigation" />
@@ -43,8 +42,7 @@
             android:exported="true"
             android:label="@string/title_activity_new_project"
             android:parentActivityName=".Main"
-            android:windowSoftInputMode="adjustPan"
-            android:noHistory="true">
+            android:windowSoftInputMode="adjustPan">
         <action android:name="android.intent.action.NEWPROJECT" />
 
             <meta-data

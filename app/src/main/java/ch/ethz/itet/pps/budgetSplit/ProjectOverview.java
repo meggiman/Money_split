@@ -48,6 +48,8 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
         // Required empty public constructor
     }
 
+    ProgressBar progressBar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,21 +57,22 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
             projectUri = getArguments().getParcelable(PROJECT_CONTENT_URI);
         }
 
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_project_overview, container, false);
+        View myView = inflater.inflate(R.layout.fragment_project_overview, container, false);
+        progressBar = (ProgressBar) myView.findViewById(R.id.projectOverviewProgressBar);
+        getLoaderManager().initLoader(0, null, this); // This class uses only one Loader Manager, so i just give zero as loader id.
+        return myView;
     }
 
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         //Show progressbar while Loading
-        ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.projectOverviewProgressBar);
         progressBar.setVisibility(View.VISIBLE);
         final String[] PROJECTION = {
                 budgetSplitContract.projectsDetailsRO._ID,
@@ -100,7 +103,8 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
             ((TextView) getView().findViewById(R.id.projectName)).setText(projectName);
             ((TextView) getView().findViewById(R.id.projectDescription)).setText(projectDescription);
             ((TextView) getView().findViewById(R.id.administrator)).setText(projectAdminName);
-            ((TextView) getView().findViewById(R.id.CountOfParticipants)).setText(nrOfParticipants);
+            TextView nrofParticipants = (TextView) getView().findViewById(R.id.CountOfParticipants);
+            ((TextView) getView().findViewById(R.id.CountOfParticipants)).setText(Integer.toString(nrOfItems));
         } else {
             throw new IllegalArgumentException("Illegal Content-Uri. The returned Cursor for Project-Overview was either empty or contained more than one row.");
         }
