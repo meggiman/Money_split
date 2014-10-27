@@ -9,16 +9,22 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -52,23 +58,33 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
     long projectId;
     Cursor cursorItem = null;
     Cursor cursorItemParticipants = null;
+    Cursor cursorParticipants = null;
     Cursor cursorItemTags = null;
     Cursor cursorTags = null;
     Cursor cursorProject = null;
     Cursor cursorCurrencies = null;
 
     //View variables
-    LinearLayout tagsLayout;
     ListView participantsList;
-    List<TextView> tagViews;
-    List<Long> tempTags; //Temporary List of tag IDs which will eventually be written to DB.
+    //Tags Variables
+    LinearLayout tagsAddedLayout;
+    List<View> tagsAddedViews;
+    List<View> tagsNotAddedViews;
+    Stack<View> tagViewPool;
+    Stack<TextView> tagTextPool;
+    List<Tag> tagsAlreadyAdded;
+    List<Tag> tagsToAdd;
+    List<Tag> tagsToDelete;
+    List<Tag> tagsNotAdded;
+    LinearLayout tagChooserList;
+    PopupWindow tagChooserPopup;
+
     EditText itemName;
     Spinner CreatorSpinner;
 
     //Variables used to restrict full privileges for non-Creating users.
     int localUserId = 0;
     boolean fullAccess = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +142,12 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         getLoaderManager().initLoader(LOADER_CURRENCIES, null, this);
 
 
+        //Initialize View-Variables
+        tagsAddedLayout = (LinearLayout) findViewById(R.id.linearLayoutTags);
+
+        //Initialize global Variables
+        tagViewPool = new Stack<View>();
+        tagTextPool = new Stack<TextView>();
     }
 
 
@@ -135,6 +157,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         getMenuInflater().inflate(R.menu.add_new_item, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -161,6 +184,9 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                 return new CursorLoader(getApplicationContext(), budgetSplitContract.tags.CONTENT_URI, budgetSplitContract.tags.PROJECTION_ALL, null, null, null);
             case LOADER_CURRENCIES:
                 return new CursorLoader(getApplicationContext(), budgetSplitContract.currencies.CONTENT_URI, budgetSplitContract.currencies.PROJECTION_ALL, null, null, null);
+            case LOADER_PARTICIPANTS:
+                return new CursorLoader(getApplicationContext(), budgetSplitContract.participants.CONTENT_URI, budgetSplitContract.participants.PROJECTION_ALL, null, null, null);
+
             case LOADER_PROJECT:
                 String[] projection = {budgetSplitContract.projectsDetailsRO._ID,
                         budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_NAME,
@@ -178,7 +204,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         switch (cursorLoader.getId()) {
             case LOADER_ITEM:
                 //call drawGUI only if Load finished for the first time. For future calls, use redrawGUI.
-                if (loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                if (loaderParticipantsFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading && loaderTagsFinishedInitialLoading) {
                     if (loaderItemFinishedInitialLoading) {
                         refreshItem(cursor);
@@ -198,11 +224,11 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             case LOADER_PROJECT:
                 cursorProject = cursor;
                 if (isNewItem) {
-                    if (loaderCurrenciesFinishedInitialLoading && loaderTagsFinishedInitialLoading) {
+                    if (loaderParticipantsFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderTagsFinishedInitialLoading) {
                         drawGUIForNewItem();
                     }
                 }
-                if (loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                if (loaderItemFinishedInitialLoading && loaderParticipantsFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderTagsFinishedInitialLoading) {
                     drawGUIForExistingItem();
                 }
@@ -216,7 +242,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             case LOADER_TAGS:
                 //New Item
                 if (isNewItem) {
-                    if (loaderCurrenciesFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
+                    if (loaderParticipantsFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                         if (loaderTagsFinishedInitialLoading) {
                             refreshTags(cursor);
                             cursorTags = cursor;
@@ -227,7 +253,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                     }
                 }
                 //Existing Item
-                if (loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                if (loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                     if (loaderTagsFinishedInitialLoading) {
                         refreshTags(cursor);
@@ -246,7 +272,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             case LOADER_CURRENCIES:
                 //New Item
                 if (isNewItem) {
-                    if (loaderTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
+                    if (loaderParticipantsFinishedInitialLoading && loaderTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                         if (loaderCurrenciesFinishedInitialLoading) {
                             refreshCurrencies(cursor);
                             cursorCurrencies = cursor;
@@ -257,7 +283,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                     }
                 }
                 //Existing Item
-                if (loaderItemFinishedInitialLoading && loaderTagsFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                if (loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderTagsFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                     if (loaderCurrenciesFinishedInitialLoading) {
                         refreshCurrencies(cursor);
@@ -271,9 +297,39 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                 break;
 
 
+            //If activity was started with a new item, drawGUIForNewItem() is called, if all necessary loaders finished their work. If activity was started with an existing
+            //item, drawGUIForExistingItem() of redrawGUIForExistingItem() is called if all all necessary loaders finished their work.
+            case LOADER_PARTICIPANTS:
+                //New Item
+                if (isNewItem) {
+                    if (loaderCurrenciesFinishedInitialLoading && loaderTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
+                        if (loaderParticipantsFinishedInitialLoading) {
+                            refreshParticipants(cursor);
+                            cursorParticipants = cursor;
+                        } else {
+                            cursorParticipants = cursor;
+                            drawGUIForNewItem();
+                        }
+                    }
+                }
+                //Existing Item
+                if (loaderCurrenciesFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderTagsFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                        && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
+                    if (loaderParticipantsFinishedInitialLoading) {
+                        refreshParticipants(cursor);
+                        cursorParticipants = cursor;
+                    } else {
+                        cursorParticipants = cursor;
+                        drawGUIForExistingItem();
+                    }
+                }
+                loaderParticipantsFinishedInitialLoading = true;
+                break;
+
+
             //This case is only reached, if activity was started for an existing item. Determines, whether to wait for other Loaders or to call the drawGUIForExistingItem() or refresh-Method.
             case LOADER_ITEM_PARTICIPANTS:
-                if (loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderTagsFinishedInitialLoading
+                if (loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderTagsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                     if (loaderItemParticipantsFinishedInitialLoading) {
                         refreshItemsParticipants(cursor);
@@ -289,7 +345,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
 
             //This case is only reached, if activity was started for an existing item. Determines, whether to wait for other Loaders or to call the drawGUIForExistingItem() or refresh-Method.
             case LOADER_ITEM_TAGS:
-                if (loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                if (loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                     if (loaderItemTagsFinishedInitialLoading) {
                         refreshItemsTags(cursor);
@@ -311,10 +367,6 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         }
     }
 
-    void redrawGUIForExistingItem(int loaderID, Cursor cursor) {
-
-    }
-
     void refreshItem(Cursor newItemCursor) {
 
     }
@@ -324,6 +376,10 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
     }
 
     void refreshCurrencies(Cursor newCurrenciesCursor) {
+
+    }
+
+    void refreshParticipants(Cursor newParticipantsCursor) {
 
     }
 
@@ -340,56 +396,214 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
     }
 
     void drawGUIForNewItem() {
+        //Draw Tag GUI
+        tagsAddedViews = new ArrayList<View>();
+        tagsAlreadyAdded = new ArrayList<Tag>();
+        tagsNotAdded = cursorToList(cursorTags);
+        ImageButton addNewTagButton = new ImageButton(getApplicationContext());
+        addNewTagButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new));
+        addNewTagButton.setLayoutParams(new ViewGroup.LayoutParams(32, 32));
+        addNewTagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTagsPopupWindow(view);
+            }
+        });
+        tagsAddedLayout.addView(addNewTagButton, tagsAddedLayout.getChildCount());
 
+    }
+
+    private void addTag(View view) {
+        Tag tag = (Tag) view.getTag();
+        tagsNotAdded.remove(tag); //Remove Tag from List.
+        //check if tag was already in db.
+        if (tagsAlreadyAdded.contains(tag)) {
+            tagsToDelete.remove(tag);
+        } else {
+            tagsToAdd.add(tag);
+        }
+        //Remove view from tag chooser and view List.
+        tagsNotAddedViews.remove(view);
+        tagChooserList.removeView(view);
+        tagTextPool.push((TextView) view); //Add TextView to Pool for recycling.
+        View newTagView = tag.getTagView(tagsAddedLayout);  //Create or recycle new TagView to add to Activity.
+        tagsAddedViews.add(newTagView);
+        tagsAddedLayout.addView(newTagView, tagsAddedLayout.getChildCount() - 1); //Add the new tag just behind the "add tag" Button.
+    }
+
+    private void deleteTag(View view) {
+        Tag tag = (Tag) view.getTag();
+        //Check if tag is already in db.
+        if (tagsAlreadyAdded.contains(tag)) {
+            tagsToDelete.add(tag);
+        }
+        {
+            tagsToAdd.remove(tag);
+        }
+        tagsNotAdded.add(tag);  //Add tag to List.
+        //Remove view from LinearLayout.
+        tagsAddedViews.remove(view);
+        tagsAddedLayout.removeView(view);
+        tagViewPool.push(view); //Add View to Pool for recycling.
+        TextView newTagView = tag.getTagTextView(tagChooserList); //Create or recycle new TextView to add to TagChooser.
+        tagsNotAddedViews.add(newTagView);
+        tagChooserList.addView(newTagView, 0); //Add the Tag at first position to Tag-Chooser-List.
+    }
+
+    private void showTagsPopupWindow(View view) {
+        if (tagChooserPopup == null) {
+            View tagChooserLayout = ((LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.activity_add_item_tag_chooser, null);
+            tagChooserList = (LinearLayout) tagChooserLayout.findViewById(R.id.scrollView).findViewById(R.id.linearLayoutTags);
+            tagsNotAddedViews = TagHelper.TagsToCustomView(tagChooserList, tagsNotAdded);
+            for (View tagView : tagsNotAddedViews) {
+                tagChooserList.addView(tagView, 0);
+            }
+            ImageButton createNewTag = new ImageButton(getBaseContext());
+            createNewTag.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new));
+            createNewTag.setLayoutParams(new ViewGroup.LayoutParams(32, 32));
+            createNewTag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //TODO Create new Tag
+                }
+            });
+            tagChooserLayout.findViewById(R.id.buttonCancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tagChooserPopup.dismiss();
+                }
+            });
+            tagChooserPopup = new PopupWindow(tagChooserLayout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        }
+        tagChooserPopup.showAsDropDown(view);
     }
 
     /**
      * Class Data Type for use in ArrayAdapters.
      */
-    static class Tag {
+    public class Tag {
         long id;
         String name;
 
-        Tag(long id, String name) {
+        public Tag(long id, String name) {
             this.id = id;
             this.name = name;
         }
 
         /**
-         * Converts a Cursor of tags to a {@link java.util.List} of Tags.
-         * The Cursor must at least Contain the Columns {@value budgetSplitContract.tags#_ID}  and {@value budgetSplitContract.tags#COLUMN_NAME}. If the more specific Column identifiers
-         * {@value budgetSplitContract.itemsTagsDetailsRO#COLUMN_TAG_ID} and {@value budgetSplitContract.itemsTagsDetailsRO#COLUMN_TAG_NAME} they are interpreted as the Values for the Objects.
-         *
-         * @param cursor A Cursor containing tags to convert into List of Tags.
-         * @return A {@link java.util.List} of Tags containing all Tags in cursor. If the cursors row count was zero, an empty List is returned.
-         * @throws java.lang.IllegalArgumentException if the Cursor does not contain any rows with the Column names mentioned above.
+         * @param root The ParenView of the Views to create.
+         * @return Returns a CustomView Tag filled with the name of the tag and a link to this object added as tag of the delete Button.
          */
-        static List<Tag> cursorToList(Cursor cursor) {
-            if (cursor == null) {
-                throw new NullPointerException("The given Cursor cursor was null.");
+        View getTagView(ViewGroup root) {
+            View newView;
+            if (tagViewPool.empty()) {
+                newView = ((LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.activity_add_item_tag, root);
+            } else {
+                newView = tagViewPool.pop();
             }
-            int idIndex = cursor.getColumnIndex(budgetSplitContract.itemsTagsDetailsRO.COLUMN_TAG_ID);
-            if (idIndex == -1) {
-                idIndex = cursor.getColumnIndexOrThrow(BaseColumns._ID);
-            }
-            if (cursor.getType(idIndex) != Cursor.FIELD_TYPE_INTEGER) {
-                throw new IllegalArgumentException("The Cursors Tag-Id Column Data-Type didn't contain numbers.");
-            }
-            int nameIndex = cursor.getColumnIndex(budgetSplitContract.itemsTagsDetailsRO.COLUMN_TAG_NAME);
-            if (nameIndex == -1) {
-                nameIndex = cursor.getColumnIndexOrThrow(budgetSplitContract.tags.COLUMN_NAME);
-            }
-            if (cursor.getType(nameIndex) != Cursor.FIELD_TYPE_STRING) {
-                throw new IllegalArgumentException("The Cursors Tag-Name Column Data-Type didn't contain strings.");
-            }
-            ArrayList<Tag> list = new ArrayList<Tag>();
-            if (cursor.moveToFirst()) {
-                while (!cursor.isAfterLast()) {
-                    list.add(new Tag(cursor.getLong(idIndex), cursor.getString(nameIndex)));
-                    cursor.moveToNext();
+            ((TextView) newView.findViewById(R.id.textViewTagName)).setText(name);
+            newView.findViewById(R.id.imageButtonDelete).setTag(this);
+            newView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteTag(view);
                 }
+            });
+            return newView;
+        }
+
+        /**
+         * @param root The ParenView of the Views to create.
+         * @return Returns a TextView filled with the name of the tag and a link to this object as tag of the TextView.
+         */
+        TextView getTagTextView(ViewGroup root) {
+            TextView newView;
+            if (tagTextPool.empty()) {
+                newView = new TextView(root.getContext());
+            } else {
+                newView = tagTextPool.pop();
             }
-            return list;
+            newView.setText(name);
+            newView.setTag(this);
+            newView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addTag(view);
+                }
+            });
+            return newView;
+        }
+
+
+    }
+
+    /**
+     * Converts a Cursor of tags to a {@link java.util.List} of Tags.
+     * The Cursor must at least Contain the Columns {@value ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract.tags#_ID}  and {@value ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract.tags#COLUMN_NAME}. If the more specific Column identifiers
+     * {@value ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract.itemsTagsDetailsRO#COLUMN_TAG_ID} and {@value ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract.itemsTagsDetailsRO#COLUMN_TAG_NAME} they are interpreted as the Values for the Objects.
+     *
+     * @param cursor A Cursor containing tags to convert into List of Tags.
+     * @return A {@link java.util.List} of Tags containing all Tags in cursor. If the cursors row count was zero, an empty List is returned.
+     * @throws IllegalArgumentException if the Cursor does not contain any rows with the Column names mentioned above.
+     */
+    List<Tag> cursorToList(Cursor cursor) {
+        if (cursor == null) {
+            throw new NullPointerException("The given Cursor cursor was null.");
+        }
+        int idIndex = cursor.getColumnIndex(budgetSplitContract.itemsTagsDetailsRO.COLUMN_TAG_ID);
+        if (idIndex == -1) {
+            idIndex = cursor.getColumnIndexOrThrow(BaseColumns._ID);
+        }
+        if (cursor.getType(idIndex) != Cursor.FIELD_TYPE_INTEGER) {
+            throw new IllegalArgumentException("The Cursors Tag-Id Column Data-Type didn't contain numbers.");
+        }
+        int nameIndex = cursor.getColumnIndex(budgetSplitContract.itemsTagsDetailsRO.COLUMN_TAG_NAME);
+        if (nameIndex == -1) {
+            nameIndex = cursor.getColumnIndexOrThrow(budgetSplitContract.tags.COLUMN_NAME);
+        }
+        if (cursor.getType(nameIndex) != Cursor.FIELD_TYPE_STRING) {
+            throw new IllegalArgumentException("The Cursors Tag-Name Column Data-Type didn't contain strings.");
+        }
+        ArrayList<Tag> list = new ArrayList<Tag>();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                list.add(new Tag(cursor.getLong(idIndex), cursor.getString(nameIndex)));
+                cursor.moveToNext();
+            }
+        }
+        return list;
+    }
+
+    static class TagHelper {
+
+        /**
+         * Inflates all Tags with the Tag Custom-Layout in tags and returns a list of the inflated views.
+         *
+         * @param root The root of the Views added to the List.
+         * @param tags The tags to inflate the views for.
+         * @return A List of all inflated Views.
+         */
+        static List<View> TagsToCustomView(ViewGroup root, List<Tag> tags) {
+            ArrayList<View> tagViews = new ArrayList<View>();
+            for (Tag tag : tags) {
+                tagViews.add(tag.getTagView(root));
+            }
+            return tagViews;
+        }
+
+        /**
+         * Creates a TextView for each Tag in tags and returns a list of the views.
+         *
+         * @param root The root of the Views added to the List.
+         * @param tags The tags to inflate the views for.
+         * @return A List of all inflated Views.
+         */
+        static List<View> TagsToTextView(ViewGroup root, List<Tag> tags) {
+            ArrayList<View> tagViews = new ArrayList<View>();
+            for (Tag tag : tags) {
+                tagViews.add(tag.getTagTextView(root));
+            }
+            return tagViews;
         }
     }
 

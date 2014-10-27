@@ -43,6 +43,8 @@
     <string name="search_bluetooth">Connect Via Bluetooth</string>
     <string name="create_contact2">+ Contact</string>
     <string name="title_activity_new_contact">NewContact</string>
+    <string name="add_new_payer">Add new Payer</string>
+    <string name="choose_tags">Choose the tags to add</string>
     <string name="title_activity_first_screen">FirstScreen</string>
     <string name="pref_not_first_started">pref_notFirstStarted</string>
     <string name="pref_user_id">pref_user_id</string>
