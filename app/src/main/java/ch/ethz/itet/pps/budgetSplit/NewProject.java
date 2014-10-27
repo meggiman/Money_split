@@ -116,6 +116,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     long adminId = preferences.getLong(getString(R.string.pref_user_id), -1);
 
+
                     // create new Project in Database
                     ContentValues projectValues = new ContentValues();
                     projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_NAME, projectName.getText().toString());

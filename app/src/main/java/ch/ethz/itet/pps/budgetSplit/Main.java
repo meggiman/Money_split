@@ -16,6 +16,7 @@ import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -104,13 +105,11 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         // Starting First Screen
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (preferences.contains(getString(R.string.pref_not_first_started))) {
+        if (!preferences.contains(getString(R.string.pref_not_first_started))) {
             Intent firstScreenIntent = new Intent(this, FirstScreen.class);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(getString(R.string.pref_not_first_started), true);
             startActivity(firstScreenIntent);
+        } else {
         }
-
 
     }
 

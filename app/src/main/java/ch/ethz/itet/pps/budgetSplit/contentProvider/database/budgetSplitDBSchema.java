@@ -69,7 +69,7 @@ public final class budgetSplitDBSchema {
                 + "("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_NAME + " TEXT NOT NULL, "
-                + COLUMN_UNIQUEID + " INTEGER NOT NULL UNIQUE, "
+                + COLUMN_UNIQUEID + " TEXT UNIQUE, "
                 + COLUMN_ISVIRTUAL + " INTEGER DEFAULT 0"
                 + ");";
 
