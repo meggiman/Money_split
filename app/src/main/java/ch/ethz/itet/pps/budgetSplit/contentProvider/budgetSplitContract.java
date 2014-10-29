@@ -183,6 +183,7 @@ public class budgetSplitContract {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_ITEMS_DETAILS_RO);
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_ITEMS_DETAILS_RO;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_ITEMS_DETAILS_RO;
+        public static final String COLUMN_PROJECT_ID = budgetSplitDBSchema.items_view.COLUMN_PROJECT_ID;
         public static final String COLUMN_ITEM_NAME = budgetSplitDBSchema.items_view.COLUMN_ITEM_NAME;
         public static final String COLUMN_ITEM_TIMESTAMP = budgetSplitDBSchema.items_view.COLUMN_ITEM_TIMESTAMP;
         public static final String COLUMN_ITEM_DATE_ADDED = budgetSplitDBSchema.items_view.COLUMN_ITEM_DATE_ADDED;
@@ -192,7 +193,7 @@ public class budgetSplitContract {
         public static final String COLUMN_CREATOR_IS_VIRTUAL = budgetSplitDBSchema.items_view.COLUMN_ITEM_CREATOR_IS_VIRTUAL;
         public static final String COLUMN_CREATOR_UNIQUE_ID = budgetSplitDBSchema.items_view.COLUMN_ITEM_CREATOR_UNIQUE_ID;
         public static final String COLUMN_ITEM_PRICE = budgetSplitDBSchema.items_view.COLUMN_ITEM_PRICE;
-        public static final String[] PROJECTION_ALL = {_ID, COLUMN_ITEM_NAME, COLUMN_ITEM_TIMESTAMP, COLUMN_ITEM_DATE_ADDED, COLUMN_TIME_ADDED, COLUMN_CREATOR_ID, COLUMN_CREATOR_NAME, COLUMN_CREATOR_IS_VIRTUAL, COLUMN_CREATOR_UNIQUE_ID, COLUMN_ITEM_PRICE};
+        public static final String[] PROJECTION_ALL = {_ID, COLUMN_PROJECT_ID, COLUMN_ITEM_NAME, COLUMN_ITEM_TIMESTAMP, COLUMN_ITEM_DATE_ADDED, COLUMN_TIME_ADDED, COLUMN_CREATOR_ID, COLUMN_CREATOR_NAME, COLUMN_CREATOR_IS_VIRTUAL, COLUMN_CREATOR_UNIQUE_ID, COLUMN_ITEM_PRICE};
     }
 
 

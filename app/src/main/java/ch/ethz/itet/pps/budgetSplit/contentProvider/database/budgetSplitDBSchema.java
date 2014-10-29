@@ -460,6 +460,7 @@ public final class budgetSplitDBSchema {
 
     public static abstract class items_view implements BaseColumns {
         public static final String VIEW_ITEMS = "viewItems";
+        public static final String COLUMN_PROJECT_ID = "projectId";
         public static final String COLUMN_ITEM_NAME = "itemName";
         public static final String COLUMN_ITEM_TIMESTAMP = "itemTimestamp";
         public static final String COLUMN_ITEM_DATE_ADDED = "itemDateAdded";
@@ -472,6 +473,7 @@ public final class budgetSplitDBSchema {
 
         private static final String VIEW_SELECT = "SELECT "
                 + items.TABLE_ITEMS + "." + _ID + ", "
+                + items.TABLE_ITEMS + "." + items.COLUMN_PROJECT + " AS " + COLUMN_PROJECT_ID + ", "
                 + items.TABLE_ITEMS + "." + items.COLUMN_NAME + " AS " + COLUMN_ITEM_NAME + ", "
                 + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + " AS " + COLUMN_ITEM_TIMESTAMP + ", "
                 + "strftime('%d.%m.%Y', " + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + ", 'localtime') AS " + COLUMN_ITEM_DATE_ADDED + ", "
