@@ -33,8 +33,10 @@
         <activity
             android:name=".add_new_item"
             android:label="@string/title_activity_add_new_item"
-            android:parentActivityName=".ProjectNavigation">
-            <meta-data
+            android:parentActivityName=".ProjectNavigation"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait">
+        <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ethz.itet.pps.budgetSplit.ProjectNavigation" />
         </activity>

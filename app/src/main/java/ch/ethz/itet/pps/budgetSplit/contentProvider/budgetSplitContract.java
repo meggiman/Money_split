@@ -232,8 +232,8 @@ public class budgetSplitContract {
 
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_ITEMS_PARTICIPANTS_DETAILS_RO;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_ITEMS_PARTICIPANTS_DETAILS_RO;
-        public static final String COLUMN_ITEM_ID = budgetSplitDBSchema.itemsTags_view.COLUMN_ITEM_ID;
-        public static final String COLUMN_ITEM_NAME = budgetSplitDBSchema.itemsTags_view.COLUMN_ITEM_NAME;
+        public static final String COLUMN_ITEM_ID = budgetSplitDBSchema.itemsParticipants_view.COLUMN_ITEM_ID;
+        public static final String COLUMN_ITEM_NAME = budgetSplitDBSchema.itemsParticipants_view.COLUMN_ITEM_NAME;
         public static final String COLUMN_PARTICIPANT_ID = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_ID;
         public static final String COLUMN_PARTICIPANT_NAME = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_NAME;
         public static final String COLUMN_PARTICIPANT_UNIQUE_ID = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_UNIQUE_ID;

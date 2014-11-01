@@ -38,7 +38,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         addPreferencesFromResource(R.xml.preferences);
 
         //Populate ListPreference defaultCurrency with data from database.
-        String[] projection = {budgetSplitContract.currencies.COLUMN_NAME, budgetSplitContract.currencies.COLUMN_CURRENCY_CODE};
+        String[] projection = {budgetSplitContract.currencies._ID, budgetSplitContract.currencies.COLUMN_NAME, budgetSplitContract.currencies.COLUMN_CURRENCY_CODE};
         Cursor cursor = getActivity().getContentResolver().query(budgetSplitContract.currencies.CONTENT_URI, projection, null, null, budgetSplitContract.currencies.COLUMN_NAME);
 
         String[] currencyIds = new String[cursor.getCount()];
@@ -50,8 +50,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         }
         ListPreference defaultCurrency = (ListPreference) findPreference(getResources().getString(R.string.pref_default_currency));
-        defaultCurrency.setEntries(currencyIds);
-        defaultCurrency.setEntryValues(currencyCodes);
+        defaultCurrency.setEntries(currencyCodes);
+        defaultCurrency.setEntryValues(currencyIds);
     }
 
     @Override

@@ -51,5 +51,26 @@
     <string name="welcome_text">Hello There! Welcome to BudgetSplit. Please enter your username:</string>
     <string name="pref_user_unique_id">pref_user_unique_id</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="choose_a_payer">Choose a payer</string>
+    <string name="create_a_new_tag">Create a new Tag</string>
+    <string name="tag_name">tag name</string>
+    <string name="save_item">Save Item</string>
+    <string name="illegal_item_name">Illegal item name</string>
+    <string name="please_select_a_currency_for_">Please select a Currency for </string>
+    <string name="please_enter_a_amount_bigger_than_zero_for_">Please enter a amount bigger then zero for </string>
+    <string name="couldnt_add_item_to_db">The item could not be added to the database. There was an SQL-Exception.</string>
+    <string name="couldnt_update_item_in_db">The item could not be updated. There was an SQL-Exception.</string>
+    <string name="item_successfully_saved">Item successfully saved.</string>
+    <string name="loading">Loading...</string>
+    <string name="items">Items</string>
+    <string name="swiss_franc">Swiss franc</string>
+    <string name="please_enter_value">Please enter a value.</string>
+    <string name="new_item_was_created">New item was created.</string>
+    <string name="delete">delete</string>
+    <string name="delete_items">Delete Items</string>
+    <string name="delete_">Delete </string>
+    <string name="items_q"> items?</string>
+    <string name="item_was_saved">Item was successfully saved</string>
+
 
 </resources>

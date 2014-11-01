@@ -42,6 +42,9 @@ public class budgetSplitContentProvider extends ContentProvider {
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.items.TABLE_ITEMS, budgetSplitContract.items.ITEMS);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.items.TABLE_ITEMS + "/#", budgetSplitContract.items.ITEM);
 
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsTags.TABLE_ITEMS_TAGS, budgetSplitContract.itemsTags.ITEMSTAGS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsTags.TABLE_ITEMS_TAGS + "/#", budgetSplitContract.itemsTags.ITEMTAGS);
+
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.currencies.TABLE_CURRENCIES, budgetSplitContract.currencies.CURRENCIES);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.currencies.TABLE_CURRENCIES + "/#", budgetSplitContract.currencies.CURRENCY);
 
@@ -329,75 +332,67 @@ public class budgetSplitContentProvider extends ContentProvider {
             case budgetSplitContract.projects.PROJECTS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.projects.TABLE_PROJECTS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
-
+                break;
             //Insert into ProjectParticipants-Table
             case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.projectParticipants.TABLE_PROJECT_PARTICIPANTS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                break;
 
             //Insert into Participants-Table
             case budgetSplitContract.participants.PARTICIPANTS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.participants.TABLE_PARTICIPANTS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                break;
 
             //Insert into Tags-Table
             case budgetSplitContract.tags.TAGS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.tags.TABLE_TAGS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                break;
 
             //Insert into itemsTags-Table
             case budgetSplitContract.itemsTags.ITEMSTAGS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.itemsTags.TABLE_ITEMS_TAGS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                break;
 
             //Insert into currencies-Table
             case budgetSplitContract.currencies.CURRENCIES:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.currencies.TABLE_CURRENCIES, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                break;
 
             //Insert into items-Table
             case budgetSplitContract.items.ITEMS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.items.TABLE_ITEMS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                break;
 
             //Insert into Tags-Table
             case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                break;
 
             //Insert into Tags-Table
             case budgetSplitContract.excludeItems.EXCLUDE_ITEMS:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.excludeItems.TABLE_EXCLUDE_ITEMS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                break;
 
             //Insert into tagFilter-Table
             case budgetSplitContract.tagFilter.TAGS_FILTER:
                 db = dbHelper.getWritableDatabase();
                 id = db.insert(budgetSplitContract.tagFilter.TABLE_TAG_FILTER, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                break;
             default:
                 throw new IllegalArgumentException("Unsupported Uri for insertion: " + uri);
 
         }
+        notifyViews(uri);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return getUriForId(uri, id);
     }
 
     @Override
@@ -504,7 +499,7 @@ public class budgetSplitContentProvider extends ContentProvider {
 
             //Query Table projectDetailsRO
             case budgetSplitContract.projectsDetailsRO.PROJECTS_DETAILS:
-                builder.setTables(budgetSplitContract.projectsDetailsRO.TABLE_PROJECTS_DETAILS_RO);
+                builder.setTables(budgetSplitDBSchema.projects_view.VIEW_PROJECTS);
                 break;
             case budgetSplitContract.projectsDetailsRO.PROJECT_DETAILS:
                 builder.setTables(budgetSplitDBSchema.projects_view.VIEW_PROJECTS);
@@ -556,7 +551,7 @@ public class budgetSplitContentProvider extends ContentProvider {
 
     @Override
     synchronized public int update(Uri uri, ContentValues values, String selection,
-                      String[] selectionArgs) {
+                                   String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int updateCount = 0;
         String idString;

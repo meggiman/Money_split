@@ -85,6 +85,15 @@ public class FirstScreen extends Activity {
                     Uri yourUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
                     long userId = ContentUris.parseId(yourUri);
 
+
+                    //Add CHF as first currency
+                    ContentValues newCurrency = new ContentValues();
+                    newCurrency.put(budgetSplitContract.currencies.COLUMN_NAME, getString(R.string.swiss_franc));
+                    newCurrency.put(budgetSplitContract.currencies.COLUMN_CURRENCY_CODE, "CHF");
+                    newCurrency.put(budgetSplitContract.currencies.COLUMN_EXCHANGE_RATE, 1);
+                    Uri newCurrencyUri = getContentResolver().insert(budgetSplitContract.currencies.CONTENT_URI, newCurrency);
+                    editor.putString(getString(R.string.pref_default_currency), newCurrencyUri.getLastPathSegment());
+
                     // Store all values to respective sharedPreferences-Keys.
                     editor.putString(getString(R.string.pref_user_unique_id), hashStringHex);
                     editor.putLong(getString(R.string.pref_user_id), userId);
