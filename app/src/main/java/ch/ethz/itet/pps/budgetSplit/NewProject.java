@@ -179,6 +179,13 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
                         junktionValues.clear();
                     }
 
+                    SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    long id = preferences1.getLong(getString(R.string.pref_user_id), -1);
+
+                    junktionValues.put(budgetSplitContract.projectParticipants.COLUMN_PROJECTS_ID, projectId);
+                    junktionValues.put(budgetSplitContract.projectParticipants.COLUMN_PARTICIPANTS_ID, id);
+                    getContentResolver().insert(budgetSplitContract.projectParticipants.CONTENT_URI, junktionValues);
+
 
                     finish();
                 }
@@ -253,7 +260,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
         }
 
 
-        }
+    }
 
     // Call this method from Listview
     public void updateContactsSpinner() {
