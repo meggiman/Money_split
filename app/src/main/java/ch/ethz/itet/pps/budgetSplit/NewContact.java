@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
@@ -44,8 +45,10 @@ public class NewContact extends Activity {
                     // Add Id to Global Array
                     long contactId = ContentUris.parseId(nameUri);
                     GlobalStuffHelper.addParticipantsIds(contactId);
+                    setResult(RESULT_OK);// overgives that the contact has succesfully been created to the activity new project
                     finish();
                 } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.enter_a_name), Toast.LENGTH_SHORT).show();
                 }
 
             }
