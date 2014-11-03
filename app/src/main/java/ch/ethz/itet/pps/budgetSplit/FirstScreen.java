@@ -37,6 +37,7 @@ public class FirstScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_screen);
 
+
         //Initialize Views
         Button btnOK = (Button) findViewById(R.id.buttonOk);
         btnOK.setOnClickListener(new View.OnClickListener() {

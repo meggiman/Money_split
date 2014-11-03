@@ -1,8 +1,8 @@
 package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,7 +17,7 @@ import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 public class NewContact extends Activity {
 
     //Inicialization
-    Button newContactBluetooth;
+    Button newContactVirtual;
     EditText newContactName;
     Uri nameUri;
 
@@ -28,20 +28,26 @@ public class NewContact extends Activity {
         setContentView(R.layout.activity_new_contact);
 
         // Adding Objects
-        newContactBluetooth = (Button) findViewById(R.id.search_bluetooth);
+        newContactVirtual = (Button) findViewById(R.id.search_bluetooth);
         newContactName = (EditText) findViewById(R.id.edit_text_create_contact_name);
 
-        newContactBluetooth.setOnClickListener(new View.OnClickListener() {
+        newContactVirtual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (newContactName.getText() != null) {
+                if (newContactName.getText().length() > 0) {
                     ContentValues newContactParticipant = new ContentValues();
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, newContactName.getText().toString());
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
                     nameUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
+
+                    // Add Id to Global Array
+                    long contactId = ContentUris.parseId(nameUri);
+                    GlobalStuffHelper.addParticipantsIds(contactId);
+                    finish();
+                } else {
                 }
-                finish();
+
             }
         });
     }
