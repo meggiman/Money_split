@@ -1,8 +1,11 @@
 package ch.ethz.itet.pps.budgetSplit.contentProvider;
 
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +13,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+
+import java.util.ArrayList;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.database.budgetSplitDBHelper;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.database.budgetSplitDBSchema;
@@ -19,6 +24,7 @@ public class budgetSplitContentProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     private budgetSplitDBHelper dbHelper;
+    private final ThreadLocal<Boolean> misInBatchMode = new ThreadLocal<Boolean>();
 
     static {
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projects.TABLE_PROJECTS, budgetSplitContract.projects.PROJECTS);
@@ -35,6 +41,9 @@ public class budgetSplitContentProvider extends ContentProvider {
 
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.items.TABLE_ITEMS, budgetSplitContract.items.ITEMS);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.items.TABLE_ITEMS + "/#", budgetSplitContract.items.ITEM);
+
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsTags.TABLE_ITEMS_TAGS, budgetSplitContract.itemsTags.ITEMSTAGS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsTags.TABLE_ITEMS_TAGS + "/#", budgetSplitContract.itemsTags.ITEMTAGS);
 
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.currencies.TABLE_CURRENCIES, budgetSplitContract.currencies.CURRENCIES);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.currencies.TABLE_CURRENCIES + "/#", budgetSplitContract.currencies.CURRENCY);
@@ -167,7 +176,7 @@ public class budgetSplitContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    synchronized public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int deletedCount = 0;
         String idString;
@@ -307,7 +316,7 @@ public class budgetSplitContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Invalid Uri for delete: " + uri);
         }
-        if (deletedCount > 0) {
+        if (deletedCount > 0 && !isInBatchMode()) {
             getContext().getContentResolver().notifyChange(uri, null);
             notifyViews(uri);
         }
@@ -315,83 +324,75 @@ public class budgetSplitContentProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    synchronized public Uri insert(Uri uri, ContentValues values) {
         SQLiteDatabase db;
         long id;
         switch (sUriMatcher.match(uri)) {
             //Insert into Projects-Table
             case budgetSplitContract.projects.PROJECTS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.projects.TABLE_PROJECTS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
-
+                id = db.insert(budgetSplitDBSchema.projects.TABLE_PROJECTS, null, values);
+                break;
             //Insert into ProjectParticipants-Table
             case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.projectParticipants.TABLE_PROJECT_PARTICIPANTS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                id = db.insert(budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS, null, values);
+                break;
 
             //Insert into Participants-Table
             case budgetSplitContract.participants.PARTICIPANTS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.participants.TABLE_PARTICIPANTS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                id = db.insert(budgetSplitDBSchema.participants.TABLE_PARTICIPANTS, null, values);
+                break;
 
             //Insert into Tags-Table
             case budgetSplitContract.tags.TAGS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.tags.TABLE_TAGS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                id = db.insert(budgetSplitDBSchema.tags.TABLE_TAGS, null, values);
+                break;
 
             //Insert into itemsTags-Table
             case budgetSplitContract.itemsTags.ITEMSTAGS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.itemsTags.TABLE_ITEMS_TAGS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                id = db.insert(budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS, null, values);
+                break;
 
             //Insert into currencies-Table
             case budgetSplitContract.currencies.CURRENCIES:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.currencies.TABLE_CURRENCIES, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                id = db.insert(budgetSplitDBSchema.currencies.TABLE_CURRENCIES, null, values);
+                break;
 
             //Insert into items-Table
             case budgetSplitContract.items.ITEMS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.items.TABLE_ITEMS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                id = db.insert(budgetSplitDBSchema.items.TABLE_ITEMS, null, values);
+                break;
 
             //Insert into Tags-Table
             case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                id = db.insert(budgetSplitDBSchema.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, null, values);
+                break;
 
             //Insert into Tags-Table
             case budgetSplitContract.excludeItems.EXCLUDE_ITEMS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.excludeItems.TABLE_EXCLUDE_ITEMS, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                id = db.insert(budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS, null, values);
+                break;
 
             //Insert into tagFilter-Table
             case budgetSplitContract.tagFilter.TAGS_FILTER:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.tagFilter.TABLE_TAG_FILTER, null, values);
-                notifyViews(uri);
-                return getUriForId(uri, id);
+                id = db.insert(budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER, null, values);
+                break;
             default:
                 throw new IllegalArgumentException("Unsupported Uri for insertion: " + uri);
 
         }
+        notifyViews(uri);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return getUriForId(uri, id);
     }
 
     @Override
@@ -498,7 +499,7 @@ public class budgetSplitContentProvider extends ContentProvider {
 
             //Query Table projectDetailsRO
             case budgetSplitContract.projectsDetailsRO.PROJECTS_DETAILS:
-                builder.setTables(budgetSplitContract.projectsDetailsRO.TABLE_PROJECTS_DETAILS_RO);
+                builder.setTables(budgetSplitDBSchema.projects_view.VIEW_PROJECTS);
                 break;
             case budgetSplitContract.projectsDetailsRO.PROJECT_DETAILS:
                 builder.setTables(budgetSplitDBSchema.projects_view.VIEW_PROJECTS);
@@ -549,8 +550,8 @@ public class budgetSplitContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection,
-                      String[] selectionArgs) {
+    synchronized public int update(Uri uri, ContentValues values, String selection,
+                                   String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int updateCount = 0;
         String idString;
@@ -689,11 +690,36 @@ public class budgetSplitContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Invalid Uri for upadate: " + uri);
         }
-        if (updateCount > 0) {
+        if (updateCount > 0 && !isInBatchMode()) {
             getContext().getContentResolver().notifyChange(uri, null);
             notifyViews(uri);
         }
         return updateCount;
+    }
+
+    @Override
+    synchronized public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations) throws OperationApplicationException {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        misInBatchMode.set(true);
+        db.beginTransaction();
+        try {
+            final ContentProviderResult[] results = super.applyBatch(operations);
+            db.setTransactionSuccessful();
+            getContext().getContentResolver().notifyChange(budgetSplitContract.CONTENT_URI, null);
+            return results;
+        } finally {
+            misInBatchMode.remove();
+            db.endTransaction();
+        }
+    }
+
+    /**
+     * Used to determine whether ContentProvider is in BatchMode.
+     *
+     * @return true if in BatchMode, otherwise false.
+     */
+    private boolean isInBatchMode() {
+        return misInBatchMode.get() != null && misInBatchMode.get();
     }
 
     /**
