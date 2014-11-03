@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/date_added"
-        android:id="@+id/textView"
+        android:id="@+id/textViewName"
         android:layout_weight="1"
         android:textStyle="bold" />
 

@@ -16,5 +16,5 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/add_new_payer"
-        android:id="@+id/textView" />
+        android:id="@+id/textViewName" />
 </LinearLayout>

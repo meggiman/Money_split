@@ -331,60 +331,60 @@ public class budgetSplitContentProvider extends ContentProvider {
             //Insert into Projects-Table
             case budgetSplitContract.projects.PROJECTS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.projects.TABLE_PROJECTS, null, values);
+                id = db.insert(budgetSplitDBSchema.projects.TABLE_PROJECTS, null, values);
                 break;
             //Insert into ProjectParticipants-Table
             case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.projectParticipants.TABLE_PROJECT_PARTICIPANTS, null, values);
+                id = db.insert(budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS, null, values);
                 break;
 
             //Insert into Participants-Table
             case budgetSplitContract.participants.PARTICIPANTS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.participants.TABLE_PARTICIPANTS, null, values);
+                id = db.insert(budgetSplitDBSchema.participants.TABLE_PARTICIPANTS, null, values);
                 break;
 
             //Insert into Tags-Table
             case budgetSplitContract.tags.TAGS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.tags.TABLE_TAGS, null, values);
+                id = db.insert(budgetSplitDBSchema.tags.TABLE_TAGS, null, values);
                 break;
 
             //Insert into itemsTags-Table
             case budgetSplitContract.itemsTags.ITEMSTAGS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.itemsTags.TABLE_ITEMS_TAGS, null, values);
+                id = db.insert(budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS, null, values);
                 break;
 
             //Insert into currencies-Table
             case budgetSplitContract.currencies.CURRENCIES:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.currencies.TABLE_CURRENCIES, null, values);
+                id = db.insert(budgetSplitDBSchema.currencies.TABLE_CURRENCIES, null, values);
                 break;
 
             //Insert into items-Table
             case budgetSplitContract.items.ITEMS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.items.TABLE_ITEMS, null, values);
+                id = db.insert(budgetSplitDBSchema.items.TABLE_ITEMS, null, values);
                 break;
 
             //Insert into Tags-Table
             case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, null, values);
+                id = db.insert(budgetSplitDBSchema.itemsParticipants.TABLE_ITEMS_PARTICIPANTS, null, values);
                 break;
 
             //Insert into Tags-Table
             case budgetSplitContract.excludeItems.EXCLUDE_ITEMS:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.excludeItems.TABLE_EXCLUDE_ITEMS, null, values);
+                id = db.insert(budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS, null, values);
                 break;
 
             //Insert into tagFilter-Table
             case budgetSplitContract.tagFilter.TAGS_FILTER:
                 db = dbHelper.getWritableDatabase();
-                id = db.insert(budgetSplitContract.tagFilter.TABLE_TAG_FILTER, null, values);
+                id = db.insert(budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER, null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported Uri for insertion: " + uri);

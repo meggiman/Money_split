@@ -71,6 +71,7 @@
     <string name="delete_">Delete </string>
     <string name="items_q"> items?</string>
     <string name="item_was_saved">Item was successfully saved</string>
+    <string name="add_participants">Add participant</string>
 
 
 </resources>
