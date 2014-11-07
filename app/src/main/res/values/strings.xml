@@ -73,6 +73,13 @@
     <string name="items_q"> items?</string>
     <string name="item_was_saved">Item was successfully saved</string>
     <string name="add_participants">Add participant</string>
+    <string name="contact_successfully_created">Contact was successfully created.</string>
+    <string name="name_your_project">Please name your project.</string>
+    <string name="enter_a_name">Please enter a name.</string>
+    <string name="project_summary_title">Summary</string>
+    <string name="nr_of_items">Number of Items:</string>
+    <string name="calculate_transactions">Calculate Transactions</string>
+    <string name="tag_filter">Tagfilter:</string>
 
 
 </resources>

@@ -24,9 +24,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TooManyListenersException;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -46,6 +48,8 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
     ArrayList<String> participantNamestoList = new ArrayList<String>();
     ArrayList<String> participantNamestoSpinner = new ArrayList<String>();
     Uri projectUri;
+
+    static final int REQUEST_CREATE_CONTACT = 1;
 
 
     AdapterView.OnItemSelectedListener onSpinner = new AdapterView.OnItemSelectedListener() {
@@ -134,6 +138,18 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CREATE_CONTACT:
+                if (resultCode == RESULT_OK) {
+                    Toast.makeText(this, getString(R.string.contact_successfully_created), Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+        // was passiert wenn contact richtig erstellt wurde
+    }
+
     public void setButtons() {
 
         // initialize actuall button
@@ -149,6 +165,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
 
                 // Do not create a Nameless Project
                 if (projectName.getText().length() == 0) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.name_your_project), Toast.LENGTH_SHORT).show();
                 } else {
 
 
@@ -195,6 +212,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
 
         });
 
+
         // Button for Virtual Contacts
         createNewContact = (Button) findViewById(R.id.activity_new_project_create_new_contact_button);
 
@@ -202,7 +220,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
             public void onClick(View view) {
 
                 Intent intentNewContact = new Intent(NewProject.this, NewContact.class);
-                startActivityForResult(intentNewContact, 0);
+                startActivityForResult(intentNewContact, REQUEST_CREATE_CONTACT);
 
 
             }
@@ -308,7 +326,6 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
             contactsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         contactsSpinner.setAdapter(contactsSpinnerAdapter);
     }
-
 
 
     @Override

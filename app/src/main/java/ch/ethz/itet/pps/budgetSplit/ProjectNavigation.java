@@ -29,6 +29,7 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
      */
     private final static int SECTION_OVERVIEW = 0;
     private final static int SECTION_ITEM_LIST = 1;
+    private final static int SECTION_SUMMARY = 5;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -146,6 +147,8 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
                     return ProjectOverview.newInstance(projectContentUri);
                 case SECTION_ITEM_LIST:
                     return ProjectItems.newInstance(projectContentUri);
+                case SECTION_SUMMARY:
+                    return ProjectSummary.newInstance(projectContentUri);
                 default:
                     throw new IllegalArgumentException("Illegal Section Number: " + position);
             }
@@ -165,6 +168,8 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
                     return getString(R.string.title_section_overview).toUpperCase(l);
                 case SECTION_ITEM_LIST:
                     return getString(R.string.items).toUpperCase(l);
+                case SECTION_SUMMARY:
+                    return getString(R.string.project_summary_title).toUpperCase(l);
             }
             return null;
         }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Participant"
+        android:textStyle="italic|bold"
+        android:id="@+id/summary_listview_participant_name"
+        android:textSize="25dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tags"
+        android:textSize="20dp"
+        android:id="@+id/summary_listview_tags"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="@string/tag_filter"
+        android:textStyle="bold"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/summary_listview_participant_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Expenses"
+        android:textSize="20dp"
+        android:id="@+id/summary_listview_expences"
+        android:layout_below="@+id/summary_listview_tags"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

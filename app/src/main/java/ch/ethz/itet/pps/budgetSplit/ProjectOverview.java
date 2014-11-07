@@ -98,6 +98,7 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
         return myView;
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
