@@ -80,6 +80,6 @@
     <string name="nr_of_items">Number of Items:</string>
     <string name="calculate_transactions">Calculate Transactions</string>
     <string name="tag_filter">Tagfilter:</string>
-
+    <string name="title_activity_transactions">Transactions</string>
 
 </resources>

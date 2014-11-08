@@ -29,7 +29,7 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
      */
     private final static int SECTION_OVERVIEW = 0;
     private final static int SECTION_ITEM_LIST = 1;
-    private final static int SECTION_SUMMARY = 5;
+    private final static int SECTION_SUMMARY = 2;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -156,8 +156,8 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
 
         @Override
         public int getCount() {
-            // Show 2 pages.
-            return 2;
+            // Show 3 pages.
+            return 3;
         }
 
         @Override

@@ -75,7 +75,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/fragment_summary_listview"
         android:layout_below="@+id/summary_listview_tags"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        tools:listitem="@layout/fragment_project_summary_listview_row" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"

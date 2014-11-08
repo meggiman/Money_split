@@ -242,8 +242,10 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
             case LOADER_ITEMS:
                 // Sum up all the item Costs for the Expences Display
                 Double finalExpences = 0d;
-                for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
-                    finalExpences += cursor.getDouble(cursor.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_PRICE));
+                if (cursor.getCount() > 0) {
+                    for (cursor.moveToFirst(); cursor.isAfterLast(); cursor.moveToNext()) {
+                        finalExpences += cursor.getDouble(cursor.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_PRICE));
+                    }
                 }
                 expences = (TextView) mainView.findViewById(R.id.totalExpenses);
                 expences.setText(Double.toString(finalExpences));
