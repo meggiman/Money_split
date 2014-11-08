@@ -129,7 +129,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
                 String id = new String();
                 id = projectId.toString();
                 selection = new String(column + " = " + id);
-                String sortOrder = new String("budgetSplitContract.projectParticipants.COLUMN_PARTICIPANTS_ID, DESC");
+                String sortOrder = new String(budgetSplitContract.projectParticipants.COLUMN_PARTICIPANTS_ID + " DESC");
                 return new CursorLoader(getActivity(), budgetSplitContract.projectParticipants.CONTENT_URI, projection, selection, null, sortOrder);
 
             case LOADER_PARTICIPANT_NAMES:
