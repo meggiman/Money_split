@@ -69,6 +69,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
 
                 //
                 updateContactsList();
+                contactsSpinner.setSelection(0);
             }
         }
 

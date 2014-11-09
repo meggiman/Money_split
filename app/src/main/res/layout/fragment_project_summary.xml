@@ -31,7 +31,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="# Items"
         android:textSize="25dp"
         android:id="@+id/nr_of_Items"
         android:layout_alignBottom="@+id/fragment_summary_textview_nr_items"
@@ -54,9 +53,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="# Expenses"
         android:textSize="25dp"
-        android:id="@+id/totalExpenses"
+        android:id="@+id/totalExpenses1"
         android:layout_alignBottom="@+id/summary_listview_tags"
         android:layout_alignLeft="@+id/nr_of_Items"
         android:layout_alignStart="@+id/nr_of_Items" />

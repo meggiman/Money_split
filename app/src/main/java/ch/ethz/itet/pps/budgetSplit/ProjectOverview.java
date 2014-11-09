@@ -167,7 +167,6 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
                 } else {
                     throw new IllegalArgumentException("Illegal Content-Uri. The returned Cursor for Project-Overview was either empty or contained more than one row.");
                 }
-                cursor.close();
                 loaderProjectFinished = true;
                 break;
             case LOADER_EXPENSES:
