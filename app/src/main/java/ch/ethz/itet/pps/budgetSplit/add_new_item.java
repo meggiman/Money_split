@@ -33,10 +33,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.zip.Inflater;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -62,6 +64,8 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
     private boolean loaderCurrenciesFinishedInitialLoading = false;
     private static final int LOADER_PROJECT = 6;
     private boolean loaderProjectFinishedInitialLoading = false;
+    private static final int LOADER_EXCLUDE_ITEMS = 7;
+    private boolean loaderExcludeItemsFinishedInitialLoading = false;
 
     //Project- and Item-specific Variables
     boolean isNewItem = true;
@@ -70,6 +74,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
     long itemId = -1;
     long projectId;
     long myParticipantsId;
+    String myUniqueId;
     long defaultCurrencyId;
     String defaultCurrencyCode;
     Double defaultCurrencyExchangeRate;
@@ -83,9 +88,11 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
     Cursor cursorTags = null;
     Cursor cursorProject = null;
     Cursor cursorCurrencies = null;
+    Cursor cursorExcludeItems = null;
 
     //View variables
     ListView payersList;
+    ListView excludeList;
     EditText itemNameEditText;
 
     //Tags Variables
@@ -112,6 +119,15 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
     ItemParticipantsAdapter payerAdapter;
     AlertDialog payerChooserPopup;
     ImageButton addNewPayerButton;
+
+    //Exclude Items Variables
+    List<ExcludeItem> excludeItemsAlreadyAdded;
+    List<ExcludeItem> excludeItemsToAdd;
+    List<ExcludeItem> excludeItemsToDelete;
+    List<ExcludeItem> excludeItemsToUpdate;
+    ExcludeItemsAdapter excludeItemsAdapter;
+    AlertDialog excludeItemsChooserPopup;
+    ImageButton excludeSomeoneButton;
 
     //Variable used to restrict full privileges for non-Creating users.
     boolean fullAccess = false;
@@ -164,6 +180,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             getLoaderManager().initLoader(LOADER_ITEM, null, this);
             getLoaderManager().initLoader(LOADER_ITEM_PARTICIPANTS, null, this);
             getLoaderManager().initLoader(LOADER_ITEM_TAGS, null, this);
+            getLoaderManager().initLoader(LOADER_EXCLUDE_ITEMS, null, this);
         } else {
             isNewItem = true;
         }
@@ -177,6 +194,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         //Initialize View-Variables
         tagsAddedLayout = (LinearLayout) findViewById(R.id.linearLayoutTags);
         payersList = (ListView) findViewById(R.id.listViewPayers);
+        excludeList = (ListView) findViewById(R.id.listViewExcludeItems);
         itemNameEditText = (EditText) findViewById(R.id.editTextItemName);
 
         //Initialize global Variables
@@ -245,6 +263,9 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                         budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_NAME,
                         budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID};
                 return new CursorLoader(getApplicationContext(), budgetSplitContract.projectsDetailsRO.CONTENT_URI, projection, null, null, null);
+
+            case LOADER_EXCLUDE_ITEMS:
+                return new CursorLoader(getApplicationContext(), budgetSplitContract.excludeItems.CONTENT_URI, budgetSplitContract.excludeItems.PROJECTION_ALL, null, null, null);
             default:
                 throw new IllegalArgumentException("The LoaderId i didn't match with any of the defined Loaders.");
         }
@@ -256,7 +277,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             case LOADER_ITEM:
                 //call drawGUI only if Load finished for the first time.
                 cursorItem = cursor;
-                if (loaderParticipantsFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                if (loaderExcludeItemsFinishedInitialLoading && loaderParticipantsFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading && loaderTagsFinishedInitialLoading && !loaderItemFinishedInitialLoading) {
                     drawGUIForExistingItem();
                 }
@@ -274,7 +295,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                         drawGUIForNewItem();
                     }
                 }
-                if (loaderItemFinishedInitialLoading && loaderParticipantsFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                if (loaderExcludeItemsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderParticipantsFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderTagsFinishedInitialLoading && !loaderProjectFinishedInitialLoading) {
                     drawGUIForExistingItem();
                 }
@@ -300,7 +321,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                     }
                 }
                 //Existing Item
-                else if (loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                else if (loaderExcludeItemsFinishedInitialLoading && loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                     if (loaderTagsFinishedInitialLoading) {
                         refreshTags(cursor);
@@ -334,7 +355,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                     }
                 }
                 //Existing Item
-                else if (loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderTagsFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                else if (loaderExcludeItemsFinishedInitialLoading && loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderTagsFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                     if (loaderCurrenciesFinishedInitialLoading) {
                         refreshCurrencies(cursor);
@@ -368,7 +389,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                     }
                 }
                 //Existing Item
-                else if (loaderCurrenciesFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderTagsFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                else if (loaderExcludeItemsFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderTagsFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                     if (loaderParticipantsFinishedInitialLoading) {
                         refreshParticipants(cursor);
@@ -389,7 +410,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             // project Table don't take effect.
             case LOADER_ITEM_PARTICIPANTS:
                 cursorItemParticipants = cursor;
-                if (loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderTagsFinishedInitialLoading
+                if (loaderExcludeItemsFinishedInitialLoading && loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderTagsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading && !loaderItemParticipantsFinishedInitialLoading) {
                     drawGUIForExistingItem();
                 }
@@ -400,11 +421,20 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             //This case is only reached, if activity was started for an existing item. Determines, whether to wait for other Loaders or to call the drawGUIForExistingItem() or refresh-Method.
             case LOADER_ITEM_TAGS:
                 cursorItemTags = cursor;
-                if (loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                if (loaderExcludeItemsFinishedInitialLoading && loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading && !loaderItemTagsFinishedInitialLoading) {
                     drawGUIForExistingItem();
                 }
                 loaderItemTagsFinishedInitialLoading = true;
+                break;
+
+            case LOADER_EXCLUDE_ITEMS:
+                cursorExcludeItems = cursor;
+                if (loaderItemTagsFinishedInitialLoading && loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
+                        && loaderTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading && !loaderExcludeItemsFinishedInitialLoading) {
+                    drawGUIForExistingItem();
+                }
+                loaderExcludeItemsFinishedInitialLoading = true;
                 break;
         }
     }
@@ -480,7 +510,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
     void drawGUIForExistingItem() {
         //Write privilege-flags
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String myUniqueId = preferences.getString(getString(R.string.pref_user_unique_id), "noIdFound");
+        myUniqueId = preferences.getString(getString(R.string.pref_user_unique_id), "noIdFound");
         if (cursorItem.getCount() == 0) {
             throw new IllegalArgumentException("The Item added to Intent does not exist in database.");
         }
@@ -555,6 +585,26 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         });
         payersList.addFooterView(payersListFooter);
 
+        //Draw ExcludeItem GUI elements
+        excludeItemsToAdd = new ArrayList<ExcludeItem>();
+        excludeItemsToUpdate = new ArrayList<ExcludeItem>();
+        excludeItemsToDelete = new ArrayList<ExcludeItem>();
+        excludeItemsAlreadyAdded = excludeItemsCursorToList(cursorExcludeItems);
+        ArrayList<ExcludeItem> excludeItemsInList = new ArrayList<ExcludeItem>();
+        excludeItemsInList.addAll(excludeItemsAlreadyAdded);
+        excludeItemsAdapter = new ExcludeItemsAdapter(getBaseContext(), R.layout.activity_add_new_item_exclude_participant_row, excludeItemsInList);
+        excludeList.setAdapter(excludeItemsAdapter);
+        View excludeItemFooter = getLayoutInflater().inflate(R.layout.activity_add_new_item_exclude_participant_footer, null);
+        excludeSomeoneButton = (ImageButton) excludeItemFooter.findViewById(R.id.imageButton);
+        excludeSomeoneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPayerChooserPopup(view);
+            }
+        });
+        excludeList.addFooterView(excludeItemFooter);
+
+
         //Draw item name View
         itemNameEditText.setText(cursorItem.getString(cursorItem.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_NAME)));
         itemNameEditText.setEnabled(fullAccess); //Disable EditText if there is no full Access on Item.
@@ -608,6 +658,24 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             }
         });
 
+        //Draw ExcludeItem GUI elements
+        excludeItemsToAdd = new ArrayList<ExcludeItem>();
+        excludeItemsToUpdate = new ArrayList<ExcludeItem>();
+        excludeItemsToDelete = new ArrayList<ExcludeItem>();
+        excludeItemsAlreadyAdded = new ArrayList<ExcludeItem>();
+        excludeItemsAdapter = new ExcludeItemsAdapter(getBaseContext(), R.layout.activity_add_new_item_exclude_participant_row, new ArrayList<ExcludeItem>());
+        View excludeItemFooter = getLayoutInflater().inflate(R.layout.activity_add_item_participants_footer, null);
+        excludeList.addFooterView(excludeItemFooter);
+        excludeList.setAdapter(excludeItemsAdapter);
+        excludeSomeoneButton = (ImageButton) excludeItemFooter.findViewById(R.id.imageButton);
+        excludeSomeoneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showExcludeItemPopup();
+            }
+        });
+
+
         //Add Listener to AddItem-Button
         Button addItemButton = (Button) findViewById(R.id.buttonAddItem);
         addItemButton.setOnClickListener(new View.OnClickListener() {
@@ -657,11 +725,13 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                 if (payer.currencyId != -1) {
                     newPayer.put(budgetSplitContract.itemsParticipants.COLUMN_CURRENCY_ID, payer.currencyId);
                 } else {
+                    deleteItem(isNewItem, itemId);
                     return getString(R.string.please_select_a_currency_for_) + payer.payerName;
                 }
                 if (payer.amountPayed != 0) {
                     newPayer.put(budgetSplitContract.itemsParticipants.COLUMN_AMOUNT_PAYED, payer.amountPayed);
                 } else {
+                    deleteItem(isNewItem, itemId);
                     return getString(R.string.please_enter_a_amount_bigger_than_zero_for_) + payer.payerName;
                 }
                 newPayer.put(budgetSplitContract.itemsParticipants.COLUMN_ITEM_ID, itemId);
@@ -701,6 +771,36 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                 operations.add(ContentProviderOperation.newDelete(budgetSplitContract.itemsTags.CONTENT_URI).withSelection(budgetSplitContract.itemsTags.COLUMN_TAGS_ID + " = " + tag.id, null).build());
             }
 
+            for (ExcludeItem excludeItem : excludeItemsToAdd) {
+                ContentValues newExcludeItem = new ContentValues();
+                if (excludeItem.shareRatio <= 1 && excludeItem.shareRatio >= 0) {
+                    newExcludeItem.put(budgetSplitContract.excludeItems.COLUMN_SHARE_RATIO, excludeItem.shareRatio);
+                } else {
+                    deleteItem(isNewItem, itemId);
+                    return getString(R.string.please_enter_a_value_between_100_and_0) + getString(R.string._for_) + excludeItem.participantName;
+                }
+                newExcludeItem.put(budgetSplitContract.excludeItems.COLUMN_ITEM_ID, itemId);
+                newExcludeItem.put(budgetSplitContract.excludeItems.COLUMN_PARTICIPANTS_ID, excludeItem.participantId);
+                operations.add(ContentProviderOperation.newInsert(budgetSplitContract.excludeItems.CONTENT_URI).withValues(newExcludeItem).build());
+            }
+
+            for (ExcludeItem excludeItem : excludeItemsToUpdate) {
+                ContentValues updatedExcludeItem = new ContentValues();
+                if (excludeItem.shareRatio <= 1 && excludeItem.shareRatio >= 0) {
+                    updatedExcludeItem.put(budgetSplitContract.excludeItems.COLUMN_SHARE_RATIO, excludeItem.shareRatio);
+                } else {
+                    deleteItem(isNewItem, itemId);
+                    return getString(R.string.please_enter_a_value_between_100_and_0) + getString(R.string._for_) + excludeItem.participantName;
+                }
+                Uri uriToUpdate = ContentUris.withAppendedId(budgetSplitContract.excludeItems.CONTENT_URI, excludeItem.rowid);
+                operations.add((ContentProviderOperation.newUpdate(uriToUpdate).withValues(updatedExcludeItem).build()));
+            }
+
+            for (ExcludeItem excludeItem : excludeItemsToDelete) {
+                Uri toDelete = ContentUris.withAppendedId(budgetSplitContract.excludeItems.CONTENT_URI, excludeItem.rowid);
+                operations.add(ContentProviderOperation.newDelete(toDelete).build());
+            }
+
             try {
                 getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, operations);
             } catch (RemoteException e) {
@@ -710,6 +810,12 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             }
 
             return null;
+        }
+
+        void deleteItem(boolean isNewItem, long itemId) {
+            if (isNewItem) {
+                getContentResolver().delete(ContentUris.withAppendedId(budgetSplitContract.items.CONTENT_URI, itemId), null, null);
+            }
         }
 
         @Override
@@ -968,23 +1074,12 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         Context context;
         int layoutResourceId;
         private ArrayList<SimpleCursorAdapter> currencyAdapters = new ArrayList<SimpleCursorAdapter>();
-        private ArrayList<Boolean> payerIsValid;
-        boolean iAmAdmin = false;
-        boolean iAmOwner = false;
-        boolean ownerIsVirtual = false;
-        String myUniqueId;
-
 
         public ItemParticipantsAdapter(Context context, int layoutResourceId, ArrayList<Payer> payers) {
             super(context, layoutResourceId, payers);
             this.context = context;
             this.layoutResourceId = layoutResourceId;
             this.payers = payers;
-            this.payerIsValid = new ArrayList<Boolean>(Collections.nCopies(payers.size(), false));
-
-            //Get User privileges
-
-
         }
 
         @Override
@@ -1040,7 +1135,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
 
             //Write Data to Views
             holder.userName.setText(payers.get(position).payerName);
-            holder.value.setText(String.format("%.2f", payers.get(position).amountPayed));
+            holder.value.setText(new DecimalFormat(",##0.00").format(payers.get(position).amountPayed));
 
             SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(getContext(), //Setup Spinner
                     android.R.layout.simple_spinner_item, cursorCurrencies,
@@ -1064,8 +1159,14 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             holder.value.setTag(payers.get(position));
 
             //If the privileges match, enable all editable views, else disable them.
-            boolean payerIsMe = payers.get(position).uniqueId.equals(myUniqueId);
-            boolean enableRow = fullAccess || payerIsMe;
+            boolean payerIsMe;
+            boolean enableRow;
+            if (!fullAccess) {
+                payerIsMe = payers.get(position).uniqueId.equals(myUniqueId);
+                enableRow = payerIsMe;
+            } else {
+                enableRow = true;
+            }
             holder.value.setEnabled(enableRow);
             holder.currency.getSelectedView().setEnabled(enableRow);             //Enable Spinner and SelectedView.
             holder.currency.setEnabled(enableRow);
@@ -1107,10 +1208,12 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                 switch (i) {
                     case EditorInfo.IME_ACTION_DONE:
                         if (textView.getText().toString().length() > 0) {
-                            saveValueChanges(Double.parseDouble(textView.getText().toString()));
+                            Double newValue = Double.parseDouble(textView.getText().toString());
+                            saveValueChanges(newValue);
                             textView.clearFocus();
                             InputMethodManager mnr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                             mnr.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                            textView.setText(new DecimalFormat(",##0.00").format(newValue));
                             return true;
                         } else {
                             Toast.makeText(getApplicationContext(), getString(R.string.please_enter_value), Toast.LENGTH_SHORT).show();
@@ -1127,6 +1230,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                     if (((EditText) view).getText().toString().length() > 0) {
                         Double newValue = Double.parseDouble(((EditText) view).getText().toString());
                         saveValueChanges(newValue);
+                        ((EditText) view).setText(new DecimalFormat(",##0.00").format(newValue));
                     } else {
                         view.requestFocus();
                         Toast.makeText(getApplicationContext(), getString(R.string.please_enter_value), Toast.LENGTH_SHORT).show();
@@ -1151,7 +1255,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
 
     void deletePayer(Payer payer) {
         if (payersToAdd.contains(payer)) {
-            payersToUpdate.remove(payer);
+            payersToAdd.remove(payer);
             payersToUpdate.remove(payer);
             payerAdapter.remove(payer);
         } else {
@@ -1257,6 +1361,230 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         }
         return list;
     }
+
+
+    class ExcludeItem {
+        long rowid;
+        long itemId;
+        long participantId;
+        String participantName;
+        String uniqueId;
+        double shareRatio;
+
+        public ExcludeItem(long itemId, long participantId, String participantName, String uniqueId, double shareRatio) {
+            this.itemId = itemId;
+            this.participantId = participantId;
+            this.participantName = participantName;
+            this.uniqueId = uniqueId;
+            this.shareRatio = shareRatio;
+        }
+
+        public ExcludeItem(long itemId, long participantId, double shareRatio) {
+            this.itemId = itemId;
+            this.participantId = participantId;
+            this.shareRatio = shareRatio;
+            if (cursorParticipants != null && cursorParticipants.getCount() > 0) {
+                for (cursorParticipants.moveToFirst(); !cursorParticipants.isAfterLast(); cursorParticipants.moveToNext()) {
+                    if (cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.participants._ID)) == participantId) {
+                        participantName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME));
+                        uniqueId = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_UNIQUEID));
+                        break;
+                    }
+                }
+            }
+            this.rowid = -1;
+        }
+
+        public ExcludeItem(long rowid, long itemId, long participantId, double shareRatio) {
+            this(itemId, participantId, shareRatio);
+            this.rowid = rowid;
+        }
+    }
+
+    List<ExcludeItem> excludeItemsCursorToList(Cursor cursor) {
+        if (cursor == null) {
+            throw new IllegalArgumentException("Cursor given was null.");
+        } else {
+            int rowIdIndex = cursor.getColumnIndex(budgetSplitContract.excludeItems.COLUMN_ROWID);
+            int itemIdIndex = cursor.getColumnIndex(budgetSplitContract.excludeItems.COLUMN_ITEM_ID);
+            int participantIdIndex = cursor.getColumnIndex(budgetSplitContract.excludeItems.COLUMN_PARTICIPANTS_ID);
+            int shareRatioIndex = cursor.getColumnIndex(budgetSplitContract.excludeItems.COLUMN_SHARE_RATIO);
+            List<ExcludeItem> result = new ArrayList<ExcludeItem>();
+            if (cursor.getCount() > 0) {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    result.add(new ExcludeItem(cursor.getLong(rowIdIndex), cursor.getLong(itemIdIndex), cursor.getLong(participantIdIndex), cursor.getDouble(shareRatioIndex)));
+                }
+            }
+            return result;
+        }
+    }
+
+
+    class ExcludeItemsAdapter extends ArrayAdapter<ExcludeItem> {
+        Context context;
+        int resourceId;
+        private ArrayList<ExcludeItem> excludeItems;
+
+        public ExcludeItemsAdapter(Context context, int resource, ArrayList<ExcludeItem> objects) {
+            super(context, resource, objects);
+            this.context = context;
+            this.resourceId = resource;
+            this.excludeItems = objects;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View row = convertView;
+            ExcludeItemHolder holder = null;
+            if (row == null) {
+                LayoutInflater inflater = getLayoutInflater();
+                row = inflater.inflate(resourceId, parent, false);
+
+                holder = new ExcludeItemHolder();
+                holder.username = (TextView) row.findViewById(R.id.textViewUsername);
+                holder.shareRatio = (EditText) row.findViewById(R.id.editTextShareRatio);
+                holder.delete = (ImageButton) row.findViewById(R.id.imageButtonDelete);
+
+                //Setup Listeners
+                holder.shareRatio.setOnEditorActionListener(new MyEditTextWatcher(holder));
+                holder.shareRatio.setOnFocusChangeListener(new MyEditTextWatcher(holder));
+                holder.delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deleteExcludeItem((ExcludeItem) view.getTag());
+                    }
+                });
+
+                //Attach Holder as Tag to row View.
+                row.setTag(holder);
+            } else {
+                holder = (ExcludeItemHolder) row.getTag();
+            }
+
+            //Bind Data to Views
+            holder.username.setText(excludeItems.get(position).participantName);
+            holder.shareRatio.setText(new DecimalFormat("##0").format(excludeItems.get(position).shareRatio * 100) + "%");
+            holder.shareRatio.setTag(excludeItems.get(position));
+            holder.delete.setTag(excludeItems.get(position));
+
+            boolean enableView;
+            if (!fullAccess) {
+                boolean excludeItemIsMe = excludeItems.get(position).uniqueId.equals(myUniqueId);
+                enableView = excludeItemIsMe;
+            } else {
+                enableView = true;
+            }
+            holder.shareRatio.setEnabled(enableView);
+            holder.delete.setEnabled(enableView);
+
+            return row;
+        }
+
+        class ExcludeItemHolder {
+            TextView username;
+            EditText shareRatio;
+            ImageButton delete;
+        }
+
+        class MyEditTextWatcher implements TextView.OnEditorActionListener, View.OnFocusChangeListener {
+
+            private ExcludeItemHolder holder;
+
+            MyEditTextWatcher(ExcludeItemHolder holder) {
+                this.holder = holder;
+            }
+
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                switch (i) {
+                    case EditorInfo.IME_ACTION_DONE:
+                        if (textView.getText().toString().length() > 0) {
+                            Double value = Double.parseDouble(textView.getText().toString());
+                            if (value >= 0 && value <= 100) {
+                                saveValueChanges(value / 100);
+                                textView.clearFocus();
+                                InputMethodManager mnr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                                mnr.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                                textView.setText(new DecimalFormat(",##0").format(value) + "%");
+                                return true;
+                            } else {
+                                Toast.makeText(getApplicationContext(), getString(R.string.please_enter_a_value_between_100_and_0), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), getString(R.string.please_enter_value), Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
+                    if (((EditText) view).getText().toString().length() > 0) {
+                        Double newValue = Double.parseDouble(((EditText) view).getText().toString());
+                        if (newValue >= 0 && newValue <= 100) {
+                            saveValueChanges(newValue / 100);
+                            ((EditText) view).setText(new DecimalFormat(",##0").format(newValue) + "%");
+                        } else {
+                            view.requestFocus();
+                            Toast.makeText(getApplicationContext(), getString(R.string.please_enter_a_value_between_100_and_0), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        view.requestFocus();
+                        Toast.makeText(getApplicationContext(), getString(R.string.please_enter_value), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            private void saveValueChanges(double newRatio) {
+                ExcludeItem excludeItem = (ExcludeItem) holder.shareRatio.getTag();
+                excludeItem.shareRatio = newRatio;
+                if (!excludeItemsToUpdate.contains(excludeItem) && excludeItem.rowid != -1) {
+                    excludeItemsToUpdate.add(excludeItem);
+                }
+            }
+        }
+    }
+
+    void deleteExcludeItem(ExcludeItem excludeItem) {
+        if (excludeItemsToAdd.contains(excludeItem)) {
+            excludeItemsToAdd.remove(excludeItem);
+            excludeItemsToUpdate.remove(excludeItem);
+            excludeItemsAdapter.remove(excludeItem);
+        } else {
+            excludeItemsToUpdate.remove(excludeItem);
+            excludeItemsToDelete.add(excludeItem);
+            excludeItemsAdapter.remove(excludeItem);
+        }
+    }
+
+    void addExcludeItem(ExcludeItem excludeItem) {
+        excludeItemsToAdd.add(excludeItem);
+        excludeItemsAdapter.add(excludeItem);
+    }
+
+    void showExcludeItemPopup() {
+        if (excludeItemsChooserPopup == null) {
+            AlertDialog.Builder myDialogBuilder = new AlertDialog.Builder(this);
+            myDialogBuilder.setTitle(getString(R.string.choose_a_payer));
+            myDialogBuilder.setCursor(cursorParticipants, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    cursorParticipants.moveToPosition(i);
+                    Long participantId = cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.participants._ID));
+                    String participantName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME));
+                    String uniqueId = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_UNIQUEID));
+                    ExcludeItem newPayer = new ExcludeItem(itemId, participantId, participantName, uniqueId, 0);
+                    addExcludeItem(newPayer);
+                }
+            }, budgetSplitContract.participants.COLUMN_NAME);
+            excludeItemsChooserPopup = myDialogBuilder.create();
+        }
+        excludeItemsChooserPopup.show();
+    }
+
 
     @Override
     protected void onDestroy() {

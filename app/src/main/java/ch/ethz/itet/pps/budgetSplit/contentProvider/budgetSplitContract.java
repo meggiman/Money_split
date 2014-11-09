@@ -135,10 +135,11 @@ public class budgetSplitContract {
         public static Uri CONTENT_URI = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_EXCLUDE_ITEMS);
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_EXCLUDE_ITEMS;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_EXCLUDE_ITEMS;
+        public static final String COLUMN_ROWID = "rowid";
         public static final String COLUMN_PARTICIPANTS_ID = budgetSplitDBSchema.excludeItems.COLUMN_PARTICIPANTS_ID;
         public static final String COLUMN_ITEM_ID = budgetSplitDBSchema.excludeItems.COLUMN_ITEM_ID;
         public static final String COLUMN_SHARE_RATIO = budgetSplitDBSchema.excludeItems.COLUMN_SHARE_RATIO;
-        public static final String[] PROJECTION_ALL = {COLUMN_PARTICIPANTS_ID, COLUMN_ITEM_ID, COLUMN_SHARE_RATIO};
+        public static final String[] PROJECTION_ALL = {COLUMN_ROWID, COLUMN_PARTICIPANTS_ID, COLUMN_ITEM_ID, COLUMN_SHARE_RATIO};
     }
 
     public static final class tagFilter {
@@ -249,7 +250,7 @@ public class budgetSplitContract {
         public static final String[] PROJECTION_ALL = {_ID, COLUMN_ITEM_ID, COLUMN_ITEM_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_CURRENCY_ID, COLUMN_CURRENCY_CODE, COLUMN_CURRENCY_EXCHANGE_RATE, COLUMN_AMOUNT_PAYED};
     }
 
-    public static final class projectsParticipantsDetailsRO implements BaseColumns {
+    public static class projectsParticipantsDetailsRO implements BaseColumns {
         static final String TABLE_PROJECT_PARTICIPANTS_DETAILS_RO = "projectParticipantsDetailsRO";
         static final int PROJECT_PARTICIPANTS_DETAILS = 151;
 
@@ -263,11 +264,34 @@ public class budgetSplitContract {
         public static final String COLUMN_PARTICIPANT_UNIQUE_ID = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_UNIQUE_ID;
         public static final String COLUMN_PARTICIPANT_IS_VIRTUAL = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_IS_VIRTUAL;
         public static final String COLUMN_PARTICIPANT_TOTAL_PAYED = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_TOTAL_PAYED;
+
+        public static final String[] PROJECTION_ALL = {COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED};
+
+
+    }
+
+    public static final class projectParticipantsDetailsCalculateRO {
+        static final String TABLE_PROJECT_PARTICIPANTS_DETAILS_CALCULATE_RO = "projectParticipantsDetailsCalculateRO";
+        static final int PROJECT_PARTICIPANTS_DETAILS_CALCULATE = 152;
+
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_PROJECT_PARTICIPANTS_DETAILS_CALCULATE_RO);
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_PROJECT_PARTICIPANTS_DETAILS_CALCULATE_RO;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_PROJECT_PARTICIPANTS_DETAILS_CALCULATE_RO;
+        public static final String COLUMN_PROJECT_ID = budgetSplitDBSchema.items_view.COLUMN_PROJECT_ID;
+        public static final String COLUMN_PROJECT_NAME = budgetSplitDBSchema.projectParticipants_view.COLUMN_PROJECT_NAME;
+        public static final String COLUMN_PARTICIPANT_ID = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID;
+        public static final String COLUMN_PARTICIPANT_NAME = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_NAME;
+        public static final String COLUMN_PARTICIPANT_UNIQUE_ID = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_UNIQUE_ID;
+        public static final String COLUMN_PARTICIPANT_IS_VIRTUAL = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_IS_VIRTUAL;
+        public static final String COLUMN_PARTICIPANT_TOTAL_PAYED = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_TOTAL_PAYED;
+
         public static final String COLUMN_PARTICIPANT_TOTAL_SHARE = "participantTotalShare";
         public static final String COLUMN_PARTICIPANT_TOTAL_DEPTHS = "participantTotalDepths";
-        public static final String[] PROJECTION_ALL = {COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED, COLUMN_PARTICIPANT_TOTAL_SHARE};
+
+        public static final String[] PROJECTION_ALL = {COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED, COLUMN_PARTICIPANT_TOTAL_SHARE, COLUMN_PARTICIPANT_TOTAL_DEPTHS};
 
         static final String[] PROJECTION_DB_ALL = {COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED};
+
 
         static final Cursor query(SQLiteDatabase database, long projectId, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
             if (database.isOpen()) {

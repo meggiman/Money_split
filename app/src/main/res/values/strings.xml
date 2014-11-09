@@ -74,6 +74,8 @@
     <string name="add_participants">Add participant</string>
     <string name="payers">Payers</string>
     <string name="share_ratio">Share Ratio</string>
-
-
+    <string name="please_enter_a_value_between_100_and_0">Please enter a value between 100%% and 0%%.</string>
+    <string name="exclude_someone">Exclude someone</string>
+    <string name="_for_">for</string>
+    <string name="Excluded">Excluded</string>
 </resources>

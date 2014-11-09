@@ -629,8 +629,7 @@ public final class budgetSplitDBSchema {
                 + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID + ", "
                 + "sum(" + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_AMOUNT_PAYED + ") AS totalPayed"
                 + " FROM " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS
-                + " GROUP BY " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID
-                + ";";
+                + " GROUP BY " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID;
 
         private static final String VIEW_SELECT = "SELECT "
                 + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + ".rowid AS " + _ID + ", "
@@ -641,8 +640,9 @@ public final class budgetSplitDBSchema {
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_UNIQUEID + " AS " + COLUMN_PARTICIPANT_UNIQUE_ID + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_ISVIRTUAL + " AS " + COLUMN_PARTICIPANT_IS_VIRTUAL + ", "
                 + "sub.totalPayed AS " + COLUMN_PARTICIPANT_TOTAL_PAYED
+                + " FROM " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS
                 + " LEFT OUTER JOIN " + projects.TABLE_PROJECTS + " ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PROJECTS_ID + " = " + projects.TABLE_PROJECTS + "." + projects._ID
-                + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PARTICIPANTS_ID + " = " + participants.TABLE_PARTICIPANTS + "." + participants._ID + ", "
+                + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PARTICIPANTS_ID + " = " + participants.TABLE_PARTICIPANTS + "." + participants._ID
                 + " LEFT OUTER JOIN (" + SUB_SELECT_TOTAL_PAYED + ") AS 'sub' ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PARTICIPANTS_ID + " = sub." + itemsParticipants.COLUMN_PARTICIPANTS_ID
                 + ";";
 

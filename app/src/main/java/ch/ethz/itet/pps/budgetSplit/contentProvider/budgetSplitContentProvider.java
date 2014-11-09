@@ -73,6 +73,7 @@ public class budgetSplitContentProvider extends ContentProvider {
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.itemsParticipantsDetailsRO.TABLE_ITEMS_PARTICIPANT_DETAILS_RO + "/#", budgetSplitContract.itemsParticipantsDetailsRO.ITEMS_PARTICIPANT_DETAILS);
 
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projectsParticipantsDetailsRO.TABLE_PROJECT_PARTICIPANTS_DETAILS_RO + "/#", budgetSplitContract.projectsParticipantsDetailsRO.PROJECT_PARTICIPANTS_DETAILS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projectParticipantsDetailsCalculateRO.TABLE_PROJECT_PARTICIPANTS_DETAILS_CALCULATE_RO + "/#", budgetSplitContract.projectParticipantsDetailsCalculateRO.PROJECT_PARTICIPANTS_DETAILS_CALCULATE);
     }
 
     public budgetSplitContentProvider() {
@@ -543,9 +544,14 @@ public class budgetSplitContentProvider extends ContentProvider {
                 builder.appendWhere(budgetSplitDBSchema.itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_ID + " = " + uri.getLastPathSegment());
                 break;
 
-            //Query Table projectParticipantsDetailsRO
             case budgetSplitContract.projectsParticipantsDetailsRO.PROJECT_PARTICIPANTS_DETAILS:
-                return budgetSplitContract.projectsParticipantsDetailsRO.query(db, ContentUris.parseId(uri), projection, selection, selectionArgs, sortOrder);
+                builder.setTables(budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS);
+                builder.appendWhere(budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PROJECT_ID + " = " + uri.getLastPathSegment());
+                break;
+
+            //Query Table projectParticipantsDetailsRO
+            case budgetSplitContract.projectParticipantsDetailsCalculateRO.PROJECT_PARTICIPANTS_DETAILS_CALCULATE:
+                return budgetSplitContract.projectParticipantsDetailsCalculateRO.query(db, ContentUris.parseId(uri), projection, selection, selectionArgs, sortOrder);
 
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
