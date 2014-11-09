@@ -1,7 +1,6 @@
 package ch.ethz.itet.pps.budgetSplit.contentProvider.database;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.print.PageRange;
 import android.provider.BaseColumns;
 
 /**
@@ -131,7 +130,7 @@ public final class budgetSplitDBSchema {
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_TIMESTAMP = "timestamp";
         public static final String COLUMN_CREATOR = "creator";
-        public static final String COLUMN_PROJECT = "project";
+        public static final String COLUMN_PROJECT_ID = "projectId";
 
         private static final String TABLE_CREATE = "CREATE TABLE "
                 + TABLE_ITEMS
@@ -140,9 +139,9 @@ public final class budgetSplitDBSchema {
                 + COLUMN_NAME + " TEXT NOT NULL, "
                 + COLUMN_TIMESTAMP + " DATE DEFAULT CURRENT_TIMESTAMP, "
                 + COLUMN_CREATOR + " INTEGER NOT NULL, "
-                + COLUMN_PROJECT + " INTEGER NOT NULL, "
+                + COLUMN_PROJECT_ID + " INTEGER NOT NULL, "
                 + "FOREIGN KEY (" + COLUMN_CREATOR + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + ") ON UPDATE CASCADE ON DELETE RESTRICT,"
-                + "FOREIGN KEY (" + COLUMN_PROJECT + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + _ID + ") ON DELETE CASCADE ON UPDATE CASCADE"
+                + "FOREIGN KEY (" + COLUMN_PROJECT_ID + ") REFERENCES " + projects.TABLE_PROJECTS + "(" + _ID + ") ON DELETE CASCADE ON UPDATE CASCADE"
                 + ");";
 
         /**
@@ -413,10 +412,10 @@ public final class budgetSplitDBSchema {
                 + " FROM " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS
                 + " GROUP BY " + projectsParticipants.COLUMN_PROJECTS_ID;
         private static final String VIEW_SUBSELECT_COUNT_ITEMS = "SELECT "
-                + items.COLUMN_PROJECT + ", "
+                + items.COLUMN_PROJECT_ID + ", "
                 + "COUNT(" + _ID + ") AS " + COLUMN_NR_OF_ITEMS
                 + " FROM " + items.TABLE_ITEMS
-                + " GROUP BY " + items.COLUMN_PROJECT;
+                + " GROUP BY " + items.COLUMN_PROJECT_ID;
 
         private static final String VIEW_SELECT = "SELECT "
                 + projects.TABLE_PROJECTS + "." + _ID + ", "
@@ -429,7 +428,7 @@ public final class budgetSplitDBSchema {
                 + "sub2." + COLUMN_NR_OF_PARTICIPANTS
                 + " FROM " + projects.TABLE_PROJECTS
                 + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + projects.TABLE_PROJECTS + "." + projects.COLUMN_ADMIN + " = " + participants.TABLE_PARTICIPANTS + "." + _ID
-                + " LEFT OUTER JOIN (" + VIEW_SUBSELECT_COUNT_ITEMS + ") AS 'sub1' ON " + projects.TABLE_PROJECTS + "." + _ID + " = sub1." + items.COLUMN_PROJECT
+                + " LEFT OUTER JOIN (" + VIEW_SUBSELECT_COUNT_ITEMS + ") AS 'sub1' ON " + projects.TABLE_PROJECTS + "." + _ID + " = sub1." + items.COLUMN_PROJECT_ID
                 + " LEFT OUTER JOIN (" + VIEW_SUBSELECT_COUNT_PARTICIPANTS + ") AS 'sub2' ON " + projects.TABLE_PROJECTS + "." + _ID + " = sub2." + projectsParticipants.COLUMN_PROJECTS_ID
                 + ";";
         private static final String VIEW_CREATE = "CREATE VIEW "
@@ -473,7 +472,7 @@ public final class budgetSplitDBSchema {
 
         private static final String VIEW_SELECT = "SELECT "
                 + items.TABLE_ITEMS + "." + _ID + ", "
-                + items.TABLE_ITEMS + "." + items.COLUMN_PROJECT + " AS " + COLUMN_PROJECT_ID + ", "
+                + items.TABLE_ITEMS + "." + items.COLUMN_PROJECT_ID + " AS " + COLUMN_PROJECT_ID + ", "
                 + items.TABLE_ITEMS + "." + items.COLUMN_NAME + " AS " + COLUMN_ITEM_NAME + ", "
                 + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + " AS " + COLUMN_ITEM_TIMESTAMP + ", "
                 + "strftime('%d.%m.%Y', " + items.TABLE_ITEMS + "." + items.COLUMN_TIMESTAMP + ", 'localtime') AS " + COLUMN_ITEM_DATE_ADDED + ", "
@@ -614,6 +613,65 @@ public final class budgetSplitDBSchema {
         public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
 
         }
+    }
+
+    public static abstract class projectParticipants_view implements BaseColumns {
+        public static final String VIEW_PROJECT_PARTICIPANTS = "projectParticipantsView";
+        public static final String COLUMN_PROJECT_ID = "projectId";
+        public static final String COLUMN_PROJECT_NAME = "projectName";
+        public static final String COLUMN_PARTICIPANT_ID = "participantId";
+        public static final String COLUMN_PARTICIPANT_NAME = "participantName";
+        public static final String COLUMN_PARTICIPANT_UNIQUE_ID = "participantUniqueId";
+        public static final String COLUMN_PARTICIPANT_IS_VIRTUAL = "participantIsVirtual";
+        public static final String COLUMN_PARTICIPANT_TOTAL_PAYED = "participantsTotalPayed";
+
+        private static final String SUB_SELECT_TOTAL_PAYED = "SELECT "
+                + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID + ", "
+                + "sum(" + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_AMOUNT_PAYED + ") AS totalPayed"
+                + " FROM " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS
+                + " GROUP BY " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID
+                + ";";
+
+        private static final String VIEW_SELECT = "SELECT "
+                + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + ".rowid AS " + _ID + ", "
+                + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PROJECTS_ID + " AS " + COLUMN_PROJECT_ID + ", "
+                + projects.TABLE_PROJECTS + "." + projects.COLUMN_NAME + " AS " + COLUMN_PROJECT_NAME + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants._ID + " AS " + COLUMN_PARTICIPANT_ID + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_PARTICIPANT_NAME + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_UNIQUEID + " AS " + COLUMN_PARTICIPANT_UNIQUE_ID + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_ISVIRTUAL + " AS " + COLUMN_PARTICIPANT_IS_VIRTUAL + ", "
+                + "sub.totalPayed AS " + COLUMN_PARTICIPANT_TOTAL_PAYED
+                + " LEFT OUTER JOIN " + projects.TABLE_PROJECTS + " ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PROJECTS_ID + " = " + projects.TABLE_PROJECTS + "." + projects._ID
+                + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PARTICIPANTS_ID + " = " + participants.TABLE_PARTICIPANTS + "." + participants._ID + ", "
+                + " LEFT OUTER JOIN (" + SUB_SELECT_TOTAL_PAYED + ") AS 'sub' ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PARTICIPANTS_ID + " = sub." + itemsParticipants.COLUMN_PARTICIPANTS_ID
+                + ";";
+
+        private static final String VIEW_CREATE = "CREATE VIEW "
+                + VIEW_PROJECT_PARTICIPANTS
+                + " AS "
+                + VIEW_SELECT;
+
+        /**
+         * Static Method to be called by SQLiteOpenHelper class for better readability.
+         *
+         * @param database
+         */
+        public static void onCreate(SQLiteDatabase database) {
+            database.execSQL(VIEW_CREATE);
+        }
+
+        /**
+         * Method to be implemented for future Changes in Database structure.
+         *
+         * @param database
+         * @param oldVersion
+         * @param newVersion
+         */
+        public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+
+        }
+
+
     }
 
 

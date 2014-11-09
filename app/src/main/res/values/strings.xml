@@ -72,6 +72,8 @@
     <string name="items_q"> items?</string>
     <string name="item_was_saved">Item was successfully saved</string>
     <string name="add_participants">Add participant</string>
+    <string name="payers">Payers</string>
+    <string name="share_ratio">Share Ratio</string>
 
 
 </resources>

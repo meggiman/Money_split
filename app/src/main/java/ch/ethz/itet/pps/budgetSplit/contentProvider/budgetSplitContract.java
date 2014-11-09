@@ -1,6 +1,10 @@
 package ch.ethz.itet.pps.budgetSplit.contentProvider;
 
 import android.content.ContentResolver;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -91,7 +95,7 @@ public class budgetSplitContract {
         public static final String COLUMN_NAME = budgetSplitDBSchema.items.COLUMN_NAME;
         public static final String COLUMN_TIMESTAMP = budgetSplitDBSchema.items.COLUMN_TIMESTAMP;
         public static final String COLUMN_CREATOR = budgetSplitDBSchema.items.COLUMN_CREATOR;
-        public static final String COLUMN_PROJECT = budgetSplitDBSchema.items.COLUMN_PROJECT;
+        public static final String COLUMN_PROJECT = budgetSplitDBSchema.items.COLUMN_PROJECT_ID;
         public static final String[] PROJECTION_ALL = {COLUMN_NAME, COLUMN_TIMESTAMP, COLUMN_CREATOR, COLUMN_PROJECT};
     }
 
@@ -243,6 +247,93 @@ public class budgetSplitContract {
         public static final String COLUMN_CURRENCY_EXCHANGE_RATE = budgetSplitDBSchema.itemsParticipants_view.COLUMN_CURRENCY_EXCHANGE_RATE;
         public static final String COLUMN_AMOUNT_PAYED = budgetSplitDBSchema.itemsParticipants_view.COLUMN_AMOUNT_PAYED;
         public static final String[] PROJECTION_ALL = {_ID, COLUMN_ITEM_ID, COLUMN_ITEM_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_CURRENCY_ID, COLUMN_CURRENCY_CODE, COLUMN_CURRENCY_EXCHANGE_RATE, COLUMN_AMOUNT_PAYED};
+    }
+
+    public static final class projectsParticipantsDetailsRO implements BaseColumns {
+        static final String TABLE_PROJECT_PARTICIPANTS_DETAILS_RO = "projectParticipantsDetailsRO";
+        static final int PROJECT_PARTICIPANTS_DETAILS = 151;
+
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_PROJECT_PARTICIPANTS_DETAILS_RO);
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_PROJECT_PARTICIPANTS_DETAILS_RO;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_PROJECT_PARTICIPANTS_DETAILS_RO;
+        public static final String COLUMN_PROJECT_ID = budgetSplitDBSchema.items_view.COLUMN_PROJECT_ID;
+        public static final String COLUMN_PROJECT_NAME = budgetSplitDBSchema.projectParticipants_view.COLUMN_PROJECT_NAME;
+        public static final String COLUMN_PARTICIPANT_ID = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID;
+        public static final String COLUMN_PARTICIPANT_NAME = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_NAME;
+        public static final String COLUMN_PARTICIPANT_UNIQUE_ID = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_UNIQUE_ID;
+        public static final String COLUMN_PARTICIPANT_IS_VIRTUAL = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_IS_VIRTUAL;
+        public static final String COLUMN_PARTICIPANT_TOTAL_PAYED = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_TOTAL_PAYED;
+        public static final String COLUMN_PARTICIPANT_TOTAL_SHARE = "participantTotalShare";
+        public static final String COLUMN_PARTICIPANT_TOTAL_DEPTHS = "participantTotalDepths";
+        public static final String[] PROJECTION_ALL = {COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED, COLUMN_PARTICIPANT_TOTAL_SHARE};
+
+        static final String[] PROJECTION_DB_ALL = {COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED};
+
+        static final Cursor query(SQLiteDatabase database, long projectId, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+            if (database.isOpen()) {
+                String[] projectIdArgs = {Long.toString(projectId)};
+
+                String sqlSubSelect = "SELECT "
+                        + budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS + "." + budgetSplitDBSchema.itemsTags.COLUMN_ITEMS_ID + ", "
+                        + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID
+                        + "(1-count(" + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID + ")) AS include"
+                        + " LEFT OUTER JOIN " + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + " ON " + budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS + "." + budgetSplitDBSchema.itemsTags.COLUMN_TAGS_ID + " = " + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_TAG_ID
+                        + " FROM " + budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS
+                        + " GROUP BY " + budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS + "." + budgetSplitDBSchema.itemsTags.COLUMN_ITEMS_ID + ", " + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID
+                        + ";";
+
+
+                String sqlMultiplyList = "SELECT "
+                        + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items._ID + " AS itemId, "
+                        + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " AS participantId, "
+                        + "coalesce(" + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_SHARE_RATIO + ", sub.include, 1) AS shareRatio"
+                        + "LEFT OUTER JOIN (" + sqlSubSelect + ") AS 'sub' ON " + budgetSplitDBSchema.items.TABLE_ITEMS + budgetSplitDBSchema.items._ID + " = sub." + budgetSplitDBSchema.itemsTags.COLUMN_ITEMS_ID + " AND " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " = sub." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID
+                        + "LEFT OUTER JOIN " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + " ON " + budgetSplitDBSchema.items.TABLE_ITEMS + budgetSplitDBSchema.items._ID + " = " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_ITEM_ID + " AND " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " = " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_PARTICIPANTS_ID
+                        + " FROM " + budgetSplitDBSchema.items.TABLE_ITEMS + ", " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS
+                        + " WHERE " + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items.COLUMN_PROJECT_ID + " = ?"
+                        + ";";
+                String sqlCreateTempTable = "CREATE TEMP TABLE multiplyList AS " + sqlMultiplyList;
+
+                String sqlItemShareUnitSubSelect = "SELECT "
+                        + budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view._ID + ", "
+                        + budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view.COLUMN_ITEM_PRICE + " / sum(multiplyList.shareRatio) AS shareUnit"
+                        + " LEFT OUTER JOIN multiplyList ON " + budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view._ID + " = multiplyList.itemId"
+                        + " FROM " + budgetSplitDBSchema.items_view.VIEW_ITEMS
+                        + " GROUP BY " + budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view._ID
+                        + ";";
+
+                String sqlProjectParticipantSelect = "SELECT "
+                        + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + ".*, "
+                        + "sum(multiplyList.shareRatio * sub.shareUnit) AS " + COLUMN_PARTICIPANT_TOTAL_SHARE + ", "
+                        + "sum(multiplyList.shareRatio * sub.shareUnit) - " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_TOTAL_PAYED
+                        + " LEFT OUTER JOIN multiplyList ON " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID + " = " + "multiplyList.participantId"
+                        + " LEFT OUTER JOIN (" + sqlItemShareUnitSubSelect + ") AS 'sub' ON " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID + " = " + "sub.shareUnit"
+                        + " FROM " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS
+                        + " GROUP BY " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID
+                        + ";";
+                Cursor result;
+
+                String sqlProjectParticipantCreateTempTable = "CREATE TEMP TABLE projectParticipantsDetails AS " + sqlProjectParticipantSelect;
+
+
+                database.beginTransaction();
+                try {
+                    database.execSQL(sqlCreateTempTable);
+                    database.execSQL(sqlProjectParticipantCreateTempTable, projectIdArgs);
+                    result = database.query("projectParticipantsDetails", projection, selection, selectionArgs, null, null, sortOrder);
+                    database.setTransactionSuccessful();
+                } catch (SQLException e) {
+                    throw e;
+                } finally {
+                    database.endTransaction();
+                }
+                database.close();
+                return result;
+
+            } else {
+                throw new SQLiteException("Database wasn't open.");
+            }
+        }
     }
 
 }
