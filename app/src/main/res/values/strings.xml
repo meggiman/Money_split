@@ -80,7 +80,7 @@
     <string name="_for_">for</string>
     <string name="Excluded">Excluded</string>
     <string name="please_enter_a_valid_item_name">Please enter a valid Itemname.</string>
-</resources>    <string name="contact_successfully_created">Contact was successfully created.</string>
+    <string name="contact_successfully_created">Contact was successfully created.</string>
     <string name="name_your_project">Please name your project.</string>
     <string name="enter_a_name">Please enter a name.</string>
     <string name="project_summary_title">Summary</string>
