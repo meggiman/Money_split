@@ -330,7 +330,7 @@ public class budgetSplitContract {
                 String sqlProjectParticipantSelect = "SELECT "
                         + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + ".*, "
                         + "sum(multiplyList.shareRatio * sub.shareUnit) AS " + COLUMN_PARTICIPANT_TOTAL_SHARE + ", "
-                        + "sum(multiplyList.shareRatio * sub.shareUnit) - " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_TOTAL_PAYED
+                        + "sum(multiplyList.shareRatio * sub.shareUnit) - " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_TOTAL_PAYED + " AS " + COLUMN_PARTICIPANT_TOTAL_DEPTHS
                         + " LEFT OUTER JOIN multiplyList ON " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID + " = " + "multiplyList.participantId"
                         + " LEFT OUTER JOIN (" + sqlItemShareUnitSubSelect + ") AS 'sub' ON " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID + " = " + "sub.shareUnit"
                         + " FROM " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS
