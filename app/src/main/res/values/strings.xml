@@ -81,5 +81,7 @@
     <string name="calculate_transactions">Calculate Transactions</string>
     <string name="tag_filter">Tagfilter:</string>
     <string name="title_activity_transactions">Transactions</string>
+    <string name="title_activity_finalize">Finalize</string>
+    <string name="title_activity_tags">Tags</string>
 
 </resources>

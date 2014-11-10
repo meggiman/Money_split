@@ -106,17 +106,35 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
         // Inflate the layout for this fragment
         mainView = inflater.inflate(R.layout.fragment_project_summary, container, false);
         progressBar = (ProgressBar) mainView.findViewById(R.id.summaryProgressBar);
-        getLoaderManager().initLoader(LOADER_PARTICIPANTS, null, this);
-        getLoaderManager().initLoader(LOADER_ITEMS, null, this);
+        //getLoaderManager().initLoader(LOADER_PARTICIPANTS, null, this);
+        //getLoaderManager().initLoader(LOADER_ITEMS, null, this);
         //Initialize Loader who need participant Ids List
-
-
-
-
 
         transactions = (Button) mainView.findViewById(R.id.fragment_summary_button);
         nrOfItems1 = (TextView) mainView.findViewById(R.id.fragment_summary_textview_nr_items);
         expences1 = (TextView) mainView.findViewById(R.id.summary_listview_tags);
+
+        // Hack to debug GUI untill 131
+        data = new ParticipantTagsLinker[]{
+                new ParticipantTagsLinker("Chrissy", "Dublos, Kitsch", "20 CHF"),
+                new ParticipantTagsLinker("Manu", "Barbies, Disney, Chäs", "213.45 CHF"),
+                new ParticipantTagsLinker("Jeff", "", "456.8 CHF")
+        };
+
+        // Set GUI elements
+        ParticipantTagsLinkerAdapter adapter = new ParticipantTagsLinkerAdapter(getActivity(), R.layout.fragment_project_summary_listview_row, data);
+        list = (ListView) mainView.findViewById(R.id.fragment_summary_listview);
+        list.setAdapter(adapter);
+
+        expences = (TextView) mainView.findViewById(R.id.totalExpenses1);
+        expences.setText("500.00 CHF");
+        nrOfItems = (TextView) mainView.findViewById(R.id.nr_of_Items);
+        nrOfItems.setText("23");
+
+        //Hide Progressbar
+//        ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.summaryProgressBar);
+        //   progressBar.setVisibility(View.GONE);
+
 
         return mainView;
     }
@@ -210,7 +228,8 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
                     }
                 }
                 participantsFinished = true;
-                getLoaderManager().initLoader(LOADER_PARTICIPANT_NAMES, null, this);
+                // Deactivated untill Database fix
+                //getLoaderManager().initLoader(LOADER_PARTICIPANT_NAMES, null, this);
                 //getLoaderManager().initLoader(LOADER_TAG_IDS, null, this);
                 break;
 
@@ -246,6 +265,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
                     }
                 }
                 tagsFinished = true;
+                // Deactivated untill Database fix
                 // getLoaderManager().initLoader(LOADER_TAG_NAMES,null,this);
                 break;
 

@@ -72,7 +72,13 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".Transactions"
-            android:label="@string/title_activity_transactions"></activity>
+            android:label="@string/title_activity_transactions" />
+        <activity
+            android:name=".Finalize"
+            android:label="@string/title_activity_finalize"></activity>
+        <activity
+            android:name=".Tags"
+            android:label="@string/title_activity_tags"></activity>
     </application>
 
 </manifest>

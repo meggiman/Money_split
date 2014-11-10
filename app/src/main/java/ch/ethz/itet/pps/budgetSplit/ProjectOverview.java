@@ -85,6 +85,15 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
         progressBar = (ProgressBar) myView.findViewById(R.id.projectOverviewProgressBar);
         getLoaderManager().initLoader(LOADER_EXPENSES, null, this);
         getLoaderManager().initLoader(LOADER_PROJECT, null, this);
+        final Button finalize = (Button) myView.findViewById(R.id.buttonFinalize);
+        finalize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent finalizeIntent = new Intent(getActivity().getBaseContext(), Finalize.class);
+                finalizeIntent.putExtra(Finalize.EXTRA_FINALIZE_PROJECT_URI, projectUri);
+                startActivityForResult(finalizeIntent, 0);
+            }
+        });
         Button addItemButton = (Button) myView.findViewById(R.id.buttonAddItem);
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
