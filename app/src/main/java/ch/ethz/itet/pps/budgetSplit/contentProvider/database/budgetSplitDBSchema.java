@@ -687,7 +687,7 @@ public final class budgetSplitDBSchema {
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_PARTICIPANT_NAME + ", "
                 + tagFilter.TABLE_TAG_FILTER + "." + tagFilter.COLUMN_TAG_ID + " AS " + COLUMN_TAG_ID + ", "
                 + tags.TABLE_TAGS + "." + tags.COLUMN_NAME + " AS " + COLUMN_TAG_NAME
-                + " FROM " + itemsTags.TABLE_ITEMS_TAGS
+                + " FROM " + tagFilter.TABLE_TAG_FILTER
                 + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + tagFilter.TABLE_TAG_FILTER + "." + tagFilter.COLUMN_PARTICIPANTS_ID + " = " + participants.TABLE_PARTICIPANTS + "." + participants._ID
                 + " LEFT OUTER JOIN " + tags.TABLE_TAGS + " ON " + tagFilter.TABLE_TAG_FILTER + "." + tagFilter.COLUMN_TAG_ID + " = " + tags.TABLE_TAGS + "." + tags._ID
                 + ";";
