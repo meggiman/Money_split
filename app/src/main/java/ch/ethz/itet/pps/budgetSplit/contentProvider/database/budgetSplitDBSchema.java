@@ -674,5 +674,47 @@ public final class budgetSplitDBSchema {
 
     }
 
+    public static abstract class participantTags_view implements BaseColumns {
+        public static final String VIEW_PARTICIPANTS_TAGS = "viewParticipantsTags";
+        public static final String COLUMN_PARTICIPANT_ID = tagFilter.COLUMN_PARTICIPANTS_ID;
+        public static final String COLUMN_PARTICIPANT_NAME = "participantName";
+        public static final String COLUMN_TAG_ID = tagFilter.COLUMN_TAG_ID;
+        public static final String COLUMN_TAG_NAME = "tagName";
+
+        private static final String VIEW_SELECT = "SELECT "
+                + tagFilter.TABLE_TAG_FILTER + ".rowid AS " + _ID + ", "
+                + tagFilter.TABLE_TAG_FILTER + "." + tagFilter.COLUMN_PARTICIPANTS_ID + " AS " + COLUMN_PARTICIPANT_ID + ", "
+                + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_PARTICIPANT_NAME + ", "
+                + tagFilter.TABLE_TAG_FILTER + "." + tagFilter.COLUMN_TAG_ID + " AS " + COLUMN_TAG_ID + ", "
+                + tags.TABLE_TAGS + "." + tags.COLUMN_NAME + " AS " + COLUMN_TAG_NAME
+                + " FROM " + itemsTags.TABLE_ITEMS_TAGS
+                + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + tagFilter.TABLE_TAG_FILTER + "." + tagFilter.COLUMN_PARTICIPANTS_ID + " = " + participants.TABLE_PARTICIPANTS + "." + participants._ID
+                + " LEFT OUTER JOIN " + tags.TABLE_TAGS + " ON " + tagFilter.TABLE_TAG_FILTER + "." + tagFilter.COLUMN_TAG_ID + " = " + tags.TABLE_TAGS + "." + tags._ID
+                + ";";
+        private static final String VIEW_CREATE = "CREATE VIEW "
+                + VIEW_PARTICIPANTS_TAGS
+                + " AS "
+                + VIEW_SELECT;
+
+        /**
+         * Static Method to be called by SQLiteOpenHelper class for better readability.
+         *
+         * @param database
+         */
+        public static void onCreate(SQLiteDatabase database) {
+            database.execSQL(VIEW_CREATE);
+        }
+
+        /**
+         * Method to be implemented for future Changes in Database structure.
+         *
+         * @param database
+         * @param oldVersion
+         * @param newVersion
+         */
+        public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+
+        }
+    }
 
 }

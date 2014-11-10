@@ -74,6 +74,10 @@ public class budgetSplitContentProvider extends ContentProvider {
 
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projectsParticipantsDetailsRO.TABLE_PROJECT_PARTICIPANTS_DETAILS_RO + "/#", budgetSplitContract.projectsParticipantsDetailsRO.PROJECT_PARTICIPANTS_DETAILS);
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projectParticipantsDetailsCalculateRO.TABLE_PROJECT_PARTICIPANTS_DETAILS_CALCULATE_RO + "/#", budgetSplitContract.projectParticipantsDetailsCalculateRO.PROJECT_PARTICIPANTS_DETAILS_CALCULATE);
+
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.participantsTagsDetails.TABLE_PARTICIPANTS_TAGS_DETAILS_RO, budgetSplitContract.participantsTagsDetails.PARTICIPANTS_TAGS_DETAILS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.participantsTagsDetails.TABLE_PARTICIPANT_TAGS_DETAILS_RO, budgetSplitContract.participantsTagsDetails.PARTICIPANT_TAGS_DETAILS);
+        sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.participantsTagsDetails.TABLE_PARTICIPANTS_TAG_DETAILS_RO, budgetSplitContract.participantsTagsDetails.PARTICIPANTS_TAG_DETAILS);
     }
 
     public budgetSplitContentProvider() {
@@ -552,6 +556,19 @@ public class budgetSplitContentProvider extends ContentProvider {
             //Query Table projectParticipantsDetailsRO
             case budgetSplitContract.projectParticipantsDetailsCalculateRO.PROJECT_PARTICIPANTS_DETAILS_CALCULATE:
                 return budgetSplitContract.projectParticipantsDetailsCalculateRO.query(db, ContentUris.parseId(uri), projection, selection, selectionArgs, sortOrder);
+
+            //Query Table ParticipantTagsDetails
+            case budgetSplitContract.participantsTagsDetails.PARTICIPANTS_TAGS_DETAILS:
+                builder.setTables(budgetSplitDBSchema.participantTags_view.VIEW_PARTICIPANTS_TAGS);
+                break;
+            case budgetSplitContract.participantsTagsDetails.PARTICIPANT_TAGS_DETAILS:
+                builder.setTables(budgetSplitDBSchema.participantTags_view.VIEW_PARTICIPANTS_TAGS);
+                builder.appendWhere(budgetSplitDBSchema.participantTags_view.VIEW_PARTICIPANTS_TAGS + "." + budgetSplitDBSchema.participantTags_view.COLUMN_PARTICIPANT_ID + " = " + uri.getLastPathSegment());
+                break;
+            case budgetSplitContract.participantsTagsDetails.PARTICIPANTS_TAG_DETAILS:
+                builder.setTables(budgetSplitDBSchema.participantTags_view.VIEW_PARTICIPANTS_TAGS);
+                builder.appendWhere(budgetSplitDBSchema.participantTags_view.VIEW_PARTICIPANTS_TAGS + "." + budgetSplitDBSchema.participantTags_view.COLUMN_TAG_ID + " = " + uri.getLastPathSegment());
+                break;
 
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
