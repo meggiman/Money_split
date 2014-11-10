@@ -83,6 +83,15 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_project_overview, container, false);
         progressBar = (ProgressBar) myView.findViewById(R.id.projectOverviewProgressBar);
+        final Button finalize = (Button) myView.findViewById(R.id.buttonFinalize);
+        finalize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent finalizeIntent = new Intent(getActivity().getBaseContext(), Finalize.class);
+                finalizeIntent.putExtra(Finalize.EXTRA_FINALIZE_PROJECT_URI, projectUri);
+                startActivityForResult(finalizeIntent, 0);
+            }
+        });
         Button addItemButton = (Button) myView.findViewById(R.id.buttonAddItem);
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override

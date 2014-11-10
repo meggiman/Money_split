@@ -27,16 +27,16 @@
 
         <activity
             android:name=".ProjectNavigation"
-            android:parentActivityName=".Main"
             android:exported="true"
-            android:label="@string/title_activity_project_navigation" />
+            android:label="@string/title_activity_project_navigation"
+            android:parentActivityName=".Main" />
         <activity
             android:name=".add_new_item"
             android:label="@string/title_activity_add_new_item"
             android:parentActivityName=".ProjectNavigation"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
-        <meta-data
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ethz.itet.pps.budgetSplit.ProjectNavigation" />
         </activity>
@@ -55,8 +55,8 @@
         <activity
             android:name=".NewContact"
             android:label="@string/title_activity_new_contact"
-            android:parentActivityName=".NewProject"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:parentActivityName=".NewProject">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ethz.itet.pps.budgetSplit.NewProject" />
@@ -69,7 +69,16 @@
             android:noHistory="true" />
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".Transactions"
+            android:label="@string/title_activity_transactions" />
+        <activity
+            android:name=".Finalize"
+            android:label="@string/title_activity_finalize"></activity>
+        <activity
+            android:name=".Tags"
+            android:label="@string/title_activity_tags"></activity>
     </application>
 
 </manifest>

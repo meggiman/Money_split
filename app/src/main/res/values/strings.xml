@@ -51,6 +51,7 @@
     <string name="welcome_text">Hello There! Welcome to BudgetSplit. Please enter your username:</string>
     <string name="pref_user_unique_id">pref_user_unique_id</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="virtual_contact">Create Virtual Contact</string>
     <string name="choose_a_payer">Choose a payer</string>
     <string name="create_a_new_tag">Create a new Tag</string>
     <string name="tag_name">tag name</string>
@@ -79,4 +80,15 @@
     <string name="_for_">for</string>
     <string name="Excluded">Excluded</string>
     <string name="please_enter_a_valid_item_name">Please enter a valid Itemname.</string>
+</resources>    <string name="contact_successfully_created">Contact was successfully created.</string>
+    <string name="name_your_project">Please name your project.</string>
+    <string name="enter_a_name">Please enter a name.</string>
+    <string name="project_summary_title">Summary</string>
+    <string name="nr_of_items">Number of Items:</string>
+    <string name="calculate_transactions">Calculate Transactions</string>
+    <string name="tag_filter">Tagfilter:</string>
+    <string name="title_activity_transactions">Transactions</string>
+    <string name="title_activity_finalize">Finalize</string>
+    <string name="title_activity_tags">Tags</string>
+
 </resources>

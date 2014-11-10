@@ -55,7 +55,7 @@
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="false"
-        android:layout_alignTop="@+id/textView4"
+        android:layout_alignTop="@+id/summary_listview_tags"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/activity_new_project_create_new_contact_button"
         android:spinnerMode="dropdown" />
@@ -68,7 +68,7 @@
         android:layout_toRightOf="@+id/textView3" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/summary_listview_tags"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -110,7 +110,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="false"
-        android:layout_below="@+id/textView4"
+        android:layout_below="@+id/summary_listview_tags"
         android:text="@string/create_contact2" />
 
 

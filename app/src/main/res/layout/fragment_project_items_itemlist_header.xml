@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/price"
-        android:id="@+id/textView4"
+        android:id="@+id/summary_listview_tags"
         android:layout_weight="1"
         android:textStyle="bold" />
 </LinearLayout>
