@@ -23,7 +23,8 @@
         android:id="@+id/editTextValue"
         android:layout_weight="1"
         android:hint="@string/value"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"
+        android:imeOptions="actionDone" />
 
     <ImageButton
         android:layout_width="32dp"

@@ -1,5 +1,6 @@
 package ch.ethz.itet.pps.budgetSplit.contentProvider;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -265,12 +266,12 @@ public class budgetSplitContract {
         public static final String COLUMN_PARTICIPANT_IS_VIRTUAL = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_IS_VIRTUAL;
         public static final String COLUMN_PARTICIPANT_TOTAL_PAYED = budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_TOTAL_PAYED;
 
-        public static final String[] PROJECTION_ALL = {COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED};
+        public static final String[] PROJECTION_ALL = {_ID, COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED};
 
 
     }
 
-    public static final class projectParticipantsDetailsCalculateRO {
+    public static final class projectParticipantsDetailsCalculateRO implements BaseColumns {
         static final String TABLE_PROJECT_PARTICIPANTS_DETAILS_CALCULATE_RO = "projectParticipantsDetailsCalculateRO";
         static final int PROJECT_PARTICIPANTS_DETAILS_CALCULATE = 152;
 
@@ -288,9 +289,9 @@ public class budgetSplitContract {
         public static final String COLUMN_PARTICIPANT_TOTAL_SHARE = "participantTotalShare";
         public static final String COLUMN_PARTICIPANT_TOTAL_DEPTHS = "participantTotalDepths";
 
-        public static final String[] PROJECTION_ALL = {COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED, COLUMN_PARTICIPANT_TOTAL_SHARE, COLUMN_PARTICIPANT_TOTAL_DEPTHS};
+        public static final String[] PROJECTION_ALL = {_ID, COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED, COLUMN_PARTICIPANT_TOTAL_SHARE, COLUMN_PARTICIPANT_TOTAL_DEPTHS};
 
-        static final String[] PROJECTION_DB_ALL = {COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED};
+        static final String[] PROJECTION_DB_ALL = {_ID, COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED};
 
 
         static final Cursor query(SQLiteDatabase database, long projectId, String[] projection, String selection, String[] selectionArgs, String sortOrder) {

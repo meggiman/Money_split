@@ -213,7 +213,7 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
                 }
                 break;
             case REQUEST_EDIT_ITEM:
-                switch (requestCode) {
+                switch (resultCode) {
                     case Activity.RESULT_OK:
                         Toast.makeText(getActivity(), getString(R.string.item_was_saved), Toast.LENGTH_SHORT).show();
                         break;

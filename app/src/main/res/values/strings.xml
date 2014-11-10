@@ -78,4 +78,5 @@
     <string name="exclude_someone">Exclude someone</string>
     <string name="_for_">for</string>
     <string name="Excluded">Excluded</string>
+    <string name="please_enter_a_valid_item_name">Please enter a valid Itemname.</string>
 </resources>

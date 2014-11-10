@@ -19,7 +19,8 @@
         android:id="@+id/editTextShareRatio"
         android:layout_weight="1"
         android:hint="@string/share_ratio"
-        android:inputType="number" />
+        android:inputType="number"
+        android:imeOptions="actionDone" />
 
     <ImageButton
         android:layout_width="32dp"

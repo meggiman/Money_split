@@ -520,6 +520,44 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         fullAccess = fullAccess || cursorProject.getString(cursorProject.getColumnIndex(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID)).equals(myUniqueId); //I am admin
         fullAccess = fullAccess || ownersUniqueId.equals(myUniqueId);//I am Item-owner
 
+        //Add Listener to itemname EditText
+        itemNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                switch (i) {
+                    case EditorInfo.IME_ACTION_DONE:
+                        if (!textView.getText().toString().trim().equals("")) {
+                            textView.clearFocus();
+                            InputMethodManager mnr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            mnr.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                            return true;
+                        } else {
+                            Toast.makeText(getBaseContext(), getString(R.string.please_enter_a_valid_item_name), Toast.LENGTH_SHORT).show();
+                            textView.requestFocus();
+                            return true;
+                        }
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        itemNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
+                    if (!((TextView) view).getText().toString().trim().equals("")) {
+                        view.clearFocus();
+                        InputMethodManager mnr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        mnr.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    } else {
+                        Toast.makeText(getBaseContext(), getString(R.string.please_enter_a_valid_item_name), Toast.LENGTH_SHORT).show();
+                        view.requestFocus();
+                    }
+                }
+            }
+        });
+
         //Draw Tag GUI elements
         tagsAlreadyAdded = new ArrayList<Tag>();
         tagsNotAdded = new ArrayList<Tag>();
@@ -623,6 +661,44 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
     void drawGUIForNewItem() {
         //Write privilege-flags
         fullAccess = true;
+
+        //Add listener to itemname editText
+        itemNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                switch (i) {
+                    case EditorInfo.IME_ACTION_DONE:
+                        if (!textView.getText().toString().trim().equals("")) {
+                            textView.clearFocus();
+                            InputMethodManager mnr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            mnr.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                            return true;
+                        } else {
+                            Toast.makeText(getBaseContext(), getString(R.string.please_enter_a_valid_item_name), Toast.LENGTH_SHORT).show();
+                            textView.requestFocus();
+                            return true;
+                        }
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        itemNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
+                    if (!((TextView) view).getText().toString().trim().equals("")) {
+                        view.clearFocus();
+                        InputMethodManager mnr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        mnr.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    } else {
+                        Toast.makeText(getBaseContext(), getString(R.string.please_enter_a_valid_item_name), Toast.LENGTH_SHORT).show();
+                        view.requestFocus();
+                    }
+                }
+            }
+        });
 
         //Draw Tag GUI elements
         tagsAddedViews = new ArrayList<View>();
@@ -1499,7 +1575,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                 switch (i) {
                     case EditorInfo.IME_ACTION_DONE:
                         if (textView.getText().toString().length() > 0) {
-                            Double value = Double.parseDouble(textView.getText().toString());
+                            Double value = Double.parseDouble(textView.getText().toString().replace("%", ""));
                             if (value >= 0 && value <= 100) {
                                 saveValueChanges(value / 100);
                                 textView.clearFocus();
@@ -1523,7 +1599,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
                     if (((EditText) view).getText().toString().length() > 0) {
-                        Double newValue = Double.parseDouble(((EditText) view).getText().toString());
+                        Double newValue = Double.parseDouble(((EditText) view).getText().toString().replace("%", ""));
                         if (newValue >= 0 && newValue <= 100) {
                             saveValueChanges(newValue / 100);
                             ((EditText) view).setText(new DecimalFormat(",##0").format(newValue) + "%");

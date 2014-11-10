@@ -83,8 +83,6 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_project_overview, container, false);
         progressBar = (ProgressBar) myView.findViewById(R.id.projectOverviewProgressBar);
-        getLoaderManager().initLoader(LOADER_EXPENSES, null, this);
-        getLoaderManager().initLoader(LOADER_PROJECT, null, this);
         Button addItemButton = (Button) myView.findViewById(R.id.buttonAddItem);
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,7 +164,6 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
                 } else {
                     throw new IllegalArgumentException("Illegal Content-Uri. The returned Cursor for Project-Overview was either empty or contained more than one row.");
                 }
-                cursor.close();
                 loaderProjectFinished = true;
                 break;
             case LOADER_EXPENSES:
@@ -198,5 +195,19 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getLoaderManager().initLoader(LOADER_EXPENSES, null, this);
+        getLoaderManager().initLoader(LOADER_PROJECT, null, this);
+    }
+
+    @Override
+    public void onStop() {
+        getLoaderManager().destroyLoader(LOADER_PROJECT);
+        getLoaderManager().destroyLoader(LOADER_EXPENSES);
+        super.onStop();
     }
 }

@@ -12,7 +12,8 @@
         android:id="@+id/editTextItemName"
         android:hint="@string/item_name"
         android:inputType="text|textNoSuggestions"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:imeOptions="actionDone" />
 
     <TextView
         android:layout_width="wrap_content"
