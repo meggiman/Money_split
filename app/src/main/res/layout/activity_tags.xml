@@ -9,8 +9,36 @@
     tools:context="ch.ethz.itet.pps.budgetSplit.Tags">
 
     <TextView
-        android:text="@string/hello_world"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_activity_tags"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:gravity="center_horizontal"
+        android:id="@+id/activity_tags_title" />
+
+    <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/add_tag"
+        android:id="@+id/button_add_tag"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="false" />
+
+    <GridView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/gridView"
+        android:numColumns="auto_fit"
+        android:layout_below="@+id/activity_tags_title"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/button_add_tag"
+        tools:listitem="@layout/activity_add_item_tag" />
+
 
 </RelativeLayout>

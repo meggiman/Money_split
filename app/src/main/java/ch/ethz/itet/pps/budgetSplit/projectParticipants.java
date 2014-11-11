@@ -202,7 +202,7 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-            return inflater.inflate(R.layout.fragment_project_participants_row, viewGroup);
+            return inflater.inflate(R.layout.fragment_project_participants_row, viewGroup, false);
         }
 
         @Override
