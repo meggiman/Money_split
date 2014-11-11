@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:id="@+id/linearLayout">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              android:id="@+id/linearLayout">
 
     <TextView
         android:layout_width="0dp"
@@ -12,25 +12,25 @@
         android:text="@string/date_added"
         android:id="@+id/textViewName"
         android:layout_weight="1"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/item_name"
-        android:id="@+id/textView2"
+        android:id="@+id/textViewCurrencyName"
         android:layout_weight="2"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/creator"
-        android:id="@+id/textView3"
+        android:id="@+id/textViewCurrencyExchangeRate"
         android:layout_weight="1"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
         android:layout_width="0dp"
@@ -39,5 +39,5 @@
         android:text="@string/price"
         android:id="@+id/summary_listview_tags"
         android:layout_weight="1"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 </LinearLayout>

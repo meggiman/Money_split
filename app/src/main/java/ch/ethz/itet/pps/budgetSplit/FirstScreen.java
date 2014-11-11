@@ -82,7 +82,7 @@ public class FirstScreen extends Activity {
                     newContactParticipant = new ContentValues();
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_UNIQUEID, hashStringHex);//hashStringHex
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, usernameEditText.getText().toString());
-                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, true);
+                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, 0);
                     Uri yourUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
                     long userId = ContentUris.parseId(yourUri);
 

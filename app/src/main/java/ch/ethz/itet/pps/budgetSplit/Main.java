@@ -25,6 +25,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import javax.microedition.khronos.opengles.GL10Ext;
 
@@ -32,6 +34,9 @@ import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
 public class Main extends Activity implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int REQUEST_LOAD_PROJECT = 1;
+    public static final int RESULT_PROJECT_DELETED = 1;
 
     //Id to identify different Loaders
     private static final int URL_LOADER_PROJECTS = 0;
@@ -43,6 +48,19 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
     Button addProjectButton;
     ListView listView;
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        {
+            switch (requestCode) {
+                case REQUEST_LOAD_PROJECT:
+                    switch (resultCode) {
+                        case RESULT_PROJECT_DELETED:
+                            Toast.makeText(this, getString(R.string.project_was_deleted_message), Toast.LENGTH_SHORT).show();
+                    }
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +103,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
             @Override
             public void onClick(View view) {
                 Intent intentAddProject = new Intent(getBaseContext(), NewProject.class);
-                startActivity(intentAddProject);
+                startActivityForResult(intentAddProject, REQUEST_LOAD_PROJECT);
             }
         });
 
@@ -124,7 +142,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.mainScreenContacts:
                 // What should "Contacts" do
                 break;
