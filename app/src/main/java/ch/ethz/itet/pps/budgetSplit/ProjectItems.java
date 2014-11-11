@@ -12,11 +12,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -48,8 +50,11 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
 
     private Uri projectUri;
     private long projectId;
+    private String myUniqueId;
     private final int LOADER_ITEMS = 1;
     private ListView itemsList;
+    private Cursor cursorProject;
+
     private SimpleCursorAdapter itemsSingleAdapter;
     private ProgressDialog progressDialog;
     private static final int REQUEST_EDIT_ITEM = 1;
@@ -82,6 +87,9 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
             projectUri = getArguments().getParcelable(PROJECT_CONTENT_URI);
             projectId = ContentUris.parseId(projectUri);
         }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        myUniqueId = preferences.getString(getString(R.string.pref_user_unique_id), "uniqueIdNotFound");
+        cursorProject = getActivity().getContentResolver().query(projectUri, new String[]{budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID}, null, null, null);
     }
 
     @Override
@@ -109,9 +117,14 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
 
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                MenuInflater menuInflater = actionMode.getMenuInflater();
-                menuInflater.inflate(R.menu.project_items_select, menu);
-                return true;
+                cursorProject.moveToFirst();
+                if (cursorProject.getString(cursorProject.getColumnIndex(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID)).equals(myUniqueId)) {
+                    MenuInflater menuInflater = actionMode.getMenuInflater();
+                    menuInflater.inflate(R.menu.project_items_select, menu);
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
             @Override
@@ -191,15 +204,26 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
             }
         });
 
+        return fragmentLayout;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         //Show ProgressDialog while Loading Cursor.
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.loading));
         progressDialog.show();
-
         //Start Loader
         getLoaderManager().initLoader(LOADER_ITEMS, null, this);
-        return fragmentLayout;
+    }
+
+    @Override
+    public void onStop() {
+        getLoaderManager().destroyLoader(LOADER_ITEMS);
+        progressDialog.dismiss();
+        super.onStop();
     }
 
     @Override
@@ -247,6 +271,5 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         itemsSingleAdapter.changeCursor(null);
-        progressDialog.show();
     }
 }

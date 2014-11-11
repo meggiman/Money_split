@@ -4,10 +4,16 @@ import java.util.Locale;
 
 import android.app.Activity;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ContentUris;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -16,6 +22,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 public class ProjectNavigation extends Activity implements ActionBar.TabListener {
 
@@ -48,6 +56,8 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
      * Uri of the Project that is loaded at the moment.
      */
     Uri projectContentUri;
+
+    AlertDialog deleteProjectDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +108,15 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.project_navigation, menu);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String myuniqueId = preferences.getString(getString(R.string.pref_user_unique_id), "uniqueIdNotFound");
+        Cursor project = getContentResolver().query(projectContentUri, new String[]{budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID}, null, null, null);
+        project.moveToFirst();
+        if (project.getString(project.getColumnIndex(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID)).equals(myuniqueId)) {
+            getMenuInflater().inflate(R.menu.project_navigation_admin, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.project_navigation, menu);
+        }
         return true;
     }
 
@@ -108,10 +126,34 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_delete_project:
+                if (deleteProjectDialog == null) {
+                    AlertDialog.Builder myAlertBuilder = new AlertDialog.Builder(this);
+                    myAlertBuilder.setTitle(getString(R.string.action_delete_project));
+                    myAlertBuilder.setMessage(getString(R.string.warning_message_project_delete));
+                    myAlertBuilder.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            getContentResolver().delete(ContentUris.withAppendedId(budgetSplitContract.projects.CONTENT_URI, ContentUris.parseId(projectContentUri)), null, null);
+                            setResult(Main.RESULT_PROJECT_DELETED);
+                            finish();
+                        }
+                    });
+                    myAlertBuilder.setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    deleteProjectDialog = myAlertBuilder.create();
+                }
+                deleteProjectDialog.show();
+                return true;
+            default:
+                return false;
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -172,7 +214,7 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
                 case SECTION_ITEM_LIST:
                     return getString(R.string.items).toUpperCase(l);
                 case SECTION_PARTICIPANTS:
-                    return getString(R.string.participants).toUpperCase(l);
+                    return getString(R.string.member).toUpperCase(l);
                 case SECTION_SUMMARY:
                     return getString(R.string.project_summary_title).toUpperCase(l);
             }

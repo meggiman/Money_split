@@ -515,6 +515,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             throw new IllegalArgumentException("The Item added to Intent does not exist in database.");
         }
         cursorItem.moveToFirst();
+        cursorProject.moveToFirst();
         fullAccess = cursorItem.getInt(cursorItem.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_CREATOR_IS_VIRTUAL)) > 0; //Owner is virtual.
         String ownersUniqueId = cursorItem.getString(cursorItem.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_CREATOR_UNIQUE_ID));
         fullAccess = fullAccess || cursorProject.getString(cursorProject.getColumnIndex(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID)).equals(myUniqueId); //I am admin

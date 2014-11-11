@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -31,6 +32,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -60,6 +62,8 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
     private ProgressDialog progressDialog;
 
     private long projectId;
+    private String myUniqueId;
+    private String adminUniqueId;
 
     /**
      * Use this factory method to create a new instance of
@@ -102,6 +106,8 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("The added uri wasn't a single row uri.");
         }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        myUniqueId = preferences.getString(getString(R.string.pref_user_unique_id), "noUniqueIdFound");
     }
 
     @Override
@@ -130,9 +136,13 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
 
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                MenuInflater menuInflater = actionMode.getMenuInflater();
-                menuInflater.inflate(R.menu.project_participants_select, menu);
-                return true;
+                if (cursorProject.getString(cursorProject.getColumnIndex(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID)).equals(myUniqueId)) {
+                    MenuInflater menuInflater = actionMode.getMenuInflater();
+                    menuInflater.inflate(R.menu.project_participants_select, menu);
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
             @Override
@@ -145,28 +155,41 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
                 switch (menuItem.getItemId()) {
                     case R.id.action_delete:
                         AlertDialog.Builder myDialogBuilder = new AlertDialog.Builder(getActivity());
-                        myDialogBuilder.setTitle(getString(R.string.delete_items));
-                        myDialogBuilder.setMessage(getString(R.string.delete_) + " " + participantsList.getCheckedItemCount() + " " + getString(R.string.items_q));
+                        myDialogBuilder.setTitle(getString(R.string.delete_participants));
+                        myDialogBuilder.setMessage(getString(R.string.delete_) + " " + participantsList.getCheckedItemCount() + " " + getString(R.string.participants_questionmark));
                         myDialogBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+                                ArrayList<String> participantNames = new ArrayList<String>();
                                 SparseBooleanArray checkedItems = participantsList.getCheckedItemPositions();
                                 for (int k = 0; k < participantsList.getAdapter().getCount(); k++) {
                                     if (checkedItems.get(k)) {
                                         Cursor cursorAtDeletePosition = (Cursor) participantsList.getItemAtPosition(k);
-                                        long id = cursorAtDeletePosition.getLong(cursorAtDeletePosition.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO._ID));
-                                        Uri uriToDelete = ContentUris.withAppendedId(budgetSplitContract.projectParticipants.CONTENT_URI, id);
-                                        operations.add(ContentProviderOperation.newDelete(uriToDelete).build());
+                                        String uniqueIdOfParticipant = cursorAtDeletePosition.getString(cursorAtDeletePosition.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_UNIQUE_ID));
+                                        if (uniqueIdOfParticipant == null || !uniqueIdOfParticipant.equals(myUniqueId)) {
+                                            long id = cursorAtDeletePosition.getLong(cursorAtDeletePosition.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO._ID));
+                                            Uri uriToDelete = ContentUris.withAppendedId(budgetSplitContract.projectParticipants.CONTENT_URI, id);
+                                            participantNames.add(cursorAtDeletePosition.getString(cursorAtDeletePosition.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME)));
+                                            operations.add(ContentProviderOperation.newDelete(uriToDelete).build());
+                                        } else {
+                                            Toast.makeText(getActivity(), "You can't delete the project admin.", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
                                 try {
-                                    getActivity().getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, operations);
+                                    ContentProviderResult[] operationResult = getActivity().getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, operations);
+                                    for (int j = 0; j < operationResult.length; j++) {
+                                        if (operationResult[j].count == 0) {
+                                            Toast.makeText(getActivity(), getString(R.string.coulnt_delete_participant) + participantNames.get(j) + getString(R.string.because_there_were_still_items_linked_to), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
                                 } catch (RemoteException e) {
                                     e.printStackTrace();
                                 } catch (OperationApplicationException e) {
                                     e.printStackTrace();
                                 }
+
                             }
                         });
                         myDialogBuilder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -202,20 +225,32 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-            return inflater.inflate(R.layout.fragment_project_participants_row, viewGroup);
+            return inflater.inflate(R.layout.fragment_project_participants_row, viewGroup, false);
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             ImageView isAdminView = (ImageView) view.findViewById(R.id.imageView);
             TextView participantNameView = (TextView) view.findViewById(R.id.textViewName);
-            TextView isVirtualView = (TextView) view.findViewById(R.id.textViewName);
+            TextView isVirtualView = (TextView) view.findViewById(R.id.textViewVirtual);
 
             cursorProject.moveToFirst();
-            boolean isProjectAdmin = cursor.getString(cursor.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_UNIQUE_ID)).equals(cursorProject.getString(cursorProject.getColumnIndex(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID)));
-            boolean isVirtual = cursor.getInt(cursor.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_IS_VIRTUAL)) > 0;
-            isAdminView.setVisibility(isProjectAdmin ? View.VISIBLE : View.INVISIBLE);
-            isVirtualView.setVisibility(isVirtual ? View.VISIBLE : View.INVISIBLE);
+            String uniqueIdOfParticipant = cursor.getString(cursor.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_UNIQUE_ID));
+            boolean isProjectAdmin = false;
+            if (uniqueIdOfParticipant != null) {
+                isProjectAdmin = uniqueIdOfParticipant.equals(cursorProject.getString(cursorProject.getColumnIndex(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID)));
+            }
+            int isVirtual = cursor.getInt(cursor.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_IS_VIRTUAL));
+            if (isProjectAdmin) {
+                isAdminView.setVisibility(View.VISIBLE);
+            } else {
+                isAdminView.setVisibility(View.INVISIBLE);
+            }
+            if (isVirtual > 0) {
+                isVirtualView.setVisibility(View.VISIBLE);
+            } else {
+                isVirtualView.setVisibility(View.INVISIBLE);
+            }
             participantNameView.setText(cursor.getString(cursor.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME)));
         }
     }
