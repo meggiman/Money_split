@@ -1,4 +1,4 @@
-/*
+
 package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
@@ -101,6 +101,9 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.new_projects_progressBar);
         progressBar.setVisibility(View.VISIBLE);
+
+
+        return new CursorLoader(this, null, null, null, null, null); //Some crap to prevent Errors.
     }
 
     @Override
@@ -118,4 +121,4 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
 
     }
 }
-*/
+

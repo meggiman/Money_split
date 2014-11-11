@@ -105,8 +105,10 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
         // Inflate the layout for this fragment
         mainView = inflater.inflate(R.layout.fragment_project_summary, container, false);
         progressBar = (ProgressBar) mainView.findViewById(R.id.summaryProgressBar);
-        //getLoaderManager().initLoader(LOADER_PARTICIPANTS, null, this);
-        //getLoaderManager().initLoader(LOADER_ITEMS, null, this);
+        getLoaderManager().initLoader(LOADER_PROJECT_PARTICIPANT_DETAILS_CALCULATE, null, this);
+        getLoaderManager().initLoader(LOADER_ITEMS, null, this);
+        getLoaderManager().initLoader(LOADER_PARTICIPANT_TAGS_DETAILS, null, this);
+
         //Initialize Loader who need participant Ids List
 
         transactions = (Button) mainView.findViewById(R.id.fragment_summary_button);
@@ -209,33 +211,27 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
         }
 
         if (projectParticipantDetailsCalculateFinished && participantTagsDetailsFinished) {
-
-
-            CursorJoiner joiner = new CursorJoiner(projectCursor, projectKey, tagCursor, tagKey);
             int capacity = projectCursor.getCount();
             data = new ParticipantTagsLinker[capacity];
             int i = 0;
-            for (CursorJoiner.Result joinerResult : joiner) {
-                switch (joinerResult) {
-                    case LEFT:
+            for (projectCursor.moveToFirst(); !projectCursor.isAfterLast(); projectCursor.moveToNext()) {
+                data[i] = new ParticipantTagsLinker();
+                data[i].name = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_NAME));
+                data[i].money = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_SHARE));
+                StringBuffer tags = new StringBuffer();
+                tagCursor.moveToFirst();
+                long participantId = projectCursor.getLong(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_ID));
+                for (tagCursor.moveToFirst(); !tagCursor.isAfterLast(); tagCursor.moveToNext()) {
+                    long tagFilterParticipantId = tagCursor.getLong(tagCursor.getColumnIndex(budgetSplitContract.participantsTagsDetails.COLUMN_PARTICIPANT_ID));
+                    if (participantId == tagFilterParticipantId) {
+                        tags.append(tagCursor.getString(tagCursor.getColumnIndex(budgetSplitContract.participantsTagsDetails.COLUMN_TAG_NAME)));
+                        tags.append(" ");
+                    } else if (participantId < tagFilterParticipantId) {
                         break;
-                    case RIGHT:
-                        break;
-                    case BOTH:
-                        if (projectCursor.getCount() > 0) {
-                            data[i].name = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_NAME));
-                            data[i].money = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_SHARE.toString()));
-                            StringBuffer tags = new StringBuffer();
-                            while (tagCursor.getColumnIndex(budgetSplitContract.participantsTagsDetails.COLUMN_PARTICIPANT_ID) == projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_ID)) {
-                                tags.append(tagCursor.getString(tagCursor.getColumnIndex(budgetSplitContract.participantsTagsDetails.COLUMN_TAG_NAME)));
-                                tags.append(" ");
-                                tagCursor.moveToNext();
-                            }
-                            data[i].tags = tags.toString();
-                        }
-                        break;
-
+                    }
                 }
+                data[i].tags = tags.toString().trim();
+                i++;
             }
             // Set GUI elements
             ParticipantTagsLinkerAdapter adapter = new ParticipantTagsLinkerAdapter(getActivity(), R.layout.fragment_project_summary_listview_row, data);

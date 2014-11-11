@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import java.util.ArrayList;
+
 import ch.ethz.itet.pps.budgetSplit.contentProvider.database.budgetSplitDBSchema;
 
 /**
@@ -300,21 +302,20 @@ public class budgetSplitContract {
 
                 String sqlSubSelect = "SELECT "
                         + budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS + "." + budgetSplitDBSchema.itemsTags.COLUMN_ITEMS_ID + ", "
-                        + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID
-                        + "(1-count(" + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID + ")) AS include"
-                        + " LEFT OUTER JOIN " + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + " ON " + budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS + "." + budgetSplitDBSchema.itemsTags.COLUMN_TAGS_ID + " = " + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_TAG_ID
+                        + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID + ", "
+                        + "(sum(" + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_SHARE_RATIO + ")) AS include"
                         + " FROM " + budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS
-                        + " GROUP BY " + budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS + "." + budgetSplitDBSchema.itemsTags.COLUMN_ITEMS_ID + ", " + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID
-                        + ";";
+                        + " LEFT OUTER JOIN " + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + " ON " + budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS + "." + budgetSplitDBSchema.itemsTags.COLUMN_TAGS_ID + " = " + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_TAG_ID
+                        + " GROUP BY " + budgetSplitDBSchema.itemsTags.TABLE_ITEMS_TAGS + "." + budgetSplitDBSchema.itemsTags.COLUMN_ITEMS_ID + ", " + budgetSplitDBSchema.tagFilter.TABLE_TAG_FILTER + "." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID;
 
 
                 String sqlMultiplyList = "SELECT "
                         + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items._ID + " AS itemId, "
                         + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " AS participantId, "
                         + "coalesce(" + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_SHARE_RATIO + ", sub.include, 1) AS shareRatio"
-                        + "LEFT OUTER JOIN (" + sqlSubSelect + ") AS 'sub' ON " + budgetSplitDBSchema.items.TABLE_ITEMS + budgetSplitDBSchema.items._ID + " = sub." + budgetSplitDBSchema.itemsTags.COLUMN_ITEMS_ID + " AND " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " = sub." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID
-                        + "LEFT OUTER JOIN " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + " ON " + budgetSplitDBSchema.items.TABLE_ITEMS + budgetSplitDBSchema.items._ID + " = " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_ITEM_ID + " AND " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " = " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_PARTICIPANTS_ID
                         + " FROM " + budgetSplitDBSchema.items.TABLE_ITEMS + ", " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS
+                        + " LEFT OUTER JOIN (" + sqlSubSelect + ") AS 'sub' ON " + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items._ID + " = sub." + budgetSplitDBSchema.itemsTags.COLUMN_ITEMS_ID + " AND " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " = sub." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID
+                        + " LEFT OUTER JOIN " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + " ON " + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items._ID + " = " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_ITEM_ID + " AND " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " = " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_PARTICIPANTS_ID
                         + " WHERE " + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items.COLUMN_PROJECT_ID + " = ?"
                         + ";";
                 String sqlCreateTempTable = "CREATE TEMP TABLE multiplyList AS " + sqlMultiplyList;
@@ -322,18 +323,18 @@ public class budgetSplitContract {
                 String sqlItemShareUnitSubSelect = "SELECT "
                         + budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view._ID + ", "
                         + budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view.COLUMN_ITEM_PRICE + " / sum(multiplyList.shareRatio) AS shareUnit"
-                        + " LEFT OUTER JOIN multiplyList ON " + budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view._ID + " = multiplyList.itemId"
                         + " FROM " + budgetSplitDBSchema.items_view.VIEW_ITEMS
-                        + " GROUP BY " + budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view._ID
-                        + ";";
+                        + " LEFT OUTER JOIN multiplyList ON " + budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view._ID + " = multiplyList.itemId"
+                        + " GROUP BY " + budgetSplitDBSchema.items_view.VIEW_ITEMS + "." + budgetSplitDBSchema.items_view._ID;
 
                 String sqlProjectParticipantSelect = "SELECT "
                         + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + ".*, "
                         + "sum(multiplyList.shareRatio * sub.shareUnit) AS " + COLUMN_PARTICIPANT_TOTAL_SHARE + ", "
                         + "sum(multiplyList.shareRatio * sub.shareUnit) - " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_TOTAL_PAYED + " AS " + COLUMN_PARTICIPANT_TOTAL_DEPTHS
-                        + " LEFT OUTER JOIN multiplyList ON " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID + " = " + "multiplyList.participantId"
-                        + " LEFT OUTER JOIN (" + sqlItemShareUnitSubSelect + ") AS 'sub' ON " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID + " = " + "sub.shareUnit"
                         + " FROM " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS
+                        + " LEFT OUTER JOIN multiplyList ON " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID + " = " + "multiplyList.participantId"
+                        + " LEFT OUTER JOIN (" + sqlItemShareUnitSubSelect + ") AS 'sub' ON " + "multiplyList.itemId" + " = " + "sub._id"
+                        + " WHERE " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PROJECT_ID + " = ?"
                         + " GROUP BY " + budgetSplitDBSchema.projectParticipants_view.VIEW_PROJECT_PARTICIPANTS + "." + budgetSplitDBSchema.projectParticipants_view.COLUMN_PARTICIPANT_ID
                         + ";";
                 Cursor result;
@@ -343,16 +344,23 @@ public class budgetSplitContract {
 
                 database.beginTransaction();
                 try {
-                    database.execSQL(sqlCreateTempTable);
+                    database.execSQL("DROP TABLE IF EXISTS multiplyList");
+                    database.execSQL("DROP TABLE IF EXISTS projectParticipantsDetails");
+                    database.execSQL(sqlCreateTempTable, projectIdArgs);
                     database.execSQL(sqlProjectParticipantCreateTempTable, projectIdArgs);
                     result = database.query("projectParticipantsDetails", projection, selection, selectionArgs, null, null, sortOrder);
+                    ArrayList<String> names = new ArrayList<String>();
+                    ArrayList<Double> totalshare = new ArrayList<Double>();
+                    for (result.moveToFirst(); !result.isAfterLast(); result.moveToNext()) {
+                        names.add(result.getString(0));
+                        totalshare.add(result.getDouble(1));
+                    }
                     database.setTransactionSuccessful();
                 } catch (SQLException e) {
                     throw e;
                 } finally {
                     database.endTransaction();
                 }
-                database.close();
                 return result;
 
             } else {

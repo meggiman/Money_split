@@ -638,7 +638,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         excludeSomeoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPayerChooserPopup(view);
+                showExcludeItemPopup();
             }
         });
         excludeList.addFooterView(excludeItemFooter);
