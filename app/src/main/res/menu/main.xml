@@ -13,4 +13,8 @@
         android:title="@string/settings" />
     <!-- android:onClick="settingsMethod" -->
 
+    <item
+        android:id="@+id/Tags"
+        android:title="@string/tags" />
+
 </menu>

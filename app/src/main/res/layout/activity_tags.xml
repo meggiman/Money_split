@@ -33,12 +33,25 @@
     <GridView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/gridView"
+        android:columnWidth="65dp"
+        android:id="@+id/gridView_tags"
         android:numColumns="auto_fit"
         android:layout_below="@+id/activity_tags_title"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/button_add_tag"
-        tools:listitem="@layout/activity_add_item_tag" />
+        tools:listitem="@layout/activity_new_tag_gridview"
+        android:drawSelectorOnTop="false" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar_tags"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:indeterminate="false" />
 
 
 </RelativeLayout>

@@ -51,11 +51,8 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
     static final int LOADER_ITEMS = 2;
 
     // memory for all the loaded Data
-    ArrayList<Long> participantIds;
     Cursor projectCursor;
-    String[] projectKey = new String[]{budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_ID};
     Cursor tagCursor;
-    String[] tagKey = new String[]{budgetSplitContract.participantsTagsDetails.COLUMN_PARTICIPANT_ID};
 
     // Fills the Listview Adapter
     ParticipantTagsLinker[] data;

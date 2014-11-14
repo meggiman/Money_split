@@ -105,4 +105,7 @@
     <string name="currency_name">Currency Name</string>
     <string name="rate">Rate</string>
     <string name="add_tag">Add Tag</string>
+    <string name="new_project_created">Project was successfully created.</string>
+    <string name="title_activity_activity_tags_gridview_layout">activity_tags_gridview_layout</string>
+
 </resources>

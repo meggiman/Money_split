@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ public class NewContact extends Activity {
     //Inicialization
     Button newContactVirtual;
     EditText newContactName;
+    CheckBox isVirtual;
     Uri nameUri;
 
 
@@ -31,14 +33,19 @@ public class NewContact extends Activity {
         // Adding Objects
         newContactVirtual = (Button) findViewById(R.id.search_bluetooth);
         newContactName = (EditText) findViewById(R.id.edit_text_create_contact_name);
+        isVirtual = (CheckBox) findViewById(R.id.checkBox_virtual);
+        // We can only add Virtual Contacts at the moment.
+        isVirtual.setEnabled(false);
 
         newContactVirtual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (newContactName.getText().length() > 0) {
+                String name = newContactName.getText().toString();
+
+                if (name.trim().length() > 0) {
                     ContentValues newContactParticipant = new ContentValues();
-                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, newContactName.getText().toString());
+                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, newContactName.getText().toString().trim());
                     newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, 1);
                     nameUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
 

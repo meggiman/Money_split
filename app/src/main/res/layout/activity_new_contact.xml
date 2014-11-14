@@ -50,20 +50,20 @@
         android:id="@+id/search_bluetooth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/create_contact"
+        android:layout_below="@+id/new_project_name_text"
         android:layout_alignLeft="@+id/new_project_name_text"
         android:layout_alignStart="@+id/new_project_name_text"
-        android:layout_below="@+id/new_project_name_text"
-        android:layout_marginTop="124dp"
-        android:text="@string/virtual_contact" />
+        android:layout_marginTop="145dp" />
 
-    <Button
-        android:id="@+id/button"
+    <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/virtual"
+        android:id="@+id/checkBox_virtual"
+        android:layout_centerVertical="true"
         android:layout_alignLeft="@+id/search_bluetooth"
         android:layout_alignStart="@+id/search_bluetooth"
-        android:layout_below="@+id/search_bluetooth"
-        android:layout_marginTop="53dp"
-        android:text="@string/search_bluetooth" />
+        android:checked="true" />
 
 </RelativeLayout>

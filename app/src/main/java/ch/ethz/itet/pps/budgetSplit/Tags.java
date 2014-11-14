@@ -8,47 +8,54 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
+import android.widget.GridView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
+import android.widget.TextView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
 public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    static final int LOADER_TAGS = 0;
+    ProgressBar progressBar;
+    Cursor tagCursor;
+    ArrayList<String> tags;
+    ArrayAdapter<String> tagsGridAdapter;
+
+
+
     Button newTag;
     AlertDialog tagCreatePopup;
+    GridView tagGrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tags);
 
-        newTag = new Button(getApplicationContext());
+        getLoaderManager().initLoader(LOADER_TAGS, null, this);
+
+        newTag = (Button) findViewById(R.id.button_add_tag);
         newTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showCreateTagPopup(view);
             }
         });
+        tagGrid = (GridView) findViewById(R.id.gridView_tags);
     }
 
     @Override
@@ -87,7 +94,7 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     ContentValues newTag = new ContentValues();
-                    newTag.put(budgetSplitContract.tags.COLUMN_NAME, editText.getText().toString());
+                    newTag.put(budgetSplitContract.tags.COLUMN_NAME, editText.getText().toString().trim());
                     getContentResolver().insert(budgetSplitContract.tags.CONTENT_URI, newTag);
                     dialogInterface.dismiss();
                 }
@@ -99,18 +106,30 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
     }
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.new_projects_progressBar);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar_tags);
         progressBar.setVisibility(View.VISIBLE);
 
+        String[] projection = {budgetSplitContract.tags.COLUMN_NAME};
 
-        return new CursorLoader(this, null, null, null, null, null); //Some crap to prevent Errors.
+        return new CursorLoader(this, budgetSplitContract.tags.CONTENT_URI, projection, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        //contactsSpinnerAdapter.swapCursor(cursor);
+        tags = new ArrayList<String>();
+        tagsGridAdapter = new ArrayAdapter<String>(this, R.layout.activity_tags_gridview_layout, R.id.activity_new_tag_gridview_textview, tags);
+        if (cursor.getCount() > 0) {
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                tags.add(cursor.getString(cursor.getColumnIndex(budgetSplitContract.tags.COLUMN_NAME)));
+            }
+            tagsGridAdapter = new ArrayAdapter<String>(this, R.layout.activity_tags_gridview_layout, R.id.activity_new_tag_gridview_textview, tags);
+        }
+        tagGrid.setAdapter(tagsGridAdapter);
+
+
         // Hide Progress Bar
-        ((ProgressBar) findViewById(R.id.new_projects_progressBar)).setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
 
 
     }
