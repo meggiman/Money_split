@@ -14,6 +14,7 @@ import android.content.Loader;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -179,15 +180,13 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
                                 }
                                 try {
                                     ContentProviderResult[] operationResult = getActivity().getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, operations);
-                                    for (int j = 0; j < operationResult.length; j++) {
-                                        if (operationResult[j].count == 0) {
-                                            Toast.makeText(getActivity(), getString(R.string.coulnt_delete_participant) + participantNames.get(j) + getString(R.string.because_there_were_still_items_linked_to), Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
+
                                 } catch (RemoteException e) {
                                     e.printStackTrace();
                                 } catch (OperationApplicationException e) {
                                     e.printStackTrace();
+                                } catch (SQLiteConstraintException e) {
+                                    Toast.makeText(getActivity(), getString(R.string.coulnt_delete_participant) + " " + getString(R.string.because_there_were_still_items_linked_to), Toast.LENGTH_SHORT).show();
                                 }
 
                             }

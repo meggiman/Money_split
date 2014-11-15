@@ -219,6 +219,17 @@ public final class budgetSplitDBSchema {
                 + "PRIMARY KEY (" + COLUMN_PROJECTS_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
                 + ");";
 
+        private static final String TRIGGER_RESTRICT_ITEM_PARTICIPANTS = "restrictItemParticipants";
+        private static final String TRIGGER_CREATE = "CREATE TRIGGER "
+                + TRIGGER_RESTRICT_ITEM_PARTICIPANTS + " BEFORE DELETE ON " + TABLE_PROJECTS_PARTICIPANTS
+                + " FOR EACH ROW BEGIN SELECT CASE WHEN ((SELECT " + itemsParticipants.COLUMN_PARTICIPANTS_ID + " FROM " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS
+                + " WHERE " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID + " = OLD." + COLUMN_PARTICIPANTS_ID + ") NOTNULL)"
+                + " THEN RAISE(ABORT, 'Participant can not be deleted because he is still payer of some items.')"
+                + " WHEN ((SELECT " + items.COLUMN_CREATOR + " FROM " + items.TABLE_ITEMS + " WHERE " + items.TABLE_ITEMS + "." + items.COLUMN_CREATOR + " = OLD." + COLUMN_PARTICIPANTS_ID + ") NOTNULL)"
+                + " THEN RAISE(ABORT, 'Participant can not be deleted because he is still creator of some items.')"
+                + " END;"
+                + " END;";
+
         /**
          * Static Method to be called by SQLiteOpenHelper class for better readability.
          *
@@ -226,6 +237,10 @@ public final class budgetSplitDBSchema {
          */
         public static void onCreate(SQLiteDatabase database) {
             database.execSQL(TABLE_CREATE);
+        }
+
+        public static void onCreateTrigger(SQLiteDatabase database) {
+            database.execSQL(TRIGGER_CREATE);
         }
 
         /**

@@ -9,11 +9,13 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ActionMode;
@@ -22,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,12 +31,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import java.util.Currency;
-
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
-public class Currencies extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class currencies extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int LOADER_CURRENCIES = 1;
 
@@ -54,7 +53,7 @@ public class Currencies extends Activity implements LoaderManager.LoaderCallback
         setContentView(R.layout.activity_currencies);
         final ListView currencyList = (ListView) findViewById(R.id.listViewCurrencies);
         String[] from = {budgetSplitContract.currencies.COLUMN_CURRENCY_CODE, budgetSplitContract.currencies.COLUMN_NAME, budgetSplitContract.currencies.COLUMN_EXCHANGE_RATE};
-        int[] to = {R.id.textViewCurrencyCode, R.id.textViewCurrencyName, R.id.textViewCurrencyExchangeRate};
+        int[] to = {R.id.textViewCurrencyCode, R.id.textViewExcludeItems, R.id.textViewCurrencyExchangeRate};
         currencyAdapter = new SimpleCursorAdapter(this, R.layout.activity_currencies_row, null, from, to, 0);
         currencyList.setAdapter(currencyAdapter);
         currencyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -81,7 +80,7 @@ public class Currencies extends Activity implements LoaderManager.LoaderCallback
                 if (actionMode != null) {
                     return false;
                 }
-                actionMode = Currencies.this.startActionMode(new ActionMode.Callback() {
+                actionMode = currencies.this.startActionMode(new ActionMode.Callback() {
                     @Override
                     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                         actionMode.getMenuInflater().inflate(R.menu.currencies_select, menu);
@@ -97,17 +96,23 @@ public class Currencies extends Activity implements LoaderManager.LoaderCallback
                     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.action_delete:
-                                AlertDialog.Builder myBuilder = new AlertDialog.Builder(Currencies.this);
+                                AlertDialog.Builder myBuilder = new AlertDialog.Builder(currencies.this);
                                 myBuilder.setTitle(getString(R.string.delete_currency));
                                 myBuilder.setMessage(getString(R.string.warning_delete_currency));
                                 myBuilder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        Uri currencyToDeleteUri = ContentUris.withAppendedId(budgetSplitContract.currencies.CONTENT_URI, currencyList.getItemIdAtPosition(currencyList.getCheckedItemPosition()));
-                                        try {
-                                            getContentResolver().delete(currencyToDeleteUri, null, null);
-                                        } catch (SQLiteConstraintException e) {
-                                            Toast.makeText(getBaseContext(), getString(R.string.toast_currency_was_not_deleted), Toast.LENGTH_LONG).show();
+                                        long currencyId = currencyList.getItemIdAtPosition(currencyList.getCheckedItemPosition());
+                                        Uri currencyToDeleteUri = ContentUris.withAppendedId(budgetSplitContract.currencies.CONTENT_URI, currencyId);
+                                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                                        if (Long.parseLong(preferences.getString(getString(R.string.pref_default_currency), "-1")) != currencyId) {
+                                            try {
+                                                getContentResolver().delete(currencyToDeleteUri, null, null);
+                                            } catch (SQLiteConstraintException e) {
+                                                Toast.makeText(getBaseContext(), getString(R.string.toast_currency_was_not_deleted), Toast.LENGTH_LONG).show();
+                                            }
+                                        } else {
+                                            Toast.makeText(getBaseContext(), getString(R.string.warning_can_not_delete_default_currency), Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
@@ -126,7 +131,7 @@ public class Currencies extends Activity implements LoaderManager.LoaderCallback
 
                     @Override
                     public void onDestroyActionMode(ActionMode actionMode) {
-                        Currencies.this.actionMode = null;
+                        currencies.this.actionMode = null;
                     }
                 });
                 Cursor checkedCurrency = (Cursor) adapterView.getItemAtPosition(i);
@@ -253,19 +258,19 @@ public class Currencies extends Activity implements LoaderManager.LoaderCallback
             @Override
             public void onClick(View view) {
                 if (createCurrency.currencyCodeEditText.getText().toString().length() != 3) {
-                    Animation shake = AnimationUtils.loadAnimation(Currencies.this, R.anim.shake);
+                    Animation shake = AnimationUtils.loadAnimation(currencies.this, R.anim.shake);
                     createCurrency.currencyCodeEditText.startAnimation(shake);
                     Toast.makeText(getBaseContext(), getString(R.string.please_enter_valid_currency_code), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (createCurrency.currencyNameEditText.getText().toString().isEmpty()) {
-                    Animation shake = AnimationUtils.loadAnimation(Currencies.this, R.anim.shake);
+                    Animation shake = AnimationUtils.loadAnimation(currencies.this, R.anim.shake);
                     createCurrency.currencyNameEditText.startAnimation(shake);
                     Toast.makeText(getBaseContext(), getString(R.string.please_enter_valid_currencyname), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (createCurrency.currencyRateEditText.getText().toString().isEmpty() || Double.parseDouble(createCurrency.currencyRateEditText.getText().toString()) == 0) {
-                    Animation shake = AnimationUtils.loadAnimation(Currencies.this, R.anim.shake);
+                    Animation shake = AnimationUtils.loadAnimation(currencies.this, R.anim.shake);
                     createCurrency.currencyRateEditText.startAnimation(shake);
                     Toast.makeText(getBaseContext(), getString(R.string.please_enter_valid_exchange_rate), Toast.LENGTH_SHORT).show();
                     return;
@@ -287,9 +292,10 @@ public class Currencies extends Activity implements LoaderManager.LoaderCallback
                         }
                     }
                 } catch (SQLiteException e) {
-                    Animation shake = AnimationUtils.loadAnimation(Currencies.this, R.anim.shake);
+                    Animation shake = AnimationUtils.loadAnimation(currencies.this, R.anim.shake);
                     createCurrency.dialog.getButton(DialogInterface.BUTTON_POSITIVE).startAnimation(shake);
-                    Toast.makeText(Currencies.this, getString(R.string.warning_currency_already_exists), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(currencies.this, getString(R.string.warning_currency_already_exists), Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 createCurrency.dialog.dismiss();
                 createCurrency = null;

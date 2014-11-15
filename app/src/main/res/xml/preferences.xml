@@ -5,11 +5,18 @@
         android:title="@string/username"
         android:summary="@string/username_summary"
         android:dialogTitle="@string/username"
-        android:dialogMessage="@string/enter_username" />
+        android:dialogMessage="@string/enter_username"/>
     <ListPreference
         android:key="@string/pref_default_currency"
         android:summary="Set the default currency to use for new items"
-        android:title="@string/default_currency" />
+        android:title="@string/default_currency"/>
+    <Preference
+        android:title="@string/tagfilter"
+        android:summary="@string/summary_tagfilter_preference">
+        <intent
+            android:targetPackage="@string/package_name"
+            android:targetClass="ch.ethz.itet.pps.budgetSplit.TagFilter"/>
+    </Preference>
 
 
 </PreferenceScreen>

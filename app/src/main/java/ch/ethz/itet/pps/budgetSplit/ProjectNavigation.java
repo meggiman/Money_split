@@ -134,7 +134,7 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             getContentResolver().delete(ContentUris.withAppendedId(budgetSplitContract.projects.CONTENT_URI, ContentUris.parseId(projectContentUri)), null, null);
-                            setResult(Main.RESULT_PROJECT_DELETED);
+                            setResult(Main.RESULT_PROJECT_DELETE);
                             finish();
                         }
                     });
@@ -149,7 +149,7 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
                 deleteProjectDialog.show();
                 return true;
             case R.id.action_currencies:
-                Intent intent = new Intent(this, Currencies.class);
+                Intent intent = new Intent(this, currencies.class);
                 startActivity(intent);
             default:
                 return false;

@@ -79,8 +79,16 @@
             android:name=".Tags"
             android:label="@string/title_activity_tags"/>
         <activity
-            android:name=".Currencies"
+            android:name=".currencies"
             android:label="@string/title_activity_currencies">
+        </activity>
+        <activity
+            android:name=".TagFilter"
+            android:label="@string/title_activity_tag_filter"
+            android:parentActivityName=".SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.itet.pps.budgetSplit.SettingsActivity"/>
         </activity>
     </application>
 

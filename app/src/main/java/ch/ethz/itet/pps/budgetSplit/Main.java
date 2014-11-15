@@ -2,21 +2,15 @@ package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.database.CharArrayBuffer;
-import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,10 +19,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Switch;
 import android.widget.Toast;
-
-import javax.microedition.khronos.opengles.GL10Ext;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -36,7 +27,9 @@ import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 public class Main extends Activity implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_LOAD_PROJECT = 1;
-    public static final int RESULT_PROJECT_DELETED = 1;
+    static final int RESULT_PROJECT_DELETE = 1;
+    static final String EXTRA_PROJECT_URI = "projectUri";
+
 
     //Id to identify different Loaders
     private static final int URL_LOADER_PROJECTS = 0;
@@ -55,8 +48,8 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
             switch (requestCode) {
                 case REQUEST_LOAD_PROJECT:
                     switch (resultCode) {
-                        case RESULT_PROJECT_DELETED:
-                            Toast.makeText(this, getString(R.string.project_was_deleted_message), Toast.LENGTH_SHORT).show();
+                        case RESULT_PROJECT_DELETE:
+                            Toast.makeText(this, getString(R.string.project_was_deleted_message), Toast.LENGTH_LONG).show();
                     }
             }
         }
@@ -92,7 +85,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
 
                 overwiewIntent.putExtra(ProjectNavigation.EXTRA_CONTENT_URI, projectUri);
                 overwiewIntent.putExtra(ProjectNavigation.EXTRA_PROJECT_TITLE, projectTitle);
-                startActivity(overwiewIntent);
+                startActivityForResult(overwiewIntent, REQUEST_LOAD_PROJECT);
             }
         });
 
@@ -123,7 +116,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!preferences.contains(getString(R.string.pref_not_first_started))) {
             Intent firstScreenIntent = new Intent(this, FirstScreen.class);
-            startActivity(firstScreenIntent);
+            startActivityForResult(firstScreenIntent, 0);
         } else {
         }
 

@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Schweizer Franken"
-        android:id="@+id/textViewCurrencyName"
+        android:id="@+id/textViewExcludeItems"
         android:layout_gravity="center_vertical"
         android:layout_weight="5"
         android:layout_margin="8dp"/>

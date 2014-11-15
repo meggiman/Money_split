@@ -214,7 +214,7 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
         getLoaderManager().destroyLoader(LOADER_PROJECT);
         getLoaderManager().destroyLoader(LOADER_EXPENSES);
         super.onStop();

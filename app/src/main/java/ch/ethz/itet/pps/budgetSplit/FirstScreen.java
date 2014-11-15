@@ -102,10 +102,8 @@ public class FirstScreen extends Activity {
                     editor.putBoolean(getString(R.string.pref_not_first_started), true);
                     editor.commit();
 
-                    // Start Main Activity
-                    Intent mainActivity = new Intent(FirstScreen.this, Main.class);
-                    startActivity(mainActivity);
-
+                    // Go back to main activity
+                    finish();
                 }
             }
         });
@@ -129,5 +127,10 @@ public class FirstScreen extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //do nothing
     }
 }
