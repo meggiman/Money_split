@@ -3,31 +3,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+              android:layout_height="wrap_content"
+              android:padding="8dp">
 
     <EditText
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
+        android:id="@+id/editTextCode"
         android:layout_gravity="center_vertical"
         android:hint="@string/currency_code"
-        android:layout_weight="1"/>
+        android:layout_weight="2"
+        android:inputType="textCapCharacters"
+        android:imeOptions="actionNext"
+        style="@android:style/DeviceDefault.ButtonBar.AlertDialog"/>
 
     <EditText
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/editText2"
+        android:id="@+id/editTextCurrencyName"
         android:layout_gravity="center_vertical"
         android:hint="@string/currency_name"
-        android:layout_weight="3"/>
+        android:layout_weight="4"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        style="@android:style/DeviceDefault.ButtonBar.AlertDialog"/>
 
     <EditText
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:ems="10"
-        android:id="@+id/editText3"
+        android:id="@+id/editTextCurrencyRate"
         android:layout_gravity="center_vertical"
         android:hint="@string/rate"
-        android:layout_weight="1"/>
+        android:layout_weight="2"
+        android:imeOptions="actionDone"
+        style="@android:style/DeviceDefault.ButtonBar.AlertDialog"/>
+
 </LinearLayout>

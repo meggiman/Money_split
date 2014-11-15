@@ -101,8 +101,20 @@
     <string name="participants_questionmark">participants?</string>
     <string name="title_activity_currencies">Currencies</string>
     <string name="add_currency">Add currency</string>
-    <string name="currency_code">Code (CHF)</string>
+    <string name="currency_code">Code</string>
     <string name="currency_name">Currency Name</string>
     <string name="rate">Rate</string>
+    <string name="create_new_currency">Create new Currency</string>
+    <string name="create">Create</string>
+    <string name="please_enter_valid_currency_code">Please enter a valid Currencycode.</string>
+    <string name="please_enter_valid_currencyname">Please enter a valid Name for the new Currency.</string>
+    <string name="please_enter_valid_exchange_rate">Please enter a valid exchange Rate bigger than zero.</string>
+    <string name="currency_saved">Currency successfully saved.</string>
+    <string name="currencies">Currencies</string>
+    <string name="warning_currency_already_exists">The entered Currency already exists. Currencies must differ in Code and Name.</string>
+    <string name="delete_currency">Delete Currency</string>
+    <string name="warning_delete_currency">The Currency will be removed from the List and can not be used in any project anymore.</string>
+    <string name="toast_currency_was_not_deleted">The currency could not be deleted because it is still used by some items</string>
+    <string name="update">Update</string>
 
 </resources>

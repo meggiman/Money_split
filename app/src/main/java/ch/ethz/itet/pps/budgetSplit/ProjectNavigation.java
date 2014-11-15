@@ -10,6 +10,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ContentUris;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,11 +18,8 @@ import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -150,6 +148,9 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
                 }
                 deleteProjectDialog.show();
                 return true;
+            case R.id.action_currencies:
+                Intent intent = new Intent(this, Currencies.class);
+                startActivity(intent);
             default:
                 return false;
         }

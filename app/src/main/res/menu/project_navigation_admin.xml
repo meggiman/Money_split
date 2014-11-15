@@ -8,4 +8,8 @@
         android:title="@string/action_delete_project"
         android:orderInCategory="100"
         android:showAsAction="never"/>
+    <item
+        android:id="@+id/action_currencies"
+        android:title="@string/currencies"
+        android:orderInCategory="99"/>
 </menu>

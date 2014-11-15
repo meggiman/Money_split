@@ -12,24 +12,26 @@
         android:text="CHF"
         android:id="@+id/textViewCurrencyCode"
         android:layout_gravity="center_vertical"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:layout_margin="8dp"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Schweizer Franken"
         android:id="@+id/textViewCurrencyName"
         android:layout_gravity="center_vertical"
         android:layout_weight="5"
-        android:layout_marginLeft="10dp"/>
+        android:layout_margin="8dp"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="1"
         android:id="@+id/textViewCurrencyExchangeRate"
         android:layout_gravity="center_vertical"
-        android:layout_marginRight="10dp"/>
+        android:layout_margin="8dp"
+        android:layout_weight="1"/>
 </LinearLayout>

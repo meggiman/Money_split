@@ -175,8 +175,8 @@ public final class budgetSplitDBSchema {
                 + TABLE_CURRENCIES
                 + "("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_NAME + " TEXT NOT NULL, "
-                + COLUMN_CURRENCY_CODE + " TEXT NOT NULL, "
+                + COLUMN_NAME + " TEXT NOT NULL UNIQUE, "
+                + COLUMN_CURRENCY_CODE + " TEXT NOT NULL UNIQUE, "
                 + COLUMN_EXCHANGE_RATE + " FLOAT NOT NULL "
                 + ");";
 
