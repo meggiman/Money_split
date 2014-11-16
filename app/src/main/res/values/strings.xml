@@ -107,5 +107,8 @@
     <string name="add_tag">Add Tag</string>
     <string name="new_project_created">Project was successfully created.</string>
     <string name="title_activity_activity_tags_gridview_layout">activity_tags_gridview_layout</string>
+    <string name="title_activity_contacts__list">Contacts_List</string>
+    <string name="title_activity_tag_selection">TagSelection</string>
+
 
 </resources>

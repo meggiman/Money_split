@@ -338,7 +338,8 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
         GlobalStuffHelper.clearSpinnerArray();
         // Load Data
         String[] projection = {budgetSplitContract.participants._ID, budgetSplitContract.participants.COLUMN_NAME};
-        return new CursorLoader(getApplicationContext(), budgetSplitContract.participants.CONTENT_URI, projection, null, null, null);
+        String sortOrder = new String(budgetSplitContract.participants.COLUMN_NAME + " ASC");
+        return new CursorLoader(getApplicationContext(), budgetSplitContract.participants.CONTENT_URI, projection, null, null, sortOrder);
     }
 
     @Override

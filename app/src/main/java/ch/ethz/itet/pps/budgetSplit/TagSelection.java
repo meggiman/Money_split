@@ -1,3 +1,4 @@
+
 package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
@@ -23,25 +24,35 @@ import java.util.ArrayList;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
-public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class TagSelection extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    static final int LOADER_TAGS = 5;
+
+    static final int LOADER_TAGS = 0;
     ProgressBar progressBar;
-    Cursor tagCursor;
     ArrayList<String> tags;
     ArrayAdapter<String> tagsGridAdapter;
 
 
-
     Button newTag;
+    Button ok;
     AlertDialog tagCreatePopup;
     GridView tagGrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tags);
+        setContentView(R.layout.activity_tag_selection);
 
+        getLoaderManager().initLoader(LOADER_TAGS, null, this);
+
+        ok = (Button) findViewById(R.id.tag_selection_ok);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // update Tagfilter!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                finish();
+            }
+        });
         newTag = (Button) findViewById(R.id.tag_selection_button_add_tag);
         newTag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,8 +61,6 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
             }
         });
         tagGrid = (GridView) findViewById(R.id.tag_selection_gridView_tags);
-
-        getLoaderManager().initLoader(LOADER_TAGS, null, this);
     }
 
     @Override
@@ -100,6 +109,7 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
         tagCreatePopup.show();
 
     }
+
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         progressBar = (ProgressBar) findViewById(R.id.progressBar_tags);
@@ -113,19 +123,7 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        tags = new ArrayList<String>();
-        tagsGridAdapter = new ArrayAdapter<String>(this, R.layout.activity_tags_gridview_layout, R.id.activity_new_tag_gridview_textview, tags);
-        if (cursor.getCount() > 0) {
 
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                tags.add(cursor.getString(cursor.getColumnIndex(budgetSplitContract.tags.COLUMN_NAME)));
-            }
-            tagsGridAdapter = new ArrayAdapter<String>(this, R.layout.activity_tags_gridview_layout, R.id.activity_new_tag_gridview_textview, tags);
-        }
-        tagGrid.setAdapter(tagsGridAdapter);
-
-
-        // Hide Progress Bar
         progressBar.setVisibility(View.GONE);
 
 
@@ -137,3 +135,4 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
 
     }
 }
+

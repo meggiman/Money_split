@@ -151,7 +151,8 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.mainScreenContacts:
-                // What should "Contacts" do
+                Intent contactIntent = new Intent(Main.this, ContactsList.class);
+                startActivity(contactIntent);
                 break;
 
             case R.id.Tags:

@@ -17,6 +17,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/add_new_payer"
-        android:id="@+id/textViewName"
+        android:id="@+id/contact_list_row_name"
         android:layout_gravity="center_vertical" />
 </LinearLayout>
