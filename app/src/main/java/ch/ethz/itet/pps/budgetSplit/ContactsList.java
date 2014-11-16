@@ -2,6 +2,7 @@ package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -50,6 +52,7 @@ public class ContactsList extends Activity implements LoaderManager.LoaderCallba
                 startActivity(createContactIntent);
             }
         });
+
 
         getLoaderManager().initLoader(0, null, this);
     }
@@ -105,6 +108,25 @@ public class ContactsList extends Activity implements LoaderManager.LoaderCallba
         ContactAdapter adapter = new ContactAdapter(this, R.layout.activity_contacts_list_row, data);
         list = (ListView) findViewById(R.id.contact_list_listwiev);
         list.setAdapter(adapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position,
+                                    long id) {
+
+                Intent tagSelectionIntent = new Intent(ContactsList.this, TagSelection.class);
+
+                // get contact ID
+                Contact c = (Contact) adapterView.getItemAtPosition(position);
+
+                long contactId = c.getContactId();
+                String name = c.name;
+
+                tagSelectionIntent.putExtra(TagSelection.EXTRA_ID, contactId);
+                tagSelectionIntent.putExtra(TagSelection.EXTRA_TITLE, name);
+                tagSelectionIntent.putExtra(TagSelection.EXTRA_TAGFILTER_VISIBLE, true);
+                startActivity(tagSelectionIntent);
+            }
+        });
 
         //Hide Progressbar
         progressBar.setVisibility(View.GONE);

@@ -32,7 +32,6 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
     ArrayAdapter<String> tagsGridAdapter;
 
 
-
     Button newTag;
     AlertDialog tagCreatePopup;
     GridView tagGrid;
@@ -42,7 +41,7 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tags);
 
-        newTag = (Button) findViewById(R.id.tag_selection_button_add_tag);
+        newTag = (Button) findViewById(R.id.tag_selection_button_add_tag1);
         newTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,6 +99,7 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
         tagCreatePopup.show();
 
     }
+
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         progressBar = (ProgressBar) findViewById(R.id.progressBar_tags);

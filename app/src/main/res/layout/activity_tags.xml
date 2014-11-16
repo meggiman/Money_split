@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_tag"
-        android:id="@+id/tag_selection_button_add_tag"
+        android:id="@+id/tag_selection_button_add_tag1"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -38,8 +38,8 @@
         android:numColumns="auto_fit"
         android:layout_below="@+id/tag_selection_variable"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/tag_selection_button_add_tag"
-        tools:listitem="@layout/activity_new_tag_gridview"
+        android:layout_above="@+id/tag_selection_button_add_tag1"
+        tools:listitem="@layout/activity_tags_gridview_layout"
         android:drawSelectorOnTop="false" />
 
     <ProgressBar
