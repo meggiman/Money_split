@@ -75,7 +75,7 @@
     <string name="add_participants">Add participant</string>
     <string name="payers">Payers</string>
     <string name="share_ratio">Share Ratio</string>
-    <string name="please_enter_a_value_between_100_and_0" formatted="false">Please enter a value between 100% and 0%.</string>
+    <string name="please_enter_a_value_between_100_and_0">Please enter a value between 100%% and 0%%.</string>
     <string name="exclude_someone">Exclude someone</string>
     <string name="_for_">for</string>
     <string name="Excluded">Excluded</string>
@@ -124,5 +124,5 @@
     <string name="warning_to_many_exclude_items">There must be at least 1 Participant, that pays a 100 % share.</string>
     <string name="choose_someone_to_exclude">Choose someone to exclude from this Item</string>
     <string name="warning_can_not_delete_default_currency">You can not delete your default currency.</string>
-
+    <string name="add_tag">Add Tag</string>
 </resources>
