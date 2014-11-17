@@ -97,6 +97,7 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
         tagCreatePopup.show();
 
     }
+
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.new_projects_progressBar);

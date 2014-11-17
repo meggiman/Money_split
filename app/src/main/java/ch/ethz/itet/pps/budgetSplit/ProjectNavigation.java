@@ -133,6 +133,7 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
                     myAlertBuilder.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            getContentResolver().delete(budgetSplitContract.items.CONTENT_URI, budgetSplitContract.items.COLUMN_PROJECT + " = ?", new String[]{projectContentUri.getLastPathSegment()});
                             getContentResolver().delete(ContentUris.withAppendedId(budgetSplitContract.projects.CONTENT_URI, ContentUris.parseId(projectContentUri)), null, null);
                             setResult(Main.RESULT_PROJECT_DELETE);
                             finish();

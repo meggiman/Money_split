@@ -125,4 +125,5 @@
     <string name="choose_someone_to_exclude">Choose someone to exclude from this Item</string>
     <string name="warning_can_not_delete_default_currency">You can not delete your default currency.</string>
     <string name="add_tag">Add Tag</string>
+    <string name="depths">Depths:</string>
 </resources>

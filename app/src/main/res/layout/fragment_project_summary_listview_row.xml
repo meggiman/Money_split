@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,11 +39,44 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Expenses"
+        android:text="0.0 CHF"
         android:textSize="9dp"
         android:id="@+id/summary_listview_expences"
         android:layout_below="@+id/summary_listview_tags"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="6dp"/>
+        android:layout_margin="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Expenses"
+        android:textSize="9dp"
+        android:id="@+id/textView"
+        android:layout_toLeftOf="@+id/summary_listview_expences"
+        android:layout_below="@+id/summary_listview_tags"
+        android:layout_margin="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/depths"
+        android:textSize="9dp"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/summary_listview_tags"
+        android:layout_toRightOf="@+id/summary_listview_expences"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+0.0 CHF"
+        android:textSize="9dp"
+        android:id="@+id/textViewDepths"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_below="@+id/summary_listview_tags"
+        android:layout_margin="8dp"/>
 
 </RelativeLayout>

@@ -2,17 +2,17 @@
 <pre-dex-items>
 
     <item
-        dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-477ba2bc261be19e592612b60c5bc5a25dbd6483.jar"
-        jar="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\libs\internal_impl-20.0.0.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="27bbd3982cdfe4468a9bf99c8c773734a9049e33"/>
-    <item
         dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.0-0d638ece2b52fb5ba5f622cc7282ab66807b9b7d.jar"
         jar="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\libs\internal_impl-21.0.0.jar"
         jumboMode="false"
         revision="20.0.0"
         sha1="1609e6d42d0480b0f4188e2c29f75388fa12a8f0"/>
+    <item
+        dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-477ba2bc261be19e592612b60c5bc5a25dbd6483.jar"
+        jar="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="27bbd3982cdfe4468a9bf99c8c773734a9049e33"/>
     <item
         dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.0-37df463b57ce18c1c80f9c514f18002a9517d3a7.jar"
         jar="C:\Users\Manuel\AppData\Local\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.0\support-annotations-21.0.0.jar"

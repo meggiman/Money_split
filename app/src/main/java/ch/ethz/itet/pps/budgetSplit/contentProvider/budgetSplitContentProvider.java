@@ -270,7 +270,7 @@ public class budgetSplitContentProvider extends ContentProvider {
 
             //Delete Rows in Table items
             case budgetSplitContract.items.ITEMS:
-                deletedCount = db.delete(budgetSplitDBSchema.tags.TABLE_TAGS, selection, selectionArgs);
+                deletedCount = db.delete(budgetSplitDBSchema.items.TABLE_ITEMS, selection, selectionArgs);
                 break;
             case budgetSplitContract.items.ITEM:
                 idString = uri.getLastPathSegment();
@@ -760,36 +760,67 @@ public class budgetSplitContentProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case budgetSplitContract.projects.PROJECTS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
                 break;
             case budgetSplitContract.projects.PROJECT:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
                 break;
 
             case budgetSplitContract.participants.PARTICIPANTS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_ALL, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_SINGLE_ITEM, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_SINGLE_TAG, null);
                 break;
             case budgetSplitContract.participants.PARTICIPANT:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_ALL, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_SINGLE_ITEM, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_SINGLE_TAG, null);
                 break;
 
             case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 break;
             case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANT:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 break;
 
             case budgetSplitContract.items.ITEMS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_ALL, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_TAG, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
                 break;
             case budgetSplitContract.items.ITEM:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_ALL, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_TAG, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
+                ;
                 break;
 
             case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:
@@ -797,18 +828,26 @@ public class budgetSplitContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_ALL, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_SINGLE_PARTICIPANT, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 break;
             case budgetSplitContract.itemsParticipants.ITEM_PARTICIPANTS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_ALL, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_SINGLE_PARTICIPANT, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 break;
 
             case budgetSplitContract.itemsTags.ITEMSTAGS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_ALL, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_TAG, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 break;
             case budgetSplitContract.itemsTags.ITEMTAGS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsParticipantsDetailsRO.CONTENT_URI_ALL, null);

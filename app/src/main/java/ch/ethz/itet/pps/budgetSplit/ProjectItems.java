@@ -7,6 +7,7 @@ import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.ContentProviderOperation;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,12 +30,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -54,8 +60,10 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
     private final int LOADER_ITEMS = 1;
     private ListView itemsList;
     private Cursor cursorProject;
+    private Double defaultCurrencyExchange;
+    private String defaultCurrencyCode;
 
-    private SimpleCursorAdapter itemsSingleAdapter;
+    private ItemAdapter itemsSingleAdapter;
     private ProgressDialog progressDialog;
     private static final int REQUEST_EDIT_ITEM = 1;
     private static final int REQUEST_CREATE_ITEM = 2;
@@ -90,6 +98,11 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         myUniqueId = preferences.getString(getString(R.string.pref_user_unique_id), "uniqueIdNotFound");
         cursorProject = getActivity().getContentResolver().query(projectUri, new String[]{budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID}, null, null, null);
+        long defaultCurrencyId = Long.parseLong(preferences.getString(getString(R.string.pref_default_currency), "-1"));
+        Cursor defaultCurrencyCursor = getActivity().getContentResolver().query(ContentUris.withAppendedId(budgetSplitContract.currencies.CONTENT_URI, defaultCurrencyId), budgetSplitContract.currencies.PROJECTION_ALL, null, null, null);
+        defaultCurrencyCursor.moveToFirst();
+        defaultCurrencyExchange = defaultCurrencyCursor.getDouble(defaultCurrencyCursor.getColumnIndex(budgetSplitContract.currencies.COLUMN_EXCHANGE_RATE));
+        defaultCurrencyCode = defaultCurrencyCursor.getString(defaultCurrencyCursor.getColumnIndex(budgetSplitContract.currencies.COLUMN_CURRENCY_CODE));
     }
 
     @Override
@@ -104,7 +117,7 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
                 budgetSplitContract.itemsDetailsRO.COLUMN_CREATOR_NAME,
                 budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_PRICE};
         int to[] = {R.id.textViewDateAdded, R.id.textViewItemName, R.id.textViewCreator, R.id.textViewPrice};
-        itemsSingleAdapter = new SimpleCursorAdapter(getActivity(), R.layout.fragment_project_items_itemlist_row, null, from, to, 0);
+        itemsSingleAdapter = new ItemAdapter(getActivity(), null, 0);
         View itemListHeaderView = inflater.inflate(R.layout.fragment_project_items_itemlist_header, null);
         itemsList.addHeaderView(itemListHeaderView, null, false);
         itemsList.setAdapter(itemsSingleAdapter);
@@ -264,7 +277,7 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        itemsSingleAdapter.swapCursor(cursor);
+        itemsSingleAdapter.changeCursor(cursor);
         progressDialog.dismiss();
     }
 
@@ -272,4 +285,31 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         itemsSingleAdapter.changeCursor(null);
     }
+
+    private class ItemAdapter extends CursorAdapter {
+
+
+        public ItemAdapter(Context context, Cursor c, int flags) {
+            super(context, c, flags);
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+            return getActivity().getLayoutInflater().inflate(R.layout.fragment_project_items_itemlist_row, viewGroup, false);
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            TextView dateAddedView = (TextView) view.findViewById(R.id.textViewDateAdded);
+            TextView itemNameView = (TextView) view.findViewById(R.id.textViewItemName);
+            TextView itemCreatorView = (TextView) view.findViewById(R.id.textViewCreator);
+            TextView priceView = (TextView) view.findViewById(R.id.textViewPrice);
+
+            dateAddedView.setText(cursor.getString(cursor.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_DATE_ADDED)));
+            itemNameView.setText(cursor.getString(cursor.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_NAME)));
+            itemCreatorView.setText(cursor.getString(cursor.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_CREATOR_NAME)));
+            priceView.setText(new DecimalFormat(",##0.00").format(cursor.getDouble(cursor.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_PRICE)) / defaultCurrencyExchange) + " " + defaultCurrencyCode);
+        }
+    }
+
 }
