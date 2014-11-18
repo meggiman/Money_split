@@ -4,33 +4,28 @@ package ch.ethz.itet.pps.budgetSplit;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentProviderOperation;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.SparseBooleanArray;
-import android.view.ActionMode;
-import android.view.LayoutInflater;
+import android.os.RemoteException;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,16 +40,18 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
     static final String EXTRA_TAGFILTER_VISIBLE = "tagfilterVisible"; // tells you if you're coming from a contacts activity or from a items activity
     static final String EXTRA_TITLE = "title";
     static final int LOADER_TAGS_ALL = 0;
-    static final int LOADER_TAGS = 1;
+    static final int LOADER_TAGS_PARTICIPANTS = 1;
     static final int LOADER_TAGS_ITEM = 2;
     boolean tagsAllFinished = false;
     boolean tagsFinished = false;
     boolean tagsItemFinished = false;
     Intent intent = new Intent();
+    private List<Long> toDeleteList = new ArrayList<Long>();
+    private List<Long> toInsertList = new ArrayList<Long>();
 
 
     ProgressBar progressBar;
-    ArrayList<Long> tagIds;
+    ArrayList<IdHolder> tagIds;
     List<Tag> data = new ArrayList<Tag>();
     TagAdapter tagsGridAdapter;
 
@@ -75,104 +72,146 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
         intent = getIntent();
 
 
-        getLoaderManager().initLoader(LOADER_TAGS, null, this);
+        getLoaderManager().initLoader(LOADER_TAGS_PARTICIPANTS, null, this);
         getLoaderManager().initLoader(LOADER_TAGS_ALL, null, this);
 
         ok = (Button) findViewById(R.id.tag_selection_ok);
         ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // coming from a Contacts Activity
-                if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
+                                  @Override
+                                  public void onClick(View view) {
+                                      // coming from a Contacts Activity
+                                      if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
+                                          for (int i = 0; i < data.size(); i++) {
+                                              if (data.get(i).checked) {
+                                                  boolean insert = true;
+                                                  for (int j = 0; j < tagIds.size(); j++) {
+                                                      if (data.get(i).id == tagIds.get(j).tagId) {
+                                                          // Item was already Checked and thus stays in the Tagfilter
+                                                          // do nothing especially no insert
+                                                          insert = false;
+                                                      }
+                                                  }
+                                                  if (insert == true) {
+                                                      // The right junktion does not yet exist -> insert
+                                                      ContentValues cv = new ContentValues();
+                                                      cv.put(budgetSplitContract.tagFilter.COLUMN_PARTICIPANTS_ID, intent.getLongExtra(EXTRA_ID, -1));
+                                                      cv.put(budgetSplitContract.tagFilter.COLUMN_TAG_ID, data.get(i).id);
+                                                      cv.put(budgetSplitContract.tagFilter.COLUMN_SHARE_RATIO, 0);
+                                                      getContentResolver().insert(budgetSplitContract.tagFilter.CONTENT_URI, cv);
+                                                  }
+                                              } else { // data.checked == false
+                                                  for (int j = 0; j < tagIds.size(); j++) {
+                                                      if (data.get(i).id == tagIds.get(j).tagId) {
+                                                          // The Tag was checked before but isn't anmore -> delete
+                                                          toDeleteList.add(tagIds.get(j).tableId);
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                          Uri toDelete;
+                                          ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+                                          for (int k = 0; k < toDeleteList.size(); k++) {
+                                              toDelete = ContentUris.withAppendedId(budgetSplitContract.tagFilter.CONTENT_URI, toDeleteList.get(k));
+                                              operations.add(ContentProviderOperation.newDelete(toDelete).build());
+                                          }
+                                          try {
+                                              getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, operations);
+                                          } catch (RemoteException e) {
+                                              e.printStackTrace();
+                                          } catch (OperationApplicationException e) {
+                                              e.printStackTrace();
+                                          }
+                                      }
 
-                    for (int i = 0; i < data.size(); i++) {
-                        if (data.get(i).checked) {
-                            boolean insert = true;
-                            for (int j = 0; i < tagIds.size(); j++) {
-                                if (data.get(i).id == tagIds.get(j)) {
-                                    // Item was already Checked and thus stays in the Tagfilter
-                                    // do nothing especially no insert
-                                    insert = false;
-                                }
-                            }
-                            if (insert == true) {
-                                // The right junktion does not yet exist -> insert
-                                ContentValues cv = new ContentValues();
-                                cv.put(budgetSplitContract.tagFilter.COLUMN_PARTICIPANTS_ID, intent.getLongExtra(EXTRA_ID, -1));
-                                cv.put(budgetSplitContract.tagFilter.COLUMN_TAG_ID, data.get(i).id);
-                                getContentResolver().insert(budgetSplitContract.tagFilter.CONTENT_URI, cv);
-                            }
-                        } else { // data.checked == false
-                            boolean delete = false;
-                            for (int j = 0; i < tagIds.size(); j++) {
-                                if (data.get(i).id == tagIds.get(j)) {
-                                    // The Tag was checked before but isn't anmore -> delete
-                                    delete = true;
-                                }
-                            }
-                            if (delete == true) {
-                                // Manu Fragen --> Delete junktion where participantID == intent.extra && TagID == data.get(i).id
-                            }
-                        }
-                    }
-                }
-                // coming from an Items Activity (tagfilterVisible==false)
-                else {
-                    for (int i = 0; i < data.size(); i++) {
-                        if (data.get(i).checked) {
-                            boolean insert = true;
-                            for (int j = 0; i < tagIds.size(); j++) {
-                                if (data.get(i).id == tagIds.get(j)) {
-                                    // Item was already Checked and thus stays in the Tagfilter
-                                    // do nothing especially no insert
-                                    insert = false;
-                                }
-                            }
-                            if (insert == true) {
-                                // The right junktion does not yet exist -> insert
-                                ContentValues cv = new ContentValues();
-                                cv.put(budgetSplitContract.itemsTags.COLUMN_ITEM_ID, intent.getLongExtra(EXTRA_ID, -1));
-                                cv.put(budgetSplitContract.itemsTags.COLUMN_TAGS_ID, data.get(i).id);
-                                getContentResolver().insert(budgetSplitContract.itemsTags.CONTENT_URI, cv);
-                            }
-                        } else { // data.checked == false
-                            boolean delete = false;
-                            for (int j = 0; i < tagIds.size(); j++) {
-                                if (data.get(i).id == tagIds.get(j)) {
-                                    // The Tag was checked before but isn't anmore -> delete
-                                    delete = true;
-                                }
-                            }
-                            if (delete == true) {
-                                // Manu Fragen --> Delete junktion where participantID == intent.extra && TagID == data.get(i).id
-                            }
-                        }
-                    }
-                }
+                                      // coming from an Items Activity (tagfilterVisible==false)
+                                      else {
+                                          for (int i = 0; i < data.size(); i++) {
+                                              if (data.get(i).checked) {
+                                                  boolean insert = true;
+                                                  for (int j = 0; j < tagIds.size(); j++) {
+                                                      if (data.get(i).id == tagIds.get(j).tagId) {
+                                                          // Item was already Checked and thus stays in the Tagfilter
+                                                          // do nothing especially no insert
+                                                          insert = false;
+                                                      }
+                                                  }
+                                                  if (insert == true) {
+                                                      // The right junktion does not yet exist -> insert
+                                                      ContentValues cv = new ContentValues();
+                                                      cv.put(budgetSplitContract.itemsTags.COLUMN_ITEM_ID, intent.getLongExtra(EXTRA_ID, -1));
+                                                      cv.put(budgetSplitContract.itemsTags.COLUMN_TAGS_ID, data.get(i).id);
+                                                      getContentResolver().insert(budgetSplitContract.itemsTags.CONTENT_URI, cv);
+                                                  }
+                                              } else { // data.checked == false
+                                                  boolean delete = false;
+                                                  List<Long> toDeleteList = new ArrayList<Long>();
+                                                  for (int j = 0; j < tagIds.size(); j++) {
+                                                      if (data.get(i).id == tagIds.get(j).tagId) {
+                                                          // The Tag was checked before but isn't anmore -> delete
+                                                          toDeleteList.add(tagIds.get(j).tableId);
+                                                          break;
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                          Uri toDelete;
+                                          ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+                                          for (int k = 0; k < toDeleteList.size(); k++) {
+                                              toDelete = ContentUris.withAppendedId(budgetSplitContract.itemsTags.CONTENT_URI, toDeleteList.get(k));
+                                              operations.add(ContentProviderOperation.newDelete(toDelete).build());
+                                          }
+                                          try {
+                                              getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, operations);
+                                          } catch (RemoteException e) {
+                                              e.printStackTrace();
+                                          } catch (OperationApplicationException e) {
+                                              e.printStackTrace();
+                                          }
+                                      }
+                                      finish();
+                                  }
+                              }
 
+        );
+        newTag = (Button)
 
-                finish();
-            }
-        });
-        newTag = (Button) findViewById(R.id.tag_selection_button_add_tag1);
-        newTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showCreateTagPopup(view);
-            }
-        });
-        tagGrid = (GridView) findViewById(R.id.tag_selection_gridView_tags);
+                findViewById(R.id.tag_selection_button_add_tag1);
+
+        newTag.setOnClickListener(new View.OnClickListener()
+
+                                  {
+                                      @Override
+                                      public void onClick(View view) {
+                                          showCreateTagPopup(view);
+                                      }
+                                  }
+
+        );
+        tagGrid = (GridView)
+
+                findViewById(R.id.tag_selection_gridView_tags);
         // Sets the selection colours
         //tagGrid.setSelector(R.drawable.gridview_item_background);
-        tagGrid.setAdapter(new TagAdapter(this, R.layout.activity_tag_selection_checkable_row, data));
+        tagGrid.setAdapter(new
 
-        tagfilter = (TextView) findViewById(R.id.tag_selection_tagfilter);
+                        TagAdapter(this, R.layout.activity_tag_selection_checkable_row, data)
+
+        );
+
+        tagfilter = (TextView)
+
+                findViewById(R.id.tag_selection_tagfilter);
+
         tagfilter.setVisibility(View.VISIBLE);
-        if (!intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, false)) {
+        if (!intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, false))
+
+        {
             tagfilter.setVisibility(View.GONE);
         }
 
-        title = (TextView) findViewById(R.id.tag_selection_variable);
+        title = (TextView)
+
+                findViewById(R.id.tag_selection_variable);
 
         char[] titleName = (intent.getStringExtra(EXTRA_TITLE)).toCharArray();
 
@@ -239,21 +278,23 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
 
                 return new CursorLoader(this, budgetSplitContract.tags.CONTENT_URI, projection, null, null, sortOrder);
 
-            case LOADER_TAGS:
+            case LOADER_TAGS_PARTICIPANTS:
                 String[] projection1 = new String[]{
-                        budgetSplitContract.tagFilter.COLUMN_TAG_ID
+                        budgetSplitContract.participantsTagsDetails.COLUMN_TAG_ID,
+                        budgetSplitContract.participantsTagsDetails._ID
                 };
                 Long contactId = getIntent().getLongExtra(EXTRA_ID, -1);
-                String selection = new String(budgetSplitContract.tagFilter.COLUMN_PARTICIPANTS_ID + " = " + contactId.toString());
-                return new CursorLoader(this, budgetSplitContract.tagFilter.CONTENT_URI, projection1, selection, null, null);
+                String selection = new String(budgetSplitContract.participantsTagsDetails.COLUMN_PARTICIPANT_ID + " = " + contactId.toString());
+                return new CursorLoader(this, budgetSplitContract.participantsTagsDetails.CONTENT_URI_ALL, projection1, selection, null, null);
 
             case LOADER_TAGS_ITEM:
                 String[] projection2 = new String[]{
-                        budgetSplitContract.itemsTags.COLUMN_TAGS_ID
+                        budgetSplitContract.itemsTagsDetailsRO.COLUMN_TAG_ID,
+                        budgetSplitContract.itemsTagsDetailsRO._ID
                 };
                 Long itemId = getIntent().getLongExtra(EXTRA_ID, -1);
-                String selection1 = new String(budgetSplitContract.itemsTags.COLUMN_ITEM_ID + " = " + itemId.toString());
-                return new CursorLoader(this, budgetSplitContract.itemsTags.CONTENT_URI, projection2, selection1, null, null);
+                String selection1 = new String(budgetSplitContract.itemsTagsDetailsRO.COLUMN_ITEM_ID + " = " + itemId.toString());
+                return new CursorLoader(this, budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_ALL, projection2, selection1, null, null);
 
             default:
                 throw new IllegalArgumentException("Unknown Loader");
@@ -276,21 +317,21 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
                 tagsAllFinished = true;
                 break;
 
-            case LOADER_TAGS:
-                tagIds = new ArrayList<Long>();
+            case LOADER_TAGS_PARTICIPANTS:
+                tagIds = new ArrayList<IdHolder>();
                 if (cursor.getCount() > 0) {
                     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                        tagIds.add(cursor.getLong(cursor.getColumnIndex(budgetSplitContract.participantsTagsDetails.COLUMN_TAG_ID)));
+                        tagIds.add(new IdHolder(cursor.getLong(cursor.getColumnIndex(budgetSplitContract.participantsTagsDetails.COLUMN_TAG_ID)), cursor.getLong(cursor.getColumnIndex(budgetSplitContract.participantsTagsDetails._ID))));
                     }
                     tagsFinished = true;
                 }
                 break;
 
             case LOADER_TAGS_ITEM:
-                tagIds = new ArrayList<Long>();
+                tagIds = new ArrayList<IdHolder>();
                 if (cursor.getCount() > 0) {
                     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                        tagIds.add(cursor.getLong(cursor.getColumnIndex(budgetSplitContract.itemsTags.COLUMN_TAGS_ID)));
+                        tagIds.add(new IdHolder(cursor.getLong(cursor.getColumnIndex(budgetSplitContract.itemsTagsDetailsRO.COLUMN_TAG_ID)), cursor.getLong(cursor.getColumnIndex(budgetSplitContract.itemsTagsDetailsRO._ID))));
                     }
                     tagsItemFinished = true;
                 }
@@ -298,21 +339,18 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
         }
 
 
-        if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
-            if ((tagsFinished || tagsItemFinished) && tagsAllFinished) {
-                for (int i = 0; i < data.size(); i++) {
-                    for (int j = 0; j < tagIds.size(); j++) {
-                        if (data.get(i).id == (Long) tagIds.get(j)) {
-                            data.get(i).checked = true;
-                        }
-                        }
+        if ((tagsFinished || tagsItemFinished) && tagsAllFinished) {
+            for (int i = 0; i < data.size(); i++) {
+                for (int j = 0; j < tagIds.size(); j++) {
+                    if (data.get(i).id == (Long) tagIds.get(j).tagId) {
+                        data.get(i).checked = true;
                     }
                 }
-            tagGrid.setAdapter(new TagAdapter(this, R.layout.activity_tag_selection_checkable_row, data));
-            // Hide Progress Bar
-            progressBar.setVisibility(View.GONE);
             }
-
+        }
+        tagGrid.setAdapter(new TagAdapter(this, R.layout.activity_tag_selection_checkable_row, data));
+        // Hide Progress Bar
+        progressBar.setVisibility(View.GONE);
 
 
     }
@@ -326,7 +364,9 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
     class Tag {
         String name;
         Long id;
+        Long tableId;
         boolean checked;
+
 
         public Tag() {
             super();
@@ -372,6 +412,7 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
             Tag item = (Tag) th.data;
             // transfer the name
             th.name.setText(item.name);
+            if (item.checked) th.name.setBackgroundColor(Color.CYAN);
         }
 
         @Override
@@ -402,6 +443,20 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
             // Still need to implement long clicklistener --> Delete!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             return holder;
+        }
+    }
+
+    class IdHolder {
+        Long tagId;
+        Long tableId;
+
+        public IdHolder() {
+            super();
+        }
+
+        public IdHolder(Long tagId, Long tableId) {
+            this.tagId = tagId;
+            this.tableId = tableId;
         }
     }
 }

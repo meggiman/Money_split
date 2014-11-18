@@ -385,8 +385,8 @@ public class budgetSplitContract {
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_PARTICIPANTS_TAGS_DETAILS_RO;
         public static final String COLUMN_PARTICIPANT_ID = budgetSplitDBSchema.participantTags_view.COLUMN_PARTICIPANT_ID;
         public static final String COLUMN_PARTICIPANT_NAME = budgetSplitDBSchema.participantTags_view.COLUMN_PARTICIPANT_NAME;
-        public static final String COLUMN_TAG_ID = budgetSplitDBSchema.itemsTags_view.COLUMN_TAG_ID;
-        public static final String COLUMN_TAG_NAME = budgetSplitDBSchema.itemsTags_view.COLUMN_TAG_NAME;
+        public static final String COLUMN_TAG_ID = budgetSplitDBSchema.participantTags_view.COLUMN_TAG_ID;
+        public static final String COLUMN_TAG_NAME = budgetSplitDBSchema.participantTags_view.COLUMN_TAG_NAME;
         public static final String[] PROJECTION_ALL = {_ID, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_TAG_ID, COLUMN_TAG_NAME};
     }
 }
