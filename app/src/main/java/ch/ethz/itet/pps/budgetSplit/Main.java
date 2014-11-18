@@ -58,6 +58,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
                         case RESULT_PROJECT_DELETED:
                             Toast.makeText(this, getString(R.string.project_was_deleted_message), Toast.LENGTH_SHORT).show();
                     }
+                    break;
                 case REQUEST_CREATE_PROJECT:
                     Toast.makeText(this, getString(R.string.new_project_created), Toast.LENGTH_SHORT).show();
             }
@@ -146,7 +147,13 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.mainScreenContacts:
-                // What should "Contacts" do
+                Intent contactIntent = new Intent(Main.this, ContactsList.class);
+                startActivity(contactIntent);
+                break;
+
+            case R.id.Tags:
+                Intent tagIntent = new Intent(Main.this, Tags.class);
+                startActivity(tagIntent);
                 break;
 
             case R.id.MainScreenSettings:
