@@ -80,7 +80,6 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
      * @param contentUri Parameter 1.
      * @return A new instance of fragment ProjectSummary.
      */
-    // TODO: Rename and change types and number of parameters
     public static ProjectSummary newInstance(Uri contentUri) {
         ProjectSummary fragment = new ProjectSummary();
         Bundle args = new Bundle();

@@ -1,6 +1,7 @@
 package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
@@ -24,8 +25,7 @@ public class Finalize extends FragmentActivity {
                 // If activity has already been initialized it should not do it again.
                 return;
             }
-            ProjectSummary summaryFragment = new ProjectSummary();
-            summaryFragment.setArguments(getIntent().getExtras());
+            ProjectSummary summaryFragment = ProjectSummary.newInstance((Uri) getIntent().getParcelableExtra(EXTRA_FINALIZE_PROJECT_URI));
             getFragmentManager().beginTransaction().add(R.id.fragment_container, summaryFragment).commit();
         }
     }
