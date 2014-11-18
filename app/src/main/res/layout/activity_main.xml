@@ -39,7 +39,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:longClickable="false"
-        android:text="@string/project_add" />
+        android:text="@string/project_add"/>
 
     <ProgressBar
         android:id="@+id/projectsLoadProgressBar"

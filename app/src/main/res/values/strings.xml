@@ -126,4 +126,5 @@
     <string name="warning_can_not_delete_default_currency">You can not delete your default currency.</string>
     <string name="add_tag">Add Tag</string>
     <string name="depths">Depths:</string>
+    <string name="please_enter_valid_value">Please enter a valid value.</string>
 </resources>
