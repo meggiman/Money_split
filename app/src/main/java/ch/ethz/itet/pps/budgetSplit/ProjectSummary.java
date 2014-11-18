@@ -9,12 +9,11 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.CursorJoiner;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +41,8 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
 
     // TODO: Rename and change types of parameters
     private Uri projectUri;
+    private double defaultExchangeRate;
+    private String defaultCurrencyCode;
 
     // Loader ID's
     static final int LOADER_PROJECT_PARTICIPANT_DETAILS_CALCULATE = 0;
@@ -49,6 +50,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
     static final int LOADER_PARTICIPANT_TAGS_DETAILS = 1;
     private boolean participantTagsDetailsFinished = false;
     static final int LOADER_ITEMS = 2;
+    private boolean itemsDetailsFinished = false;
 
     // memory for all the loaded Data
     Cursor projectCursor;
@@ -75,7 +77,6 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
      * @param contentUri Parameter 1.
      * @return A new instance of fragment ProjectSummary.
      */
-    // TODO: Rename and change types and number of parameters
     public static ProjectSummary newInstance(Uri contentUri) {
         ProjectSummary fragment = new ProjectSummary();
         Bundle args = new Bundle();
@@ -140,7 +141,8 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
                 projection = new String[]{
                         budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_NAME,
                         budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_ID,
-                        budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_SHARE
+                        budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_SHARE,
+                        budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_DEPTHS
                 };
                 String sortOrder = new String(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_ID + " ASC");
                 return new CursorLoader(getActivity(), ContentUris.withAppendedId(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, projectId), projection, null, null, sortOrder);
@@ -193,13 +195,14 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
                 Uri currencyUri = ContentUris.withAppendedId(budgetSplitContract.currencies.CONTENT_URI, currencyId);
                 Cursor cursor1 = getActivity().getContentResolver().query(currencyUri, budgetSplitContract.currencies.PROJECTION_ALL, null, null, null);
                 cursor1.moveToFirst();
-                float exchangeRate = cursor1.getFloat(cursor1.getColumnIndex(budgetSplitContract.currencies.COLUMN_EXCHANGE_RATE));
-                String currencyCode = cursor1.getString(cursor1.getColumnIndex(budgetSplitContract.currencies.COLUMN_CURRENCY_CODE));
-                finalExpenses = finalExpenses * exchangeRate;
+                defaultExchangeRate = cursor1.getFloat(cursor1.getColumnIndex(budgetSplitContract.currencies.COLUMN_EXCHANGE_RATE));
+                defaultCurrencyCode = cursor1.getString(cursor1.getColumnIndex(budgetSplitContract.currencies.COLUMN_CURRENCY_CODE));
+                finalExpenses = finalExpenses / defaultExchangeRate;
                 expences = (TextView) getView().findViewById(R.id.totalExpenses1);
-                expences.setText(new DecimalFormat(",##0.00").format(finalExpenses) + " " + currencyCode);
+                expences.setText(new DecimalFormat(",##0.00").format(finalExpenses) + " " + defaultCurrencyCode);
                 nrOfItems = (TextView) getView().findViewById(R.id.nr_of_Items);
                 nrOfItems.setText(Integer.toString(cursor.getCount()));
+                itemsDetailsFinished = true;
                 break;
 
             default:
@@ -207,14 +210,15 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
 
         }
 
-        if (projectParticipantDetailsCalculateFinished && participantTagsDetailsFinished) {
+        if (projectParticipantDetailsCalculateFinished && participantTagsDetailsFinished && itemsDetailsFinished) {
             int capacity = projectCursor.getCount();
             data = new ParticipantTagsLinker[capacity];
             int i = 0;
             for (projectCursor.moveToFirst(); !projectCursor.isAfterLast(); projectCursor.moveToNext()) {
                 data[i] = new ParticipantTagsLinker();
                 data[i].name = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_NAME));
-                data[i].money = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_SHARE));
+                data[i].expenses = projectCursor.getDouble(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_SHARE));
+                data[i].depths = projectCursor.getDouble(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_DEPTHS));
                 StringBuffer tags = new StringBuffer();
                 tagCursor.moveToFirst();
                 long participantId = projectCursor.getLong(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_ID));
@@ -255,17 +259,19 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
     public class ParticipantTagsLinker {
         public String name;
         public String tags;
-        public String money;
+        public Double expenses;
+        public Double depths;
 
         public ParticipantTagsLinker() {
             super();
         }
 
-        public ParticipantTagsLinker(String n, String t, String m) {
+        public ParticipantTagsLinker(String name, String tags, Double expenses, Double depths) {
             super();
-            this.name = n;
-            this.tags = t;
-            this.money = m;
+            this.name = name;
+            this.tags = tags;
+            this.expenses = expenses;
+            this.depths = depths;
         }
     }
 
@@ -299,6 +305,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
                 holder.name = (TextView) row.findViewById(R.id.summary_listview_participant_name);
                 holder.expences = (TextView) row.findViewById(R.id.summary_listview_expences);
                 holder.tags = (TextView) row.findViewById(R.id.summary_listview_tags);
+                holder.depths = (TextView) row.findViewById(R.id.textViewDepths);
 
                 row.setTag(holder);
             } else {
@@ -307,7 +314,13 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
 
             ParticipantTagsLinker ptl = data[position];
             holder.name.setText(ptl.name);
-            holder.expences.setText(ptl.money);
+            holder.expences.setText(new DecimalFormat(",##0.00").format(ptl.expenses / defaultExchangeRate) + " " + defaultCurrencyCode);
+            holder.depths.setText(new DecimalFormat(",##0.00").format(ptl.depths / defaultExchangeRate) + " " + defaultCurrencyCode);
+            if (ptl.depths > 0) {
+                holder.depths.setTextColor(Color.RED);
+            } else {
+                holder.depths.setTextColor(getResources().getColor(R.color.dark_green));
+            }
             holder.tags.setText(ptl.tags);
 
             return row;
@@ -317,6 +330,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
             TextView name;
             TextView tags;
             TextView expences;
+            TextView depths;
         }
     }
 

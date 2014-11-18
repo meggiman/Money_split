@@ -41,7 +41,6 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
     //Id to identify different Loaders
     private static final int URL_LOADER_PROJECTS = 0;
 
-
     //Adapter to fill the listview with Data
     SimpleCursorAdapter simpleCursorAdapter;
 
@@ -62,8 +61,6 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
                 case REQUEST_CREATE_PROJECT:
                     Toast.makeText(this, getString(R.string.new_project_created), Toast.LENGTH_SHORT).show();
             }
-
-
         }
     }
 
@@ -97,7 +94,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
 
                 overwiewIntent.putExtra(ProjectNavigation.EXTRA_CONTENT_URI, projectUri);
                 overwiewIntent.putExtra(ProjectNavigation.EXTRA_PROJECT_TITLE, projectTitle);
-                startActivity(overwiewIntent);
+                startActivityForResult(overwiewIntent, REQUEST_LOAD_PROJECT);
             }
         });
 
@@ -128,7 +125,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!preferences.contains(getString(R.string.pref_not_first_started))) {
             Intent firstScreenIntent = new Intent(this, FirstScreen.class);
-            startActivity(firstScreenIntent);
+            startActivityForResult(firstScreenIntent, 0);
         } else {
         }
 
@@ -140,8 +137,6 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
-
-
     }
 
     @Override
@@ -151,13 +146,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.mainScreenContacts:
-                Intent contactIntent = new Intent(Main.this, ContactsList.class);
-                startActivity(contactIntent);
-                break;
-
-            case R.id.Tags:
-                Intent tagIntent = new Intent(Main.this, Tags.class);
-                startActivity(tagIntent);
+                // What should "Contacts" do
                 break;
 
             case R.id.MainScreenSettings:
@@ -173,7 +162,7 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
         switch (view.getId()) {
             case R.id.buttonAddProject:
                 Intent intentAddProject = new Intent("android.intent.action.NEWPROJECT");
-                startActivityForResult(intentAddProject, REQUEST_CREATE_PROJECT);
+                startActivity(intentAddProject);
                 break;
 
 
@@ -214,5 +203,4 @@ public class Main extends Activity implements View.OnClickListener, LoaderManage
                 simpleCursorAdapter.changeCursor(null);
         }
     }
-
 }

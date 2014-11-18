@@ -189,7 +189,7 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
                 cursor1.moveToFirst();
                 float exchangeRate = cursor1.getFloat(cursor1.getColumnIndex(budgetSplitContract.currencies.COLUMN_EXCHANGE_RATE));
                 String currencyCode = cursor1.getString(cursor1.getColumnIndex(budgetSplitContract.currencies.COLUMN_CURRENCY_CODE));
-                totalExpenses = totalExpenses * exchangeRate;
+                totalExpenses = totalExpenses / exchangeRate;
                 ((TextView) getView().findViewById(R.id.expenses)).setText(new DecimalFormat(",##0.00").format(totalExpenses) + " " + currencyCode);
                 loaderExpensesFinished = true;
                 break;
@@ -214,7 +214,7 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
         getLoaderManager().destroyLoader(LOADER_PROJECT);
         getLoaderManager().destroyLoader(LOADER_EXPENSES);
         super.onStop();

@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/item_name"
-        android:id="@+id/textViewCurrencyName"
+        android:id="@+id/textViewExcludeItems"
         android:layout_weight="2"
         android:textStyle="bold" />
 

@@ -63,6 +63,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             values.put(budgetSplitContract.participants.COLUMN_NAME, sharedPreferences.getString(getString(R.string.pref_userName), ""));
             getActivity().getContentResolver().update(contentUri, values, null, null);
         }
+
     }
 
     @Override

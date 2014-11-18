@@ -38,6 +38,8 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
         budgetSplitDBSchema.itemsParticipants_view.onCreate(database);
         budgetSplitDBSchema.projectParticipants_view.onCreate(database);
         budgetSplitDBSchema.participantTags_view.onCreate(database);
+
+        budgetSplitDBSchema.projectsParticipants.onCreateTrigger(database);
     }
 
     @Override

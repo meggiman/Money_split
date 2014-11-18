@@ -14,7 +14,7 @@ public final class budgetSplitDBSchema {
     /**
      * Contract class with all necessary Constants use from within and outside of the Content Provider.
      */
-    public budgetSplitDBSchema() {
+    private budgetSplitDBSchema() {
     }
 
     /**
@@ -175,8 +175,8 @@ public final class budgetSplitDBSchema {
                 + TABLE_CURRENCIES
                 + "("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_NAME + " TEXT NOT NULL, "
-                + COLUMN_CURRENCY_CODE + " TEXT NOT NULL, "
+                + COLUMN_NAME + " TEXT NOT NULL UNIQUE, "
+                + COLUMN_CURRENCY_CODE + " TEXT NOT NULL UNIQUE, "
                 + COLUMN_EXCHANGE_RATE + " FLOAT NOT NULL "
                 + ");";
 
@@ -219,6 +219,17 @@ public final class budgetSplitDBSchema {
                 + "PRIMARY KEY (" + COLUMN_PROJECTS_ID + ", " + COLUMN_PARTICIPANTS_ID + ")"
                 + ");";
 
+        private static final String TRIGGER_RESTRICT_ITEM_PARTICIPANTS = "restrictItemParticipants";
+        private static final String TRIGGER_CREATE = "CREATE TRIGGER "
+                + TRIGGER_RESTRICT_ITEM_PARTICIPANTS + " BEFORE DELETE ON " + TABLE_PROJECTS_PARTICIPANTS
+                + " FOR EACH ROW BEGIN SELECT CASE WHEN ((SELECT " + itemsParticipants.COLUMN_PARTICIPANTS_ID + " FROM " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS
+                + " WHERE " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID + " = OLD." + COLUMN_PARTICIPANTS_ID + ") NOTNULL)"
+                + " THEN RAISE(ABORT, 'Participant can not be deleted because he is still payer of some items.')"
+                + " WHEN ((SELECT " + items.COLUMN_CREATOR + " FROM " + items.TABLE_ITEMS + " WHERE " + items.TABLE_ITEMS + "." + items.COLUMN_CREATOR + " = OLD." + COLUMN_PARTICIPANTS_ID + ") NOTNULL)"
+                + " THEN RAISE(ABORT, 'Participant can not be deleted because he is still creator of some items.')"
+                + " END;"
+                + " END;";
+
         /**
          * Static Method to be called by SQLiteOpenHelper class for better readability.
          *
@@ -226,6 +237,10 @@ public final class budgetSplitDBSchema {
          */
         public static void onCreate(SQLiteDatabase database) {
             database.execSQL(TABLE_CREATE);
+        }
+
+        public static void onCreateTrigger(SQLiteDatabase database) {
+            database.execSQL(TRIGGER_CREATE);
         }
 
         /**
@@ -481,7 +496,7 @@ public final class budgetSplitDBSchema {
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_ITEM_CREATOR_NAME + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_ISVIRTUAL + " AS " + COLUMN_ITEM_CREATOR_IS_VIRTUAL + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_UNIQUEID + " AS " + COLUMN_ITEM_CREATOR_UNIQUE_ID + ", "
-                + "sum(" + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_AMOUNT_PAYED + "*" + currencies.TABLE_CURRENCIES + "." + currencies.COLUMN_EXCHANGE_RATE + ") AS " + COLUMN_ITEM_PRICE
+                + "total(" + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_AMOUNT_PAYED + "*" + currencies.TABLE_CURRENCIES + "." + currencies.COLUMN_EXCHANGE_RATE + ") AS " + COLUMN_ITEM_PRICE
                 + " FROM " + items.TABLE_ITEMS
                 + " LEFT OUTER JOIN " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + " ON " + items.TABLE_ITEMS + "." + _ID + " = " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_ITEM_ID
                 + " LEFT OUTER JOIN " + currencies.TABLE_CURRENCIES + " ON " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_CURRENCY_ID + " = " + currencies.TABLE_CURRENCIES + "." + _ID
@@ -626,10 +641,10 @@ public final class budgetSplitDBSchema {
         public static final String COLUMN_PARTICIPANT_TOTAL_PAYED = "participantsTotalPayed";
 
         private static final String SUB_SELECT_TOTAL_PAYED = "SELECT "
-                + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID + ", "
-                + "sum(" + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_AMOUNT_PAYED + ") AS totalPayed"
-                + " FROM " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS
-                + " GROUP BY " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID;
+                + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_PARTICIPANT_ID + ", "
+                + "total(" + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_AMOUNT_PAYED + "*" + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_CURRENCY_EXCHANGE_RATE + ") AS totalPayed"
+                + " FROM " + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS
+                + " GROUP BY " + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_PARTICIPANT_ID;
 
         private static final String VIEW_SELECT = "SELECT "
                 + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + ".rowid AS " + _ID + ", "
@@ -639,11 +654,11 @@ public final class budgetSplitDBSchema {
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_PARTICIPANT_NAME + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_UNIQUEID + " AS " + COLUMN_PARTICIPANT_UNIQUE_ID + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_ISVIRTUAL + " AS " + COLUMN_PARTICIPANT_IS_VIRTUAL + ", "
-                + "sub.totalPayed AS " + COLUMN_PARTICIPANT_TOTAL_PAYED
+                + "ifnull(sub.totalPayed,0.0) AS " + COLUMN_PARTICIPANT_TOTAL_PAYED
                 + " FROM " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS
                 + " LEFT OUTER JOIN " + projects.TABLE_PROJECTS + " ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PROJECTS_ID + " = " + projects.TABLE_PROJECTS + "." + projects._ID
                 + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PARTICIPANTS_ID + " = " + participants.TABLE_PARTICIPANTS + "." + participants._ID
-                + " LEFT OUTER JOIN (" + SUB_SELECT_TOTAL_PAYED + ") AS 'sub' ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PARTICIPANTS_ID + " = sub." + itemsParticipants.COLUMN_PARTICIPANTS_ID
+                + " LEFT OUTER JOIN (" + SUB_SELECT_TOTAL_PAYED + ") AS 'sub' ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PARTICIPANTS_ID + " = sub." + itemsParticipants_view.COLUMN_PARTICIPANT_ID
                 + ";";
 
         private static final String VIEW_CREATE = "CREATE VIEW "

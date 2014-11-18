@@ -1,7 +1,6 @@
 package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
-import android.util.Log;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -22,13 +21,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.TooManyListenersException;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -157,7 +153,7 @@ public class NewProject extends Activity implements LoaderManager.LoaderCallback
         createNewProject = (Button) findViewById(R.id.button2);
         // initialize input TextViews
         projectName = (EditText) findViewById(R.id.editText);
-        projectDescription = (EditText) findViewById(R.id.editText2);
+        projectDescription = (EditText) findViewById(R.id.editTextCurrencyName);
 
 
         createNewProject.setOnClickListener(new View.OnClickListener() {

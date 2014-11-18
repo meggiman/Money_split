@@ -1,8 +1,19 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="android:windowActionBar">true</item>
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:buttonStyle">@style/Button</item>
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Button" parent="android:Widget.DeviceDefault.Button.Borderless">
+        <item name="android:textColor">#ff5ab3de</item>
+        <item name="android:padding">3dp</item>
+        <item name="android:minWidth">88dp</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
 </resources>
