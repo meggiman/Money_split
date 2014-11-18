@@ -260,8 +260,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             case LOADER_CURRENCIES:
                 return new CursorLoader(getApplicationContext(), budgetSplitContract.currencies.CONTENT_URI, budgetSplitContract.currencies.PROJECTION_ALL, null, null, null);
             case LOADER_PARTICIPANTS:
-                //TODO Change CursorLoader so that only ProjectParticipants will be showed.
-                return new CursorLoader(getApplicationContext(), budgetSplitContract.participants.CONTENT_URI, budgetSplitContract.participants.PROJECTION_ALL, null, null, null);
+                return new CursorLoader(getApplicationContext(), ContentUris.withAppendedId(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, projectId), budgetSplitContract.projectsParticipantsDetailsRO.PROJECTION_ALL, null, null, null);
 
             case LOADER_PROJECT:
                 String[] projection = {budgetSplitContract.projectsDetailsRO._ID,
@@ -637,13 +636,13 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         excludeItemsToDelete = new ArrayList<ExcludeItem>();
         excludeItemsAlreadyAdded = new ArrayList<ExcludeItem>();
         excludeItemsNotAdded = new ArrayList<ExcludeItem>();
-        CursorJoiner joiner1 = new CursorJoiner(cursorParticipants, new String[]{budgetSplitContract.participants._ID}, cursorExcludeItems, new String[]{budgetSplitContract.excludeItems.COLUMN_PARTICIPANTS_ID});
+        CursorJoiner joiner1 = new CursorJoiner(cursorParticipants, new String[]{budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID}, cursorExcludeItems, new String[]{budgetSplitContract.excludeItems.COLUMN_PARTICIPANTS_ID});
         for (CursorJoiner.Result result : joiner1) {
             switch (result) {
                 case LEFT:
-                    Long participantId = cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.participants._ID));
-                    String participantName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME));
-                    String uniqueId = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_UNIQUEID));
+                    Long participantId = cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID));
+                    String participantName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME));
+                    String uniqueId = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_UNIQUE_ID));
                     ExcludeItem newExcludeItem = new ExcludeItem(itemId, participantId, participantName, uniqueId, 0);
                     excludeItemsNotAdded.add(newExcludeItem);
                     break;
@@ -779,9 +778,9 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
         excludeItemsAlreadyAdded = new ArrayList<ExcludeItem>();
         excludeItemsNotAdded = new ArrayList<ExcludeItem>();
         for (cursorParticipants.moveToFirst(); !cursorParticipants.isAfterLast(); cursorParticipants.moveToNext()) {
-            Long participantId = cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.participants._ID));
-            String participantName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME));
-            String uniqueId = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_UNIQUEID));
+            Long participantId = cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID));
+            String participantName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME));
+            String uniqueId = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_UNIQUE_ID));
             ExcludeItem newExcludeItem = new ExcludeItem(itemId, participantId, participantName, uniqueId, 0);
             excludeItemsNotAdded.add(newExcludeItem);
         }
@@ -1409,14 +1408,14 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     cursorParticipants.moveToPosition(i);
-                    Long payerId = cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.participants._ID));
-                    String payerName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME));
-                    String uniqueId = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_UNIQUEID));
-                    boolean isVirtual = cursorParticipants.getInt(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_ISVIRTUAL)) > 0;
+                    Long payerId = cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID));
+                    String payerName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME));
+                    String uniqueId = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_UNIQUE_ID));
+                    boolean isVirtual = cursorParticipants.getInt(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_IS_VIRTUAL)) > 0;
                     Payer newPayer = new Payer(payerId, payerName, isVirtual, uniqueId);
                     addPayer(newPayer);
                 }
-            }, budgetSplitContract.participants.COLUMN_NAME);
+            }, budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME);
             payerChooserPopup = myDialogBuilder.create();
         }
         payerChooserPopup.show();
@@ -1521,9 +1520,9 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             this.shareRatio = shareRatio;
             if (cursorParticipants != null && cursorParticipants.getCount() > 0) {
                 for (cursorParticipants.moveToFirst(); !cursorParticipants.isAfterLast(); cursorParticipants.moveToNext()) {
-                    if (cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.participants._ID)) == participantId) {
-                        participantName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME));
-                        uniqueId = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.participants.COLUMN_UNIQUEID));
+                    if (cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID)) == participantId) {
+                        participantName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME));
+                        uniqueId = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_UNIQUE_ID));
                         break;
                     }
                 }

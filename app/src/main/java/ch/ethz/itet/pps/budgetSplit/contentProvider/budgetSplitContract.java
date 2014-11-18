@@ -295,7 +295,6 @@ public class budgetSplitContract {
 
         static final String[] PROJECTION_DB_ALL = {_ID, COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED};
 
-
         static final Cursor query(SQLiteDatabase database, long projectId, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
             if (database.isOpen()) {
                 String[] projectIdArgs = {Long.toString(projectId)};
@@ -311,12 +310,12 @@ public class budgetSplitContract {
 
                 String sqlMultiplyList = "SELECT "
                         + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items._ID + " AS itemId, "
-                        + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " AS participantId, "
+                        + budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + budgetSplitDBSchema.projectsParticipants.COLUMN_PARTICIPANTS_ID + " AS participantId, "
                         + "coalesce(" + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_SHARE_RATIO + ", sub.include, 1) AS shareRatio"
-                        + " FROM " + budgetSplitDBSchema.items.TABLE_ITEMS + ", " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS
-                        + " LEFT OUTER JOIN (" + sqlSubSelect + ") AS 'sub' ON " + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items._ID + " = sub." + budgetSplitDBSchema.itemsTags.COLUMN_ITEMS_ID + " AND " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " = sub." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID
-                        + " LEFT OUTER JOIN " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + " ON " + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items._ID + " = " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_ITEM_ID + " AND " + budgetSplitDBSchema.participants.TABLE_PARTICIPANTS + "." + budgetSplitDBSchema.participants._ID + " = " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_PARTICIPANTS_ID
-                        + " WHERE " + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items.COLUMN_PROJECT_ID + " = ?"
+                        + " FROM " + budgetSplitDBSchema.items.TABLE_ITEMS + ", " + budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS
+                        + " LEFT OUTER JOIN (" + sqlSubSelect + ") AS 'sub' ON " + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items._ID + " = sub." + budgetSplitDBSchema.itemsTags.COLUMN_ITEMS_ID + " AND " + budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + budgetSplitDBSchema.projectsParticipants.COLUMN_PARTICIPANTS_ID + " = sub." + budgetSplitDBSchema.tagFilter.COLUMN_PARTICIPANTS_ID
+                        + " LEFT OUTER JOIN " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + " ON " + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items._ID + " = " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_ITEM_ID + " AND " + budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + budgetSplitDBSchema.projectsParticipants.COLUMN_PARTICIPANTS_ID + " = " + budgetSplitDBSchema.excludeItems.TABLE_EXCLUDE_ITEMS + "." + budgetSplitDBSchema.excludeItems.COLUMN_PARTICIPANTS_ID
+                        + " WHERE " + budgetSplitDBSchema.items.TABLE_ITEMS + "." + budgetSplitDBSchema.items.COLUMN_PROJECT_ID + " = ? AND " + budgetSplitDBSchema.projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + budgetSplitDBSchema.projectsParticipants.COLUMN_PROJECTS_ID + " = ?"
                         + ";";
                 String sqlCreateTempTable = "CREATE TEMP TABLE multiplyList AS " + sqlMultiplyList;
 
@@ -346,7 +345,7 @@ public class budgetSplitContract {
                 try {
                     database.execSQL("DROP TABLE IF EXISTS multiplyList");
                     database.execSQL("DROP TABLE IF EXISTS projectParticipantsDetails");
-                    database.execSQL(sqlCreateTempTable, projectIdArgs);
+                    database.execSQL(sqlCreateTempTable, new String[]{projectIdArgs[0], projectIdArgs[0]});
                     database.execSQL(sqlProjectParticipantCreateTempTable, projectIdArgs);
                     result = database.query("projectParticipantsDetails", projection, selection, selectionArgs, null, null, sortOrder);
                     ArrayList<String> names = new ArrayList<String>();
