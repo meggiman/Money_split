@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -22,13 +23,17 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -37,19 +42,21 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
 
     // For Item or Participant
     static final String EXTRA_ID = "Id";
-    static final String EXTRA_TAGFILTER_VISIBLE = "tagfilterVisible";
+    static final String EXTRA_TAGFILTER_VISIBLE = "tagfilterVisible"; // tells you if you're coming from a contacts activity or from a items activity
     static final String EXTRA_TITLE = "title";
     static final int LOADER_TAGS_ALL = 0;
     static final int LOADER_TAGS = 1;
+    static final int LOADER_TAGS_ITEM = 2;
     boolean tagsAllFinished = false;
     boolean tagsFinished = false;
+    boolean tagsItemFinished = false;
     Intent intent = new Intent();
 
 
     ProgressBar progressBar;
     ArrayList<Long> tagIds;
+    List<Tag> data = new ArrayList<Tag>();
     TagAdapter tagsGridAdapter;
-    Cursor tagCursor;
 
 
     Button newTag;
@@ -75,19 +82,75 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // update Tagfilter!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                int tagCount = tagGrid.getCount();
-                SparseBooleanArray checked = tagGrid.getCheckedItemPositions();
-                ContentValues tagIds = new ContentValues();
-                for (int i = 0; i < tagCount; i++) {
-                    if (checked.get(i)) {
-                        Tag item = (Tag) tagGrid.getItemAtPosition(i);
-                        tagIds.put(budgetSplitContract.tagFilter.COLUMN_TAG_ID, item.id);
-                        tagIds.put(budgetSplitContract.tagFilter.COLUMN_PARTICIPANTS_ID, intent.getStringExtra(EXTRA_ID));
-                        getContentResolver().insert(budgetSplitContract.tagFilter.CONTENT_URI, tagIds);
-                        tagIds.clear();
+                // coming from a Contacts Activity
+                if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
+
+                    for (int i = 0; i < data.size(); i++) {
+                        if (data.get(i).checked) {
+                            boolean insert = true;
+                            for (int j = 0; i < tagIds.size(); j++) {
+                                if (data.get(i).id == tagIds.get(j)) {
+                                    // Item was already Checked and thus stays in the Tagfilter
+                                    // do nothing especially no insert
+                                    insert = false;
+                                }
+                            }
+                            if (insert == true) {
+                                // The right junktion does not yet exist -> insert
+                                ContentValues cv = new ContentValues();
+                                cv.put(budgetSplitContract.tagFilter.COLUMN_PARTICIPANTS_ID, intent.getLongExtra(EXTRA_ID, -1));
+                                cv.put(budgetSplitContract.tagFilter.COLUMN_TAG_ID, data.get(i).id);
+                                getContentResolver().insert(budgetSplitContract.tagFilter.CONTENT_URI, cv);
+                            }
+                        } else { // data.checked == false
+                            boolean delete = false;
+                            for (int j = 0; i < tagIds.size(); j++) {
+                                if (data.get(i).id == tagIds.get(j)) {
+                                    // The Tag was checked before but isn't anmore -> delete
+                                    delete = true;
+                                }
+                            }
+                            if (delete == true) {
+                                // Manu Fragen --> Delete junktion where participantID == intent.extra && TagID == data.get(i).id
+                            }
+                        }
                     }
                 }
+                // coming from an Items Activity (tagfilterVisible==false)
+                else {
+                    for (int i = 0; i < data.size(); i++) {
+                        if (data.get(i).checked) {
+                            boolean insert = true;
+                            for (int j = 0; i < tagIds.size(); j++) {
+                                if (data.get(i).id == tagIds.get(j)) {
+                                    // Item was already Checked and thus stays in the Tagfilter
+                                    // do nothing especially no insert
+                                    insert = false;
+                                }
+                            }
+                            if (insert == true) {
+                                // The right junktion does not yet exist -> insert
+                                ContentValues cv = new ContentValues();
+                                cv.put(budgetSplitContract.itemsTags.COLUMN_ITEM_ID, intent.getLongExtra(EXTRA_ID, -1));
+                                cv.put(budgetSplitContract.itemsTags.COLUMN_TAGS_ID, data.get(i).id);
+                                getContentResolver().insert(budgetSplitContract.itemsTags.CONTENT_URI, cv);
+                            }
+                        } else { // data.checked == false
+                            boolean delete = false;
+                            for (int j = 0; i < tagIds.size(); j++) {
+                                if (data.get(i).id == tagIds.get(j)) {
+                                    // The Tag was checked before but isn't anmore -> delete
+                                    delete = true;
+                                }
+                            }
+                            if (delete == true) {
+                                // Manu Fragen --> Delete junktion where participantID == intent.extra && TagID == data.get(i).id
+                            }
+                        }
+                    }
+                }
+
+
                 finish();
             }
         });
@@ -100,7 +163,8 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
         });
         tagGrid = (GridView) findViewById(R.id.tag_selection_gridView_tags);
         // Sets the selection colours
-        tagGrid.setSelector(R.drawable.gridview_item_background);
+        //tagGrid.setSelector(R.drawable.gridview_item_background);
+        tagGrid.setAdapter(new TagAdapter(this, R.layout.activity_tag_selection_checkable_row, data));
 
         tagfilter = (TextView) findViewById(R.id.tag_selection_tagfilter);
         tagfilter.setVisibility(View.VISIBLE);
@@ -183,6 +247,14 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
                 String selection = new String(budgetSplitContract.tagFilter.COLUMN_PARTICIPANTS_ID + " = " + contactId.toString());
                 return new CursorLoader(this, budgetSplitContract.tagFilter.CONTENT_URI, projection1, selection, null, null);
 
+            case LOADER_TAGS_ITEM:
+                String[] projection2 = new String[]{
+                        budgetSplitContract.itemsTags.COLUMN_TAGS_ID
+                };
+                Long itemId = getIntent().getLongExtra(EXTRA_ID, -1);
+                String selection1 = new String(budgetSplitContract.itemsTags.COLUMN_ITEM_ID + " = " + itemId.toString());
+                return new CursorLoader(this, budgetSplitContract.itemsTags.CONTENT_URI, projection2, selection1, null, null);
+
             default:
                 throw new IllegalArgumentException("Unknown Loader");
         }
@@ -193,52 +265,54 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
         switch (cursorLoader.getId()) {
 
             case LOADER_TAGS_ALL:
+                data.clear();
                 if (cursor.getCount() > 0) {
-                    int capacity = cursor.getCount();
-                    Tag[] data = new Tag[capacity];
-                    int i = 0;
                     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                        data[i] = new Tag();
-                        data[i].name = cursor.getString(cursor.getColumnIndex(budgetSplitContract.tags.COLUMN_NAME));
-                        data[i].id = cursor.getLong(cursor.getColumnIndex(budgetSplitContract.tags._ID));
-                        i++;
+                        data.add(new Tag(cursor.getString(cursor.getColumnIndex(budgetSplitContract.tags.COLUMN_NAME)), cursor.getLong(cursor.getColumnIndex(budgetSplitContract.tags._ID)), false));
                     }
-                    tagsGridAdapter = new TagAdapter(this, R.layout.activity_tags_gridview_layout, data);
+                    tagsGridAdapter = new TagAdapter(this, R.layout.activity_tag_selection_checkable_row, data);
                 }
                 tagGrid.setAdapter(tagsGridAdapter);
                 tagsAllFinished = true;
                 break;
 
             case LOADER_TAGS:
-                tagCursor = cursor;
-                tagsFinished = true;
+                tagIds = new ArrayList<Long>();
+                if (cursor.getCount() > 0) {
+                    for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                        tagIds.add(cursor.getLong(cursor.getColumnIndex(budgetSplitContract.participantsTagsDetails.COLUMN_TAG_ID)));
+                    }
+                    tagsFinished = true;
+                }
+                break;
+
+            case LOADER_TAGS_ITEM:
+                tagIds = new ArrayList<Long>();
+                if (cursor.getCount() > 0) {
+                    for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                        tagIds.add(cursor.getLong(cursor.getColumnIndex(budgetSplitContract.itemsTags.COLUMN_TAGS_ID)));
+                    }
+                    tagsItemFinished = true;
+                }
                 break;
         }
 
-        if (tagsFinished && tagsAllFinished) {
-            tagIds = new ArrayList<Long>();
-            if (tagCursor.getCount() > 0) {
-                for (tagCursor.moveToFirst(); !tagCursor.isAfterLast(); tagCursor.moveToNext()) {
-                    tagIds.add(tagCursor.getLong(tagCursor.getColumnIndex(budgetSplitContract.participantsTagsDetails.COLUMN_TAG_ID)));
-                }
-                Tag item;
-                for (int i = 0; i < tagGrid.getCount(); i++) {
-                    item = (Tag) tagGrid.getItemAtPosition(i);
+
+        if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
+            if ((tagsFinished || tagsItemFinished) && tagsAllFinished) {
+                for (int i = 0; i < data.size(); i++) {
                     for (int j = 0; j < tagIds.size(); j++) {
-                        if (item.id == tagIds.get(j)) {
-                            tagGrid.setSelection(i);
+                        if (data.get(i).id == (Long) tagIds.get(j)) {
+                            data.get(i).checked = true;
+                        }
                         }
                     }
                 }
+            tagGrid.setAdapter(new TagAdapter(this, R.layout.activity_tag_selection_checkable_row, data));
+            // Hide Progress Bar
+            progressBar.setVisibility(View.GONE);
             }
 
-            tagGrid.setMultiChoiceModeListener(new MultiChoiceModeListener());
-
-        }
-
-        // Hide Progress Bar
-
-        progressBar.setVisibility(View.GONE);
 
 
     }
@@ -252,83 +326,92 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
     class Tag {
         String name;
         Long id;
+        boolean checked;
 
         public Tag() {
             super();
         }
 
-        public Tag(String n) {
+        public Tag(String n, Long i, boolean c) {
+
             this.name = n;
+            this.id = i;
+            this.checked = c;
         }
     }
 
-    class TagHolder {
+    class TagHolder extends ClickableListAdapter.ViewHolder {
         TextView name;
+
+        public TagHolder(TextView t) {
+            name = t;
+        }
     }
 
-    public class TagAdapter extends ArrayAdapter<Tag> {
+    public class TagAdapter extends ClickableListAdapter {
         Context context;
         int layoutResourceId;
-        Tag[] data = null;
+        List<Tag> data = null;
 
 
-        public TagAdapter(Context c, int l, Tag[] d) {
+        public TagAdapter(Context c, int l, List<Tag> d) {
             super(c, l, d);
             this.context = c;
             this.layoutResourceId = l;
             this.data = d;
         }
 
+        protected void bindHolder(ViewHolder h) {
+            // Binding the holder keeps our data up to date.
+            // In contrast to createHolder this method is called for all items
+            // So, be aware when doing a lot of heavy stuff here.
+            // we simply transfer our object's data to the list item representative
+
+            //cast the TagHolder
+            TagHolder th = (TagHolder) h;
+            Tag item = (Tag) th.data;
+            // transfer the name
+            th.name.setText(item.name);
+        }
+
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View row = convertView;
-            TagHolder holder = null;
+        protected ViewHolder createHolder(View v) {
+            // createHolder will be called only as long, as the ListView is not filled
+            // entirely. That is, where we gain our performance:
+            // We use the relatively costly findViewById() methods and
+            // bind the view's reference to the holder objects.
 
-            if (row == null) {
-                LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-                row = inflater.inflate(layoutResourceId, parent, false);
+            TextView textV = (TextView) v.findViewById(R.id.activity_tag_selection_checkable_row_textview);
+            ViewHolder holder = new TagHolder(textV);
 
-                holder = new TagHolder();
-                holder.name = (TextView) row.findViewById(R.id.activity_new_tag_gridview_textview);
+            textV.setOnClickListener(new ClickableListAdapter.OnClickListener(holder) {
+                public void onClick(View v, ViewHolder viewHolder) {
+                    TagHolder clickHolder = (TagHolder) viewHolder;
+                    Tag tag = (Tag) clickHolder.data;
+                    tag.checked = !tag.checked; // toggle
+                    if (tag.checked) {
+                        clickHolder.name.setBackgroundColor(Color.CYAN);
+                    } else {
+                        clickHolder.name.setBackgroundColor(0);
+                    }
 
-                row.setTag(holder);
-            } else {
-                holder = (TagHolder) row.getTag();
-            }
+                }
 
-            Tag t = data[position];
-            holder.name.setText(t.name);
+            });
 
-            return row;
+            // Still need to implement long clicklistener --> Delete!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            return holder;
         }
-    }
-
-    public class MultiChoiceModeListener implements GridView.MultiChoiceModeListener {
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.setTitle("Select Items");
-            mode.setSubtitle("No item selected");
-            return true;
-        }
-
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return true;
-        }
-
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            return true;
-        }
-
-        public void onDestroyActionMode(ActionMode mode) {
-        }
-
-        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            int selectCount = tagGrid.getCheckedItemCount();
-            mode.setTitle("Selected Tags");
-            mode.setSubtitle(selectCount + "Tags selected");
-        }
-
     }
 }
+
+
+
+
+
+
+
 
 
 

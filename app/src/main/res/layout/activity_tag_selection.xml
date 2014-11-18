@@ -35,7 +35,7 @@
     <GridView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:columnWidth="65dp"
+        android:columnWidth="80dp"
         android:id="@+id/tag_selection_gridView_tags"
         android:choiceMode="multipleChoiceModal"
         android:numColumns="auto_fit"
