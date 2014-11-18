@@ -36,6 +36,8 @@ import android.widget.*;
 
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -1329,7 +1331,14 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                 switch (i) {
                     case EditorInfo.IME_ACTION_DONE:
                         if (textView.getText().toString().length() > 0) {
-                            Double newValue = Double.parseDouble(textView.getText().toString());
+                            Double newValue = null;
+                            try {
+                                newValue = NumberFormat.getInstance().parse((textView.getText().toString().replace(defaultCurrencyCode, ""))).doubleValue();
+                            } catch (ParseException e) {
+                                Animation shake = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+                                textView.startAnimation(shake);
+                                Toast.makeText(getContext(), getString(R.string.please_enter_valid_value), Toast.LENGTH_SHORT).show();
+                            }
                             saveValueChanges(newValue);
                             textView.clearFocus();
                             InputMethodManager mnr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -1349,7 +1358,14 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
                     if (((EditText) view).getText().toString().length() > 0) {
-                        Double newValue = Double.parseDouble(((EditText) view).getText().toString());
+                        Double newValue = null;
+                        try {
+                            newValue = NumberFormat.getInstance().parse((((EditText) view).getText().toString().replace(defaultCurrencyCode, ""))).doubleValue();
+                        } catch (ParseException e) {
+                            Animation shake = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+                            view.startAnimation(shake);
+                            Toast.makeText(getContext(), getString(R.string.please_enter_valid_value), Toast.LENGTH_SHORT).show();
+                        }
                         saveValueChanges(newValue);
                         ((EditText) view).setText(new DecimalFormat(",##0.00").format(newValue));
                     } else {
@@ -1358,7 +1374,6 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                     }
                 }
             }
-
             void saveValueChanges(double newValue) {
                 Payer payer = (Payer) holder.value.getTag();
                 payer.amountPayed = newValue;

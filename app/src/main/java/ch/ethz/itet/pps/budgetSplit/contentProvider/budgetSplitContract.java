@@ -378,7 +378,7 @@ public class budgetSplitContract {
         static final int PARTICIPANTS_TAG_DETAILS = 162;
 
         public static final Uri CONTENT_URI_ALL = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_PARTICIPANTS_TAGS_DETAILS_RO);
-        public static final Uri CONTENT_URI_SINGLE_ITEM = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_PARTICIPANT_TAGS_DETAILS_RO);
+        public static final Uri CONTENT_URI_SINGLE_PARTICIPANT = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_PARTICIPANT_TAGS_DETAILS_RO);
         public static final Uri CONTENT_URI_SINGLE_TAG = Uri.withAppendedPath(budgetSplitContract.CONTENT_URI, TABLE_PARTICIPANTS_TAG_DETAILS_RO);
 
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + TABLE_PARTICIPANTS_TAGS_DETAILS_RO;

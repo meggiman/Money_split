@@ -777,7 +777,7 @@ public class budgetSplitContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_ALL, null);
-                getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_SINGLE_ITEM, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_SINGLE_PARTICIPANT, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_SINGLE_TAG, null);
                 break;
             case budgetSplitContract.participants.PARTICIPANT:
@@ -786,7 +786,7 @@ public class budgetSplitContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_ALL, null);
-                getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_SINGLE_ITEM, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_SINGLE_PARTICIPANT, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.participantsTagsDetails.CONTENT_URI_SINGLE_TAG, null);
                 break;
 
