@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="dark_green">#339933</color>
-    <color name="primary_green">#ff22de64</color>
+    <color name="primary_dark_green">#388e3c</color>
+    <color name="primary_green">#4caf50</color>
+    <color name="primary_light_green">#c8e6c9</color>
+    <color name="accent_mint">#69f0ae</color>
+    <color name="accent_dark_mint">#00e676</color>
+    <color name="accent_light_mint">#b9f6ca</color>
 </resources>
