@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:context="ch.ethz.itet.pps.budgetSplit.ProjectOverview"
-                android:padding="8dp">
+                android:padding="@dimen/global_margins">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -16,7 +16,7 @@
         android:textAlignment="center"
         android:textStyle="italic"
         android:layout_alignStart="@+id/textViewAdmin"
-        android:layout_margin="4dp"
+        android:layout_margin="@dimen/global_margins"
         android:layout_below="@+id/summary_listview_expences"
         android:layout_alignParentLeft="true"/>
 
@@ -28,7 +28,7 @@
         android:id="@+id/textViewCreator"
         android:layout_below="@+id/textViewAdmin"
         android:layout_alignParentLeft="true"
-        android:layout_margin="4dp"/>
+        android:layout_margin="@dimen/global_margins"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
         android:layout_toEndOf="@+id/textViewCreator"
         android:layout_toRightOf="@+id/textViewCreator"
         android:layout_alignBaseline="@+id/textViewCreator"
-        android:layout_margin="4dp"/>
+        android:layout_margin="@dimen/global_margins"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
         android:text="@string/administrator"
         android:id="@+id/textViewAdmin"
         android:layout_alignParentLeft="true"
-        android:layout_margin="4dp"
+        android:layout_margin="@dimen/global_margins"
         android:layout_alignParentTop="true"/>
 
     <TextView
@@ -59,7 +59,7 @@
         android:id="@+id/administrator"
         android:layout_toRightOf="@id/textViewAdmin"
         android:layout_alignBaseline="@+id/textViewAdmin"
-        android:layout_margin="4dp"></TextView>
+        android:layout_margin="@dimen/global_margins"></TextView>
 
     <TextView
         android:layout_width="wrap_content"
@@ -70,7 +70,7 @@
         android:layout_below="@+id/textViewCreator"
         android:layout_alignStart="@+id/textViewCreator"
         android:layout_alignParentLeft="true"
-        android:layout_margin="4dp"/>
+        android:layout_margin="@dimen/global_margins"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -81,7 +81,7 @@
         android:layout_toRightOf="@+id/summary_listview_expences"
         android:layout_toEndOf="@+id/projectDescription"
         android:layout_alignBaseline="@+id/summary_listview_expences"
-        android:layout_margin="4dp"/>
+        android:layout_margin="@dimen/global_margins"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -89,7 +89,7 @@
         android:text="@string/finalize"
         android:id="@+id/buttonFinalize"
         android:layout_toLeftOf="@+id/buttonAddItem"
-        android:layout_margin="4dp"
+        android:layout_margin="@dimen/global_margins"
         android:layout_below="@+id/projectDescription"/>
 
     <Button
@@ -98,7 +98,7 @@
         android:text="@string/addItem"
         android:id="@+id/buttonAddItem"
         android:layout_alignParentRight="true"
-        android:layout_margin="4dp"
+        android:layout_margin="@dimen/global_margins"
         android:layout_below="@+id/projectDescription"/>
 
     <ProgressBar
@@ -108,5 +108,5 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:visibility="gone"
-        android:layout_margin="8dp"/>
+        android:layout_margin="@dimen/global_margins"/>
 </RelativeLayout>
