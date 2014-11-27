@@ -319,7 +319,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
             if (ptl.depths > 0) {
                 holder.depths.setTextColor(Color.RED);
             } else {
-                holder.depths.setTextColor(getResources().getColor(R.color.dark_green));
+                holder.depths.setTextColor(getResources().getColor(R.color.primary_dark_green));
             }
             holder.tags.setText(ptl.tags);
 

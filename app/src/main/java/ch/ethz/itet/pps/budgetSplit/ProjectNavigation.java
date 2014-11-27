@@ -18,12 +18,13 @@ import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
-public class ProjectNavigation extends Activity implements ActionBar.TabListener {
+public class ProjectNavigation extends ActionBarActivity implements android.support.v7.app.ActionBar.TabListener {
 
     /**
      * Extra messages to use for Intent to start this Activity.
@@ -63,7 +64,7 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
         setContentView(R.layout.activity_project_navigation);
 
         // Set up the action bar.
-        final ActionBar actionBar = getActionBar();
+        final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three
@@ -158,19 +159,20 @@ public class ProjectNavigation extends Activity implements ActionBar.TabListener
 
     }
 
+
     @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    public void onTabSelected(android.support.v7.app.ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    public void onTabUnselected(android.support.v7.app.ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
     }
 
     @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    public void onTabReselected(android.support.v7.app.ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
     }
 
     /**

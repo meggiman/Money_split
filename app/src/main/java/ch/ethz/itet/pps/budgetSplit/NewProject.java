@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
-public class NewProject extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class NewProject extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     //declarations:
 

@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ActionMode;
@@ -34,7 +35,7 @@ import android.widget.Toast;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
-public class currencies extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class currencies extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int LOADER_CURRENCIES = 1;
 

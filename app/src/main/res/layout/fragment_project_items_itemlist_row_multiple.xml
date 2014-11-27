@@ -8,7 +8,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/checkBox" />
+        android:id="@+id/checkBox"/>
 
     <TextView
         android:layout_width="0dp"
@@ -16,7 +16,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="1.1.1900"
         android:id="@+id/textViewDateAdded"
-        android:layout_weight="1" />
+        android:layout_weight="1"/>
 
     <TextView
         android:layout_width="0dp"
@@ -24,7 +24,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Item name"
         android:id="@+id/textViewItemName"
-        android:layout_weight="2" />
+        android:layout_weight="2"/>
 
     <TextView
         android:layout_width="0dp"
@@ -32,13 +32,13 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Creator"
         android:id="@+id/textViewCreator"
-        android:layout_weight="1" />
+        android:layout_weight="1"/>
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Price"
-        android:id="@+id/textViewPrice"
-        android:layout_weight="1" />
+        android:id="@+id/textViewAdmin"
+        android:layout_weight="1"/>
 </LinearLayout>

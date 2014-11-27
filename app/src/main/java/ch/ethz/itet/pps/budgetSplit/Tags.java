@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
-public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class Tags extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     static final int LOADER_TAGS = 5;
     ProgressBar progressBar;

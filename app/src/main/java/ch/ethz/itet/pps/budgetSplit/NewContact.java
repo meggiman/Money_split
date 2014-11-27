@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +17,7 @@ import android.widget.Toast;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
-public class NewContact extends Activity {
+public class NewContact extends ActionBarActivity {
 
     //Inicialization
     Button newContactVirtual;

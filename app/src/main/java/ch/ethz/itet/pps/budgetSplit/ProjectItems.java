@@ -30,17 +30,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -116,7 +113,7 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
                 budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_NAME,
                 budgetSplitContract.itemsDetailsRO.COLUMN_CREATOR_NAME,
                 budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_PRICE};
-        int to[] = {R.id.textViewDateAdded, R.id.textViewItemName, R.id.textViewCreator, R.id.textViewPrice};
+        int to[] = {R.id.textViewDateAdded, R.id.textViewItemName, R.id.textViewCreator, R.id.textViewAdmin};
         itemsSingleAdapter = new ItemAdapter(getActivity(), null, 0);
         View itemListHeaderView = inflater.inflate(R.layout.fragment_project_items_itemlist_header, null);
         itemsList.addHeaderView(itemListHeaderView, null, false);
@@ -303,7 +300,7 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
             TextView dateAddedView = (TextView) view.findViewById(R.id.textViewDateAdded);
             TextView itemNameView = (TextView) view.findViewById(R.id.textViewItemName);
             TextView itemCreatorView = (TextView) view.findViewById(R.id.textViewCreator);
-            TextView priceView = (TextView) view.findViewById(R.id.textViewPrice);
+            TextView priceView = (TextView) view.findViewById(R.id.textViewAdmin);
 
             dateAddedView.setText(cursor.getString(cursor.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_DATE_ADDED)));
             itemNameView.setText(cursor.getString(cursor.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_NAME)));

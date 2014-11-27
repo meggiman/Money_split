@@ -166,7 +166,6 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
                     int nrOfParticipants = cursor.getInt(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetailsRO.COLUMN_NR_OF_PARTICIPANTS));
                     int nrOfItems = cursor.getInt(cursor.getColumnIndexOrThrow(budgetSplitContract.projectsDetailsRO.COLUMN_NR_OF_ITEMS));
 
-                    ((TextView) getView().findViewById(R.id.projectName)).setText(projectName);
                     ((TextView) getView().findViewById(R.id.projectDescription)).setText(projectDescription);
                     ((TextView) getView().findViewById(R.id.administrator)).setText(projectAdminName);
                     ((TextView) getView().findViewById(R.id.CountOfParticipants)).setText(Integer.toString(nrOfParticipants));

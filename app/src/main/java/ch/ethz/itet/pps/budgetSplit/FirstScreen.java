@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +28,7 @@ import java.util.regex.Pattern;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
-public class FirstScreen extends Activity {
+public class FirstScreen extends ActionBarActivity {
 
     ContentValues newContactParticipant;
     String hashStringHex = "";

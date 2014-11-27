@@ -5,17 +5,6 @@
                 tools:context="ch.ethz.itet.pps.budgetSplit.ProjectSummary">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/project_summary_title"
-        android:textStyle="bold"
-        android:textSize="25dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentStart="false"
-        android:gravity="center_horizontal"
-        android:id="@+id/textViewExcludeItems"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,10 +12,9 @@
         android:text="@string/nr_of_items"
         android:textSize="15dp"
         android:id="@+id/fragment_summary_textview_nr_items"
-        android:layout_below="@+id/textViewExcludeItems"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="35dp"/>
+        android:layout_marginTop="15dp"/>
 
     <TextView
         android:layout_width="wrap_content"

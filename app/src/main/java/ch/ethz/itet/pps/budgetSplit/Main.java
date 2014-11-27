@@ -16,6 +16,7 @@ import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +34,7 @@ import javax.microedition.khronos.opengles.GL10Ext;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
-public class Main extends Activity implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class Main extends ActionBarActivity implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_LOAD_PROJECT = 1;
     public static final int RESULT_PROJECT_DELETED = 1;

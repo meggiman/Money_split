@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -47,7 +48,7 @@ import java.util.zip.Inflater;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
-public class add_new_item extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class add_new_item extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     static final String LOG_TAG = "addNewItemActivity";
 
     public static final String EXTRA_ITEM_DETAILS_URI = "itemUri";
@@ -1373,6 +1374,7 @@ public class add_new_item extends Activity implements LoaderManager.LoaderCallba
                     }
                 }
             }
+
             void saveValueChanges(double newValue) {
                 Payer payer = (Payer) holder.value.getTag();
                 payer.amountPayed = newValue;
