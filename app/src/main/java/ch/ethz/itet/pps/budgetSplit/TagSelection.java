@@ -71,8 +71,11 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
 
         intent = getIntent();
 
-
-        getLoaderManager().initLoader(LOADER_TAGS_PARTICIPANTS, null, this);
+        if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
+            getLoaderManager().initLoader(LOADER_TAGS_PARTICIPANTS, null, this);
+        } else {
+            getLoaderManager().initLoader(LOADER_TAGS_ITEM, null, this);
+        }
         getLoaderManager().initLoader(LOADER_TAGS_ALL, null, this);
 
         ok = (Button) findViewById(R.id.tag_selection_ok);

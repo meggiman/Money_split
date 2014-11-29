@@ -10,6 +10,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +30,7 @@ import java.util.List;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
-public class ContactsList extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ContactsList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     ListView list;
     ProgressBar progressBar;
@@ -49,7 +50,7 @@ public class ContactsList extends Activity implements LoaderManager.LoaderCallba
             @Override
             public void onClick(View view) {
                 Intent createContactIntent = new Intent(ContactsList.this, NewContact.class);
-                startActivity(createContactIntent);
+                startActivityForResult(createContactIntent, 0);
             }
         });
 
@@ -71,8 +72,15 @@ public class ContactsList extends Activity implements LoaderManager.LoaderCallba
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_add_contact:
+                Intent createContactIntent = new Intent(ContactsList.this, NewContact.class);
+                startActivityForResult(createContactIntent, 0);
+                break;
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

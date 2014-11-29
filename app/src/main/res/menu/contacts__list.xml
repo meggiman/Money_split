@@ -1,9 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ch.ethz.itet.pps.budgetSplit.ContactsList">
+      xmlns:ContactsList="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="ch.ethz.itet.pps.budgetSplit.ContactsList">
     <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
-        android:showAsAction="never" />
+        ContactsList:showAsAction="never"/>
+    <item
+        android:id="@+id/action_add_contact"
+        android:title="@string/add_contact"
+        android:icon="@drawable/ic_action_add_person"
+        android:orderInCategory="80"
+        ContactsList:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/Tags"
+        android:title="@string/tags"
+        android:orderInCategory="99"
+        ContactsList:showAsAction="never"/>
+
 </menu>

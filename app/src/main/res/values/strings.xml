@@ -131,6 +131,9 @@
     <string name="title_activity_activity_tags_gridview_layout">Tags</string>
     <string name="title_activity_contacts__list">Contacts List</string>
     <string name="title_activity_tag_selection">Select Tags</string>
+    <string name="add_contact">Add Contact</string>
+    <string name="save">Save</string>
+    <string name="new_tag">New Tag</string>
 
 
 </resources>

@@ -1,13 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:project_navigation="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="ch.ethz.itet.pps.budgetSplit.ProjectNavigation">
     <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
+        project_navigation:showAsAction="never"/>
+    <item
+        android:id="@+id/Tags"
+        android:title="@string/tags"
+        android:orderInCategory="99"
+        project_navigation:showAsAction="never"/>
     <item
         android:id="@+id/action_currencies"
         android:title="@string/currencies"
-        android:orderInCategory="99"/>
+        android:orderInCategory="98"/>
 </menu>

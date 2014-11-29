@@ -152,7 +152,16 @@ public class ProjectNavigation extends ActionBarActivity implements android.supp
                 return true;
             case R.id.action_currencies:
                 Intent intent = new Intent(this, currencies.class);
-                startActivity(intent);
+                startActivityForResult(intent, 0);
+                return true;
+            case R.id.action_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+            case R.id.Tags:
+                Intent tagIntent = new Intent(this, Tags.class);
+                startActivity(tagIntent);
+                return true;
             default:
                 return false;
         }
