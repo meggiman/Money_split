@@ -230,7 +230,7 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             ImageView isAdminView = (ImageView) view.findViewById(R.id.imageView);
-            TextView participantNameView = (TextView) view.findViewById(R.id.contact_list_row_name);
+            TextView participantNameView = (TextView) view.findViewById(R.id.textView_tags_title);
             TextView isVirtualView = (TextView) view.findViewById(R.id.textViewVirtual);
 
             cursorProject.moveToFirst();

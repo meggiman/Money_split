@@ -2,13 +2,11 @@ package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -25,7 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -194,7 +191,7 @@ public class ContactsList extends ActionBarActivity implements LoaderManager.Loa
                 row = inflater.inflate(layoutResourceId, parent, false);
 
                 holder = new ContactHolder();
-                holder.name = (TextView) row.findViewById(R.id.contact_list_row_name);
+                holder.name = (TextView) row.findViewById(R.id.textView_tags_title);
                 holder.edit = (ImageView) row.findViewById(R.id.contact_list_row_edit);
 
                 row.setTag(holder);

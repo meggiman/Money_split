@@ -39,6 +39,12 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
     static final String EXTRA_ID = "Id";
     static final String EXTRA_TAGFILTER_VISIBLE = "tagfilterVisible"; // tells you if you're coming from a contacts activity or from a items activity
     static final String EXTRA_TITLE = "title";
+    static final String EXTRA_ITEM_TAGS_ALREADY_ADDED = "itemTagsAlreadyAdded";
+    static final String EXTRA_ITEM_TAGS_TO_ADD = "itemTagsToAdd";
+    static final String EXTRA_ITEM_TAGS_TO_DELETE = "itemTagsToDelete";
+    static final String RESULT_EXTRA_ITEM_TAGS_TO_ADD = "resultItemTagsToAdd";
+    static final String RESULT_EXTRA_ITEM_TAGS_TO_DELETE = "resultItemTagsToDelete";
+    static final String RESULT_EXTRA_ITEM_TAGS_STRING = "resultItemTagsString";
     static final int LOADER_TAGS_ALL = 0;
     static final int LOADER_TAGS_PARTICIPANTS = 1;
     static final int LOADER_TAGS_ITEM = 2;
@@ -48,6 +54,11 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
     Intent intent = new Intent();
     private List<Long> toDeleteList = new ArrayList<Long>();
     private List<Long> toInsertList = new ArrayList<Long>();
+
+    private ArrayList<ch.ethz.itet.pps.budgetSplit.Tag> itemTagsAlreadyAdded;
+    private ArrayList<ch.ethz.itet.pps.budgetSplit.Tag> itemTagsToAdd;
+    private ArrayList<ch.ethz.itet.pps.budgetSplit.Tag> itemTagsToDelete;
+    private StringBuffer itemTagsString;
 
 
     ProgressBar progressBar;
@@ -74,6 +85,10 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
         if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
             getLoaderManager().initLoader(LOADER_TAGS_PARTICIPANTS, null, this);
         } else {
+            itemTagsAlreadyAdded = intent.getParcelableArrayListExtra(EXTRA_ITEM_TAGS_ALREADY_ADDED);
+            itemTagsToAdd = intent.getParcelableArrayListExtra(EXTRA_ITEM_TAGS_TO_ADD);
+            itemTagsToDelete = intent.getParcelableArrayListExtra(EXTRA_ITEM_TAGS_TO_DELETE);
+            itemTagsString = new StringBuffer();
             getLoaderManager().initLoader(LOADER_TAGS_ITEM, null, this);
         }
         getLoaderManager().initLoader(LOADER_TAGS_ALL, null, this);
@@ -128,48 +143,20 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
 
                                       // coming from an Items Activity (tagfilterVisible==false)
                                       else {
-                                          for (int i = 0; i < data.size(); i++) {
-                                              if (data.get(i).checked) {
-                                                  boolean insert = true;
-                                                  for (int j = 0; j < tagIds.size(); j++) {
-                                                      if (data.get(i).id == tagIds.get(j).tagId) {
-                                                          // Item was already Checked and thus stays in the Tagfilter
-                                                          // do nothing especially no insert
-                                                          insert = false;
-                                                      }
-                                                  }
-                                                  if (insert == true) {
-                                                      // The right junktion does not yet exist -> insert
-                                                      ContentValues cv = new ContentValues();
-                                                      cv.put(budgetSplitContract.itemsTags.COLUMN_ITEM_ID, intent.getLongExtra(EXTRA_ID, -1));
-                                                      cv.put(budgetSplitContract.itemsTags.COLUMN_TAGS_ID, data.get(i).id);
-                                                      getContentResolver().insert(budgetSplitContract.itemsTags.CONTENT_URI, cv);
-                                                  }
-                                              } else { // data.checked == false
-                                                  boolean delete = false;
-                                                  List<Long> toDeleteList = new ArrayList<Long>();
-                                                  for (int j = 0; j < tagIds.size(); j++) {
-                                                      if (data.get(i).id == tagIds.get(j).tagId) {
-                                                          // The Tag was checked before but isn't anmore -> delete
-                                                          toDeleteList.add(tagIds.get(j).tableId);
-                                                          break;
-                                                      }
-                                                  }
+                                          for (ch.ethz.itet.pps.budgetSplit.Tag tag : itemTagsAlreadyAdded) {
+                                              if (!itemTagsToDelete.contains(tag)) {
+                                                  itemTagsString.append(tag.name).append(", ");
                                               }
                                           }
-                                          Uri toDelete;
-                                          ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
-                                          for (int k = 0; k < toDeleteList.size(); k++) {
-                                              toDelete = ContentUris.withAppendedId(budgetSplitContract.itemsTags.CONTENT_URI, toDeleteList.get(k));
-                                              operations.add(ContentProviderOperation.newDelete(toDelete).build());
+                                          for (ch.ethz.itet.pps.budgetSplit.Tag tag : itemTagsToAdd) {
+                                              itemTagsString.append(tag.name).append(", ");
                                           }
-                                          try {
-                                              getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, operations);
-                                          } catch (RemoteException e) {
-                                              e.printStackTrace();
-                                          } catch (OperationApplicationException e) {
-                                              e.printStackTrace();
-                                          }
+                                          itemTagsString.delete(itemTagsString.length() - 2, itemTagsString.length());
+                                          Intent result = new Intent();
+                                          result.putParcelableArrayListExtra(RESULT_EXTRA_ITEM_TAGS_TO_DELETE, itemTagsToDelete);
+                                          result.putParcelableArrayListExtra(RESULT_EXTRA_ITEM_TAGS_TO_ADD, itemTagsToAdd);
+                                          result.putExtra(RESULT_EXTRA_ITEM_TAGS_STRING, itemTagsString.toString());
+                                          setResult(RESULT_OK, result);
                                       }
                                       finish();
                                   }
@@ -329,24 +316,28 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
                     tagsFinished = true;
                 }
                 break;
-
-            case LOADER_TAGS_ITEM:
-                tagIds = new ArrayList<IdHolder>();
-                if (cursor.getCount() > 0) {
-                    for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                        tagIds.add(new IdHolder(cursor.getLong(cursor.getColumnIndex(budgetSplitContract.itemsTagsDetailsRO.COLUMN_TAG_ID)), cursor.getLong(cursor.getColumnIndex(budgetSplitContract.itemsTagsDetailsRO._ID))));
-                    }
-                    tagsItemFinished = true;
-                }
-                break;
         }
 
 
-        if ((tagsFinished || tagsItemFinished) && tagsAllFinished) {
+        if (tagsFinished && tagsAllFinished) {
             for (int i = 0; i < data.size(); i++) {
                 for (int j = 0; j < tagIds.size(); j++) {
                     if (data.get(i).id == (Long) tagIds.get(j).tagId) {
                         data.get(i).checked = true;
+                    }
+                }
+            }
+        }
+        if (!intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true) && tagsAllFinished) {
+            for (Tag tagToCheck : data) {
+                for (ch.ethz.itet.pps.budgetSplit.Tag tag : itemTagsAlreadyAdded) {
+                    if (tagToCheck.id == tag.id && !itemTagsToDelete.contains(tag)) {
+                        tagToCheck.checked = true;
+                    }
+                }
+                for (ch.ethz.itet.pps.budgetSplit.Tag tag : itemTagsToAdd) {
+                    if (tagToCheck.id == tag.id) {
+                        tagToCheck.checked = true;
                     }
                 }
             }
@@ -439,6 +430,20 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
                         clickHolder.name.setBackgroundColor(0);
                     }
 
+                    if (!intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
+                        ch.ethz.itet.pps.budgetSplit.Tag tagForResult = new ch.ethz.itet.pps.budgetSplit.Tag(tag.id, tag.name);
+                        if (tag.checked) {
+                            itemTagsToDelete.remove(tagForResult);
+                            if (!itemTagsAlreadyAdded.contains(tagForResult)) {
+                                itemTagsToAdd.add(tagForResult);
+                            }
+                        } else {
+                            itemTagsToAdd.remove(tagForResult);
+                            if (itemTagsAlreadyAdded.contains(tagForResult)) {
+                                itemTagsToDelete.add(tagForResult);
+                            }
+                        }
+                    }
                 }
 
             });

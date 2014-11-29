@@ -134,6 +134,7 @@
     <string name="add_contact">Add Contact</string>
     <string name="save">Save</string>
     <string name="new_tag">New Tag</string>
-
+    <string name="title_activity_item_tag_chooser">Choose Tags</string>
+    <string name="edit_tags">Edit Tags</string>
 
 </resources>

@@ -18,6 +18,8 @@ import android.database.CursorJoiner;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -53,6 +55,8 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
 
     public static final String EXTRA_ITEM_DETAILS_URI = "itemUri";
     public static final String EXTRA_PROJECT_DETAILS_URI = "projectUri";
+
+    static final int REQUEST_EDIT_TAGS = 1;
 
     //Define integer constants to identify the individual loaders.
     private static final int LOADER_ITEM = 0;
@@ -101,20 +105,13 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
     EditText itemNameEditText;
 
     //Tags Variables
-    LinearLayout tagsAddedLayout;
-    List<View> tagsAddedViews;
-    List<View> tagsNotAddedViews;
-    Stack<View> tagViewPool;
-    Stack<TextView> tagTextPool;
-    List<Tag> tagsAlreadyAdded;
-    List<Tag> tagsToAdd;
-    List<Tag> tagsToDelete;
-    List<Tag> tagsNotAdded;
-    LinearLayout tagChooserList;
-    ImageButton addNewTagButton;
+    ArrayList<Tag> tagsAlreadyAdded;
+    ArrayList<Tag> tagsToAdd;
+    ArrayList<Tag> tagsToDelete;
+    ArrayList<Tag> tagsNotAdded;
+    Button editTagsButton;
+    TextView tagsTextView;
 
-    PopupWindow tagChooserPopup;
-    AlertDialog tagCreatePopup;
 
     //Payer Variables
     List<Payer> payersAlreadyAdded;
@@ -200,14 +197,12 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
 
 
         //Initialize View-Variables
-        tagsAddedLayout = (LinearLayout) findViewById(R.id.linearLayoutTags);
         payersList = (ListView) findViewById(R.id.listViewPayers);
         excludeList = (ListView) findViewById(R.id.listViewExcludeItems);
         itemNameEditText = (EditText) findViewById(R.id.editTextItemName);
+        editTagsButton = (Button) findViewById(R.id.buttonEditTags);
+        tagsTextView = (TextView) findViewById(R.id.textView_tags);
 
-        //Initialize global Variables
-        tagViewPool = new Stack<View>();
-        tagTextPool = new Stack<TextView>();
 
 
         //Get default Currency data
@@ -317,7 +312,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                 if (isNewItem) {
                     if (loaderParticipantsFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                         if (loaderTagsFinishedInitialLoading) {
-                            refreshTags(cursor);
                             cursorTags = cursor;
                         } else {
                             cursorTags = cursor;
@@ -331,7 +325,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                 else if (loaderExcludeItemsFinishedInitialLoading && loaderParticipantsFinishedInitialLoading && loaderItemFinishedInitialLoading && loaderCurrenciesFinishedInitialLoading && loaderItemParticipantsFinishedInitialLoading
                         && loaderItemTagsFinishedInitialLoading && loaderProjectFinishedInitialLoading) {
                     if (loaderTagsFinishedInitialLoading) {
-                        refreshTags(cursor);
                         cursorTags = cursor;
                     } else {
                         cursorTags = cursor;
@@ -449,13 +442,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         switch (cursorLoader.getId()) {
-            case LOADER_TAGS:
-                if (tagChooserPopup != null) {
-                    tagChooserPopup.dismiss();
-                    tagChooserPopup = null;
-                }
-                addNewTagButton.setEnabled(false);
-                break;
             case LOADER_CURRENCIES:
                 payerAdapter.closeCursorForAllCurrencyAdapter();
                 break;
@@ -467,37 +453,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                 addNewPayerButton.setEnabled(false);
                 break;
         }
-    }
-
-
-    //Methods to refresh GUI
-    void refreshTags(Cursor newTagsCursor) {
-        CursorJoiner cursorJoiner = new CursorJoiner(cursorTags, new String[]{budgetSplitContract.tags._ID}, newTagsCursor, new String[]{budgetSplitContract.tags._ID});
-        for (CursorJoiner.Result joinerResult : cursorJoiner) {
-            switch (joinerResult) {
-                case RIGHT:
-                    Tag newTag = new Tag(newTagsCursor.getLong(newTagsCursor.getColumnIndex(budgetSplitContract.tags._ID)), newTagsCursor.getString(newTagsCursor.getColumnIndex(budgetSplitContract.tags.COLUMN_NAME)));
-                    tagsNotAdded.add(newTag);
-                    break;
-                case LEFT:
-                    for (Tag tag : tagsToAdd) {
-                        if (tag.id == cursorTags.getLong(cursorTags.getColumnIndex(budgetSplitContract.tags._ID))) {
-                            tagsToAdd.remove(tag);
-                            break;
-                        }
-                    }
-                    break;
-                case BOTH:
-                    //Do nothing.
-                    break;
-            }
-        }
-
-        if (tagChooserPopup != null) {
-            tagChooserPopup.dismiss();
-            tagChooserPopup = null;
-        }
-        addNewTagButton.setEnabled(true);
     }
 
     void refreshCurrencies(Cursor newCurrenciesCursor) {
@@ -587,28 +542,30 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         }
         tagsToAdd = new ArrayList<Tag>();
         tagsToDelete = new ArrayList<Tag>();
-        tagsAddedViews = TagHelper.TagsToCustomView(tagsAddedLayout, tagsAlreadyAdded);
-        for (View view : tagsAddedViews) {
-            tagsAddedLayout.addView(view, tagsAddedLayout.getChildCount() - 1);
-        }
-        addNewTagButton = new ImageButton(getApplicationContext());
-        addNewTagButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new));
-        addNewTagButton.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-        addNewTagButton.setOnClickListener(new View.OnClickListener() {
+        editTagsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showTagsPopupWindow(view, true);
+                Intent intent = new Intent(add_new_item.this, TagSelection.class);
+                intent.putExtra(TagSelection.EXTRA_TAGFILTER_VISIBLE, false);
+                intent.putParcelableArrayListExtra(TagSelection.EXTRA_ITEM_TAGS_ALREADY_ADDED, tagsAlreadyAdded);
+                intent.putParcelableArrayListExtra(TagSelection.EXTRA_ITEM_TAGS_TO_ADD, tagsToAdd);
+                intent.putParcelableArrayListExtra(TagSelection.EXTRA_ITEM_TAGS_TO_DELETE, tagsToDelete);
+                intent.putExtra(TagSelection.EXTRA_TITLE, "TEST");
+                startActivityForResult(intent, REQUEST_EDIT_TAGS);
             }
         });
+        StringBuffer itemTagsString = new StringBuffer();
+        for (ch.ethz.itet.pps.budgetSplit.Tag tag : tagsAlreadyAdded) {
+            itemTagsString.append(tag.name).append(", ");
+        }
+        itemTagsString.delete(itemTagsString.length() - 2, itemTagsString.length());
+        tagsTextView.setText(itemTagsString.toString());
+
+
         //Disable all tags so they can't be edited.
         if (!fullAccess) {
-            for (View view : tagsAddedViews) {
-                view.setEnabled(false);
-            }
-        } else {
-            tagsAddedLayout.addView(addNewTagButton, tagsAddedLayout.getChildCount()); //If there is edit access, add the "add tag" button.
+            editTagsButton.setEnabled(false);
         }
-
 
         //Draw Payer GUI elements
         payersToAdd = new ArrayList<Payer>();
@@ -739,21 +696,22 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         });
 
         //Draw Tag GUI elements
-        tagsAddedViews = new ArrayList<View>();
         tagsAlreadyAdded = new ArrayList<Tag>();
         tagsNotAdded = tagCursorToList(cursorTags);
         tagsToAdd = new ArrayList<Tag>();
         tagsToDelete = new ArrayList<Tag>();
-        addNewTagButton = new ImageButton(getApplicationContext());
-        addNewTagButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new));
-        addNewTagButton.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-        addNewTagButton.setOnClickListener(new View.OnClickListener() {
+        editTagsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showTagsPopupWindow(view, true);
+                Intent intent = new Intent(add_new_item.this, TagSelection.class);
+                intent.putExtra(TagSelection.EXTRA_TAGFILTER_VISIBLE, false);
+                intent.putParcelableArrayListExtra(TagSelection.EXTRA_ITEM_TAGS_ALREADY_ADDED, tagsAlreadyAdded);
+                intent.putParcelableArrayListExtra(TagSelection.EXTRA_ITEM_TAGS_TO_ADD, tagsToAdd);
+                intent.putParcelableArrayListExtra(TagSelection.EXTRA_ITEM_TAGS_TO_DELETE, tagsToDelete);
+                intent.putExtra(TagSelection.EXTRA_TITLE, "TEST");
+                startActivityForResult(intent, REQUEST_EDIT_TAGS);
             }
         });
-        tagsAddedLayout.addView(addNewTagButton, tagsAddedLayout.getChildCount());
 
         //Draw Payer GUI elements
         payersToAdd = new ArrayList<Payer>();
@@ -956,172 +914,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
     }
 
 
-    //Methods to handle Tags
-    private void addTag(View view) {
-        Tag tag = (Tag) view.getTag();
-        tagsNotAdded.remove(tag); //Remove Tag from List.
-        //check if tag was already in db.
-        if (tagsAlreadyAdded.contains(tag)) {
-            tagsToDelete.remove(tag);
-        } else {
-            tagsToAdd.add(tag);
-        }
-        //Remove view from tag chooser and view List.
-        tagsNotAddedViews.remove(view);
-        tagChooserList.removeView(view);
-        tagTextPool.push((TextView) view); //Add TextView to Pool for recycling.
-        View newTagView = tag.getTagView(tagsAddedLayout);  //Create or recycle new TagView to add to Activity.
-        tagsAddedViews.add(newTagView);
-        tagsAddedLayout.addView(newTagView, tagsAddedLayout.getChildCount() - 1); //Add the new tag just behind the "add tag" Button.
-    }
-
-    private void deleteTag(View view) {
-        Tag tag = (Tag) view.getTag();
-        //Check if tag is already in db.
-        if (tagsAlreadyAdded.contains(tag)) {
-            tagsToDelete.add(tag);
-        } else {
-            tagsToAdd.remove(tag);
-        }
-        tagsNotAdded.add(tag);  //Add tag to List.
-        //Remove view from LinearLayout.
-        View tagView = (View) view.getParent();
-        tagsAddedViews.remove(tagView);
-        tagsAddedLayout.removeView(tagView);
-        tagViewPool.push(tagView); //Add View to Pool for recycling.
-        if (tagChooserList == null) {
-            showTagsPopupWindow(null, false); //Preloads tagsChooser so that tagChooserList does exist.
-        }
-        TextView newTagView = tag.getTagTextView(tagChooserList); //Create or recycle new TextView to add to TagChooser.
-        tagsNotAddedViews.add(newTagView);
-        tagChooserList.addView(newTagView, 0); //Add the Tag at first position to Tag-Chooser-List.
-    }
-
-    private void showTagsPopupWindow(View view, boolean show) {
-        if (tagChooserPopup == null) {
-            View tagChooserLayout = ((LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.activity_add_item_tag_chooser, null);
-            tagChooserList = (LinearLayout) tagChooserLayout.findViewById(R.id.scrollView).findViewById(R.id.LinearLayoutTags);
-            tagsNotAddedViews = TagHelper.TagsToTextView(tagChooserList, tagsNotAdded);
-            for (View tagView : tagsNotAddedViews) {
-                tagChooserList.addView(tagView, 0);
-            }
-            ImageButton createNewTag = new ImageButton(getBaseContext());
-            createNewTag.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new));
-            createNewTag.setLayoutParams(new LinearLayout.LayoutParams(60, 60));
-            createNewTag.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    tagChooserPopup.dismiss();
-                    showCreateTagPopup(view);
-                }
-            });
-            LinearLayout linearLayoutTags = (LinearLayout) tagChooserLayout.findViewById(R.id.scrollView).findViewById(R.id.LinearLayoutTags);
-            linearLayoutTags.addView(createNewTag);
-            tagChooserLayout.findViewById(R.id.buttonCancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    tagChooserPopup.dismiss();
-                }
-            });
-            tagChooserPopup = new PopupWindow(tagChooserLayout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        }
-        if (show)
-            if (show) tagChooserPopup.showAtLocation(view, Gravity.CENTER, 0, 0);
-    }
-
-    void showCreateTagPopup(final View view) {
-        if (tagCreatePopup == null) {
-            AlertDialog.Builder myDialogBuilder = new AlertDialog.Builder(this);
-            myDialogBuilder.setTitle(getString(R.string.create_a_new_tag));
-            final EditText editText = new EditText(getBaseContext());
-            editText.setHint(getString(R.string.tag_name));
-            myDialogBuilder.setView(editText);
-            myDialogBuilder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                }
-            });
-            myDialogBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    ContentValues newTag = new ContentValues();
-                    newTag.put(budgetSplitContract.tags.COLUMN_NAME, editText.getText().toString());
-                    getContentResolver().insert(budgetSplitContract.tags.CONTENT_URI, newTag);
-                    dialogInterface.dismiss();
-                    showTagsPopupWindow(view, true);
-                }
-            });
-            tagCreatePopup = myDialogBuilder.create();
-        }
-        tagCreatePopup.show();
-
-    }
-
-    /**
-     * Class Data Type for use in ArrayAdapters.
-     */
-    public class Tag {
-        long id;
-        String name;
-
-        public Tag(long id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        /**
-         * @param root The ParenView of the Views to create.
-         * @return Returns a CustomView Tag filled with the name of the tag and a link to this object added as tag of the delete Button.
-         */
-        View getTagView(ViewGroup root) {
-            View newView;
-            if (tagViewPool.empty()) {
-                newView = ((LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.activity_add_item_tag, null);
-            } else {
-                newView = tagViewPool.pop();
-            }
-            ((TextView) newView.findViewById(R.id.textViewTagName)).setText(name);
-            ImageButton tagDeleteButton = (ImageButton) newView.findViewById(R.id.imageButtonDelete);
-            tagDeleteButton.setTag(this);
-            tagDeleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    deleteTag(view);
-                }
-            });
-            return newView;
-        }
-
-        /**
-         * @param root The ParenView of the Views to create.
-         * @return Returns a TextView filled with the name of the tag and a link to this object as tag of the TextView.
-         */
-        TextView getTagTextView(ViewGroup root) {
-            TextView newView;
-            if (tagTextPool.empty()) {
-                newView = new TextView(root.getContext());
-                newView.setTextAppearance(getBaseContext(), android.R.style.TextAppearance_Holo_Medium_Inverse);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(10, 10, 10, 10);
-                newView.setLayoutParams(params);
-            } else {
-                newView = tagTextPool.pop();
-            }
-            newView.setText(name);
-            newView.setTag(this);
-            newView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    addTag(view);
-                }
-            });
-            return newView;
-        }
-
-
-    }
-
     /**
      * Converts a Cursor of tags to a {@link java.util.List} of Tags.
      * The Cursor must at least Contain the Columns {@value ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract.tags#_ID}  and {@value ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract.tags#COLUMN_NAME}. If the more specific Column identifiers
@@ -1131,7 +923,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
      * @return A {@link java.util.List} of Tags containing all Tags in cursor. If the cursors row count was zero, an empty List is returned.
      * @throws IllegalArgumentException if the Cursor does not contain any rows with the Column names mentioned above.
      */
-    List<Tag> tagCursorToList(Cursor cursor) {
+    ArrayList<Tag> tagCursorToList(Cursor cursor) {
         if (cursor == null) {
             throw new NullPointerException("The given Cursor cursor was null.");
         }
@@ -1154,39 +946,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
             }
         }
         return list;
-    }
-
-    static class TagHelper {
-
-        /**
-         * Inflates all Tags with the Tag Custom-Layout in tags and returns a list of the inflated views.
-         *
-         * @param root The root of the Views added to the List.
-         * @param tags The tags to inflate the views for.
-         * @return A List of all inflated Views.
-         */
-        static List<View> TagsToCustomView(ViewGroup root, List<Tag> tags) {
-            ArrayList<View> tagViews = new ArrayList<View>();
-            for (Tag tag : tags) {
-                tagViews.add(tag.getTagView(root));
-            }
-            return tagViews;
-        }
-
-        /**
-         * Creates a TextView for each Tag in tags and returns a list of the views.
-         *
-         * @param root The root of the Views added to the List.
-         * @param tags The tags to inflate the views for.
-         * @return A List of all inflated Views.
-         */
-        static List<View> TagsToTextView(ViewGroup root, List<Tag> tags) {
-            ArrayList<View> tagViews = new ArrayList<View>();
-            for (Tag tag : tags) {
-                tagViews.add(tag.getTagTextView(root));
-            }
-            return tagViews;
-        }
     }
 
 
@@ -1729,6 +1488,20 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         excludeItemsChooserPopup.show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_EDIT_TAGS:
+                if (resultCode == RESULT_OK) {
+                    tagsToAdd = data.getParcelableArrayListExtra(TagSelection.RESULT_EXTRA_ITEM_TAGS_TO_ADD);
+                    tagsToDelete = data.getParcelableArrayListExtra(TagSelection.RESULT_EXTRA_ITEM_TAGS_TO_DELETE);
+                    tagsTextView.setText(data.getStringExtra(TagSelection.RESULT_EXTRA_ITEM_TAGS_STRING));
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
     @Override
     protected void onDestroy() {
@@ -1757,4 +1530,65 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
     }
 }
 
+/**
+ * Class Data Type for use in ArrayAdapters.
+ */
+class Tag implements Parcelable {
+    long id;
+    String name;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tag tag = (Tag) o;
+
+        if (id != tag.id) return false;
+        if (name != null ? !name.equals(tag.name) : tag.name != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
+
+    public Tag(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    private Tag(Parcel in) {
+        name = in.readString();
+        id = in.readLong();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeLong(id);
+    }
+
+    public static final Creator<Tag> CREATOR = new Creator<Tag>() {
+
+        @Override
+        public Tag createFromParcel(Parcel parcel) {
+            return new Tag(parcel);
+        }
+
+        @Override
+        public Tag[] newArray(int i) {
+            return new Tag[i];
+        }
+    };
+}
 

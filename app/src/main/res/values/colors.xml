@@ -7,4 +7,6 @@
     <color name="accent_mint">#69f0ae</color>
     <color name="accent_dark_mint">#00e676</color>
     <color name="accent_light_mint">#b9f6ca</color>
+
+    <color name="divider_grey">#ffe1e1e1</color>
 </resources>

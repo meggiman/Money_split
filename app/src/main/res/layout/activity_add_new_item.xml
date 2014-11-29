@@ -4,7 +4,8 @@
               android:layout_height="fill_parent"
               xmlns:android="http://schemas.android.com/apk/res/android"
               android:focusableInTouchMode="true"
-              android:focusable="true">
+              android:focusable="true"
+              android:padding="@dimen/global_margins">
 
     <EditText
         android:layout_width="match_parent"
@@ -13,34 +14,63 @@
         android:hint="@string/item_name"
         android:inputType="text|textNoSuggestions"
         android:singleLine="true"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:layout_margin="@dimen/global_margins"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/tags"
-        android:id="@+id/contact_list_row_name"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_grey"
+        android:layout_margin="@dimen/global_margins"/>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="30dp"
-        android:id="@+id/linearLayoutTags"></LinearLayout>
+        android:layout_margin="@dimen/global_margins">
 
-    <Space
-        android:layout_width="20px"
-        android:layout_height="20px"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/tags"
+            android:id="@+id/textView_tags_title"
+            android:layout_marginRight="@dimen/global_margins"
+            android:layout_gravity="top"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="tag1, tag2, tag3"
+            android:id="@+id/textView_tags"
+            android:layout_marginLeft="@dimen/global_margins"
+            android:layout_weight="1"
+            android:layout_gravity="top"/>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_tags"
+        android:id="@+id/buttonEditTags"
+        android:layout_gravity="right"
+        android:layout_margin="@dimen/global_margins"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_grey"
+        android:layout_margin="@dimen/global_margins"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/payers"
-        android:id="@+id/tag_selection_tagfilter"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"/>
+        android:id="@+id/textView_payers"
+        android:layout_marginBottom="5dp"
+        android:layout_margin="@dimen/global_margins"/>
 
     <ListView
         android:layout_width="match_parent"
@@ -49,7 +79,14 @@
         android:layout_weight="1"
         tools:listitem="@layout/activity_add_item_participants_row"
         tools:listfooter="@layout/activity_add_item_participants_footer"
-        android:descendantFocusability="beforeDescendants"/>
+        android:descendantFocusability="beforeDescendants"
+        android:layout_margin="@dimen/global_margins"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_grey"
+        android:layout_margin="@dimen/global_margins"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -57,8 +94,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/Excluded"
         android:id="@+id/textViewExcludeItems"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="5dp"
+        android:layout_margin="@dimen/global_margins"/>
 
     <ListView
         android:layout_width="match_parent"
@@ -66,12 +103,14 @@
         android:id="@+id/listViewExcludeItems"
         tools:listitem="@layout/activity_add_new_item_exclude_participant_row"
         tools:listfooter="@layout/activity_add_new_item_exclude_participant_footer"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:layout_margin="@dimen/global_margins"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/addItem"
         android:id="@+id/buttonAddItem"
-        android:layout_gravity="right"/>
+        android:layout_gravity="right"
+        android:layout_margin="@dimen/global_margins"/>
 </LinearLayout>
