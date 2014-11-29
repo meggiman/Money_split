@@ -369,7 +369,7 @@ public class budgetSplitContract {
     }
 
     public static final class participantsTagsDetails implements BaseColumns {
-        static final String TABLE_PARTICIPANTS_TAGS_DETAILS_RO = "itemsTagsDetailsRo";
+        static final String TABLE_PARTICIPANTS_TAGS_DETAILS_RO = "participantsTagsDetailsRO";
         static final String TABLE_PARTICIPANT_TAGS_DETAILS_RO = TABLE_PARTICIPANTS_TAGS_DETAILS_RO + "/item";
         static final String TABLE_PARTICIPANTS_TAG_DETAILS_RO = TABLE_PARTICIPANTS_TAGS_DETAILS_RO + "/tag";
         static final int PARTICIPANTS_TAGS_DETAILS = 160;

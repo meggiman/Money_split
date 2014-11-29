@@ -948,7 +948,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                 Intent data = new Intent();
                 data.putExtra(ProjectOverview.RESULT_EXTRA_ERROR_MESSAGE, s);
                 Toast.makeText(getBaseContext(), s, Toast.LENGTH_LONG).show();
-                setResult(ProjectOverview.RESULT_CODE_ERROR);
             } else {
                 setResult(RESULT_OK);
                 finish();
