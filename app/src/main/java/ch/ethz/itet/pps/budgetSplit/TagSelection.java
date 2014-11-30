@@ -53,6 +53,7 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
     ArrayList<IdHolder> tagIds;
     List<Tag> data = new ArrayList<Tag>();
     TagAdapter tagsGridAdapter;
+    char[] oldTitle;
 
 
     Button newTag;
@@ -60,7 +61,7 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
     AlertDialog tagCreatePopup;
     GridView tagGrid;
     TextView tagfilter;
-    TextView title;
+    EditText title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,14 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
         getLoaderManager().initLoader(LOADER_TAGS_PARTICIPANTS, null, this);
         getLoaderManager().initLoader(LOADER_TAGS_ALL, null, this);
 
+        oldTitle = intent.getStringExtra(EXTRA_TITLE).toCharArray();
+
+        title = (EditText) findViewById(R.id.tag_selection_variable);
+
+        char[] titleName = (oldTitle);
+
+        title.setText(titleName, 0, titleName.length);
+
         // --> Add Button to Actionbar!! "Save"
        /* ok = (Button) findViewById(R.id.tag_selection_ok);
         ok.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +90,30 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
                                   public void onClick(View view) {
                                       // coming from a Contacts Activity
                                       if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
+                                          // Check if title has been changed
+                                          char[] newTitle = title.getText().toString().toCharArray();
+                                          if(newTitle.length == oldTitle.length){
+                                              boolean different = false;
+                                              for(int i = 0; i<oldTitle.length;i++){
+                                                  if(newTitle[i]!=oldTitle[i]){
+                                                      different = true;
+                                                      break;
+                                                  }
+                                              }
+                                              if(different){
+                                                  ContentValues name = new ContentValues();
+                                                  Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI,intent.getLongExtra(EXTRA_ID,-1));
+                                                  name.put(budgetSplitContract.participants.COLUMN_NAME,newTitle.toString());
+                                                  getContentResolver().update(input,name,null,null);
+                                              }
+                                          }
+                                          else{
+                                              ContentValues name = new ContentValues();
+                                              Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI,intent.getLongExtra(EXTRA_ID,-1));
+                                              name.put(budgetSplitContract.participants.COLUMN_NAME,newTitle.toString());
+                                              getContentResolver().update(input,name,null,null);
+                                          }
+
                                           for (int i = 0; i < data.size(); i++) {
                                               if (data.get(i).checked) {
                                                   boolean insert = true;
@@ -125,6 +158,29 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
 
                                       // coming from an Items Activity (tagfilterVisible==false)
                                       else {
+                                          // Check if title has been changed
+                                          char[] newTitle = title.getText().toString().toCharArray();
+                                          if(newTitle.length == oldTitle.length){
+                                              boolean different = false;
+                                              for(int i = 0; i<oldTitle.length;i++){
+                                                  if(newTitle[i]!=oldTitle[i]){
+                                                      different = true;
+                                                      break;
+                                                  }
+                                              }
+                                              if(different){
+                                                  ContentValues name = new ContentValues();
+                                                  Uri input = ContentUris.withAppendedId(budgetSplitContract.items.CONTENT_URI,intent.getLongExtra(EXTRA_ID,-1));
+                                                  name.put(budgetSplitContract.items.COLUMN_NAME,newTitle.toString());
+                                                  getContentResolver().update(input,name,null,null);
+                                              }
+                                          }
+                                          else{
+                                              ContentValues name = new ContentValues();
+                                              Uri input = ContentUris.withAppendedId(budgetSplitContract.items.CONTENT_URI,intent.getLongExtra(EXTRA_ID,-1));
+                                              name.put(budgetSplitContract.items.COLUMN_NAME,newTitle.toString());
+                                              getContentResolver().update(input,name,null,null);
+                                          }
                                           for (int i = 0; i < data.size(); i++) {
                                               if (data.get(i).checked) {
                                                   boolean insert = true;
@@ -200,13 +256,7 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
 
         );
 
-        title = (TextView)
 
-                findViewById(R.id.tag_selection_variable);
-
-        char[] titleName = (intent.getStringExtra(EXTRA_TITLE)).toCharArray();
-
-        title.setText(titleName, 0, titleName.length);
     }
 
     @Override

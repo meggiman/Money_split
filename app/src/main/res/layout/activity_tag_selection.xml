@@ -9,7 +9,7 @@
     tools:context="ch.ethz.itet.pps.budgetSplit.TagSelection"
     android:padding="@dimen/global_margins">
 
-    <TextView
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Item-/ContactName"
