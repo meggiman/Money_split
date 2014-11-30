@@ -85,7 +85,7 @@
             android:label="@string/title_activity_activity_tags_gridview_layout"/>
         <activity
             android:name=".ContactsList"
-            android:label="@string/title_activity_contacts__list"
+            android:label="@string/contacts"
             android:parentActivityName=".Main">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -93,7 +93,7 @@
         </activity>
         <activity
             android:name=".TagSelection"
-            android:label="@string/title_activity_tag_selection"></activity>
+            android:label="@string/tag_filter"></activity>
     </application>
 
 </manifest>

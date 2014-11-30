@@ -150,13 +150,9 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
 
     public void setButtons() {
 
+        // --> Add to Button in Action Bar!!!!
         // initialize actuall button
-        createNewProject = (Button) findViewById(R.id.button2);
-        // initialize input TextViews
-        projectName = (EditText) findViewById(R.id.editText);
-        projectDescription = (EditText) findViewById(R.id.editTextCurrencyName);
-
-
+       /* createNewProject = (Button) findViewById(R.id.button2);
         createNewProject.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
@@ -208,11 +204,15 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
 
             }
 
-        });
+        });*/
+        // initialize input TextViews
+        projectName = (EditText) findViewById(R.id.editText);
+        projectDescription = (EditText) findViewById(R.id.editTextCurrencyName);
 
 
+        // --> Add To Button in Action Bar!!!
         // Button for Virtual Contacts
-        createNewContact = (Button) findViewById(R.id.activity_new_project_create_new_contact_button);
+        /*createNewContact = (Button) findViewById(R.id.activity_new_project_create_new_contact_button);
 
         createNewContact.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -222,7 +222,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
 
 
             }
-        });
+        });*/
     }
 
     /**

@@ -32,12 +32,8 @@ public class NewContact extends ActionBarActivity {
         setContentView(R.layout.activity_new_contact);
 
         // Adding Objects
-        newContactVirtual = (Button) findViewById(R.id.search_bluetooth);
-        newContactName = (EditText) findViewById(R.id.edit_text_create_contact_name);
-        isVirtual = (CheckBox) findViewById(R.id.checkBox_virtual);
-        // We can only add Virtual Contacts at the moment.
-        isVirtual.setEnabled(false);
-
+        // Add to Button in Action Bar!!
+        /*newContactVirtual = (Button) findViewById(R.id.search_bluetooth);
         newContactVirtual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,7 +56,13 @@ public class NewContact extends ActionBarActivity {
                 }
 
             }
-        });
+        });*/
+        newContactName = (EditText) findViewById(R.id.edit_text_create_contact_name);
+        isVirtual = (CheckBox) findViewById(R.id.checkBox_virtual);
+        // We can only add Virtual Contacts at the moment.
+        isVirtual.setEnabled(false);
+
+
     }
 
 

@@ -11,10 +11,12 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_weight="1.22"
+        android:layout_weight="0.05"
         android:text="Name"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="20dp" />
+        style="@style/AppTheme.TextViewTitle.TextViewSubtitle"
+        android:textSize="20dp"
+        android:padding="@dimen/global_margins" />
 
     <TextView
         android:id="@+id/projectowner"
@@ -22,18 +24,22 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/projectName"
         android:layout_centerHorizontal="true"
-        android:layout_weight="1"
+        android:layout_weight="0.01"
         android:text="Description"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="13dp" />
+        android:textSize="13dp"
+        android:padding="@dimen/global_margins"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center" />
 
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/ic_action_person"
-        android:visibility="visible" />
+        android:visibility="visible"
+        android:padding="@dimen/global_margins" />
 
 
 </LinearLayout>
