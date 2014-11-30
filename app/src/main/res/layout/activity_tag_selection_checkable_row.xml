@@ -11,7 +11,10 @@
         android:textSize="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/activity_tag_selection_checkable_row_textview" />
+        android:id="@+id/activity_tag_selection_checkable_row_textview"
+        android:padding="@dimen/global_margins"
+        android:paddingTop="@dimen/global_margins"
+        android:paddingBottom="@dimen/global_margins" />
 
 
 </LinearLayout>

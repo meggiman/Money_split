@@ -14,7 +14,6 @@
         android:layout_weight="0.05"
         android:text="Name"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        style="@style/AppTheme.TextViewTitle.TextViewSubtitle"
         android:textSize="20dp"
         android:padding="@dimen/global_margins" />
 

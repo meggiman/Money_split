@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ch.ethz.itet.pps.budgetSplit.ProjectSummary">
+    tools:context="ch.ethz.itet.pps.budgetSplit.ProjectSummary"
+    android:padding="@dimen/global_margins">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -14,7 +15,8 @@
         android:id="@+id/fragment_summary_textview_nr_items"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="15dp"
+        android:padding="@dimen/global_margins" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,7 +37,8 @@
         android:text="@string/Expenses"
         android:layout_below="@+id/summaryProgressBar"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:padding="@dimen/global_margins" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,7 +58,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:textColor="#FFFFFF"
-        android:enabled="false" />
+        android:enabled="false"
+        android:padding="@dimen/global_margins" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -65,7 +69,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         tools:listitem="@layout/fragment_project_summary_listview_row"
-        android:layout_above="@+id/fragment_summary_button" />
+        android:layout_above="@+id/fragment_summary_button"
+        android:padding="@dimen/global_margins" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"

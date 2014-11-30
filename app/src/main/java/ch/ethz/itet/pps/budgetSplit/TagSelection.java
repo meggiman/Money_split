@@ -74,7 +74,8 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
         getLoaderManager().initLoader(LOADER_TAGS_PARTICIPANTS, null, this);
         getLoaderManager().initLoader(LOADER_TAGS_ALL, null, this);
 
-        ok = (Button) findViewById(R.id.tag_selection_ok);
+        // --> Add Button to Actionbar!! "Save"
+       /* ok = (Button) findViewById(R.id.tag_selection_ok);
         ok.setOnClickListener(new View.OnClickListener() {
                                   @Override
                                   public void onClick(View view) {
@@ -171,8 +172,10 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
                                   }
                               }
 
-        );
-        newTag = (Button)
+        );*/
+
+        // Add Button to Actionbar!! "Add Tag"
+        /*newTag = (Button)
 
                 findViewById(R.id.tag_selection_button_add_tag1);
 
@@ -185,7 +188,7 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
                                       }
                                   }
 
-        );
+        );*/
         tagGrid = (GridView)
 
                 findViewById(R.id.tag_selection_gridView_tags);
@@ -196,17 +199,6 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
                         TagAdapter(this, R.layout.activity_tag_selection_checkable_row, data)
 
         );
-
-        tagfilter = (TextView)
-
-                findViewById(R.id.tag_selection_tagfilter);
-
-        tagfilter.setVisibility(View.VISIBLE);
-        if (!intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, false))
-
-        {
-            tagfilter.setVisibility(View.GONE);
-        }
 
         title = (TextView)
 

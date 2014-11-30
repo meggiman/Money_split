@@ -126,7 +126,7 @@
     <string name="choose_someone_to_exclude">Choose someone to exclude from this Item</string>
     <string name="warning_can_not_delete_default_currency">You can not delete your default currency.</string>
     <string name="add_tag">Add Tag</string>
-    <string name="depths">Depths:</string>
+    <string name="depths">Debths:</string>
     <string name="please_enter_valid_value">Please enter a valid value.</string>
     <string name="new_project_created">Project was successfully created.</string>
     <string name="title_activity_activity_tags_gridview_layout">Tags</string>
@@ -141,6 +141,8 @@
     <string name="contact_questionmark">Contact?</string>
     <string name="contacts_delete_error">One of the selected contacts is currently involved in a project and can therefore not be deleted.</string>
     <string name="delete_contacts">Delete Contacts.</string>
+    <string name="tag_filter_semi">Tagfilter:</string>
+    <string name="spent_semi">Spent:</string>
 
 
 </resources>

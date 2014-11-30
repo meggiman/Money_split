@@ -54,13 +54,14 @@ public class Tags extends Activity implements LoaderManager.LoaderCallbacks<Curs
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tags);
 
-        newTag = (Button) findViewById(R.id.tag_selection_button_add_tag1);
+        // --> Add Button to Actionbar
+        /*newTag = (Button) findViewById(R.id.tag_selection_button_add_tag1);
         newTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showCreateTagPopup(view);
             }
-        });
+        });*/
         tagGrid = (GridView) findViewById(R.id.tag_selection_gridView_tags);
         // Create Simple Cursor Adapter
         String[] fromColumns = {budgetSplitContract.tags.COLUMN_NAME};

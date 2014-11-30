@@ -307,6 +307,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
                 holder.expences = (TextView) row.findViewById(R.id.summary_listview_expences);
                 holder.tags = (TextView) row.findViewById(R.id.summary_listview_tags);
                 holder.depths = (TextView) row.findViewById(R.id.textViewDepths);
+                holder.variable = (TextView) row.findViewById(R.id.summary_variable);
 
                 row.setTag(holder);
             } else {
@@ -319,8 +320,11 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
             holder.depths.setText(new DecimalFormat(",##0.00").format(ptl.depths / defaultExchangeRate) + " " + defaultCurrencyCode);
             if (ptl.depths > 0) {
                 holder.depths.setTextColor(Color.RED);
+                holder.variable.setText("Debths:");
             } else {
                 holder.depths.setTextColor(getResources().getColor(R.color.primary_dark_green));
+                holder.variable.setText("Refund:");
+
             }
             holder.tags.setText(ptl.tags);
 
@@ -332,6 +336,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
             TextView tags;
             TextView expences;
             TextView depths;
+            TextView variable;
         }
     }
 

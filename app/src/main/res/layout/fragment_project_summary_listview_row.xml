@@ -3,80 +3,77 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="@dimen/global_margins">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Participant"
-        android:textStyle="italic|bold"
         android:id="@+id/summary_listview_participant_name"
-        android:textSize="12dp"
-        android:layout_alignParentTop="true"/>
+        style="@style/AppTheme.TextViewTitle.TextViewSubtitle"
+        android:padding="@dimen/global_margins"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView"
+        android:layout_marginLeft="55dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tags"
-        android:textSize="10dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/summary_listview_tags"
         android:layout_gravity="center_horizontal"
-        android:layout_alignBottom="@+id/textViewExcludeItems"
-        android:layout_toRightOf="@+id/textViewExcludeItems"
-        android:layout_toEndOf="@+id/textViewExcludeItems"
-        android:layout_marginLeft="6dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12dp"
-        android:text="@string/tag_filter"
-        android:id="@+id/textViewExcludeItems"
-        android:layout_below="@+id/summary_listview_participant_name"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:padding="@dimen/global_margins"
+        android:textStyle="italic"
+        android:layout_below="@+id/summary_listview_expences" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0.0 CHF"
-        android:textSize="9dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/summary_listview_expences"
-        android:layout_below="@+id/summary_listview_tags"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="8dp"/>
+        android:layout_toEndOf="@+id/textView"
+        android:padding="@dimen/global_margins"
+        android:textStyle="italic"
+        android:layout_toStartOf="@+id/summary_listview_participant_name"
+        android:layout_alignTop="@+id/textView"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toLeftOf="@+id/summary_variable" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Expenses"
-        android:textSize="9dp"
+        android:text="@string/spent_semi"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/textView"
-        android:layout_toLeftOf="@+id/summary_listview_expences"
-        android:layout_below="@+id/summary_listview_tags"
-        android:layout_margin="8dp"/>
+        android:padding="@dimen/global_margins"
+        android:layout_below="@+id/summary_listview_participant_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/depths"
-        android:textSize="9dp"
-        android:id="@+id/textView2"
-        android:layout_below="@+id/summary_listview_tags"
-        android:layout_toRightOf="@+id/summary_listview_expences"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/summary_variable"
+        android:padding="@dimen/global_margins"
+        android:layout_alignTop="@+id/summary_listview_expences"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="+0.0 CHF"
-        android:textSize="9dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/textViewDepths"
-        android:layout_toRightOf="@+id/textView2"
-        android:layout_below="@+id/summary_listview_tags"
-        android:layout_margin="8dp"/>
+        android:layout_toEndOf="@+id/summary_variable"
+        android:padding="@dimen/global_margins"
+        android:layout_alignTop="@+id/summary_variable"
+        android:layout_toRightOf="@+id/summary_variable"
+        android:textStyle="italic" />
 
 </RelativeLayout>
