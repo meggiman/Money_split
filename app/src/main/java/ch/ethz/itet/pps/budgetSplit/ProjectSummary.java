@@ -110,6 +110,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
         //Initialize Loader who need participant Ids List
 
         transactions = (Button) mainView.findViewById(R.id.fragment_summary_button);
+        transactions.setEnabled(false);
         nrOfItems1 = (TextView) mainView.findViewById(R.id.fragment_summary_textview_nr_items);
         expences1 = (TextView) mainView.findViewById(R.id.summary_listview_tags);
         expences = (TextView) mainView.findViewById(R.id.totalExpenses1);

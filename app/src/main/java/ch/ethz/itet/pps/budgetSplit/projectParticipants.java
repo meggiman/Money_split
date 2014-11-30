@@ -174,7 +174,7 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
                                             participantNames.add(cursorAtDeletePosition.getString(cursorAtDeletePosition.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME)));
                                             operations.add(ContentProviderOperation.newDelete(uriToDelete).build());
                                         } else {
-                                            Toast.makeText(getActivity(), "You can't delete the project admin.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "You can't delete the project admin.", Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 }
@@ -186,7 +186,7 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
                                 } catch (OperationApplicationException e) {
                                     e.printStackTrace();
                                 } catch (SQLiteConstraintException e) {
-                                    Toast.makeText(getActivity(), getString(R.string.coulnt_delete_participant) + " " + getString(R.string.because_there_were_still_items_linked_to), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), getString(R.string.coulnt_delete_participant) + " " + getString(R.string.because_there_were_still_items_linked_to), Toast.LENGTH_LONG).show();
                                 }
 
                             }

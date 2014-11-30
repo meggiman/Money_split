@@ -131,6 +131,17 @@
     <string name="title_activity_activity_tags_gridview_layout">Tags</string>
     <string name="title_activity_contacts__list">Contacts List</string>
     <string name="title_activity_tag_selection">Select Tags</string>
+    <string name="delete_tags">Delete Tags</string>
+    <string name="tags_questionmark">Tags?</string>
+    <string name="tag_questionmark">Tag?</string>
+    <string name="tags_delete_error">One of the selected tags is currently being used in a Tagfilter and can therefore not be deleted.</string>
+    <string name="username_error_message">Please enter a valid username</string>
+    <string name="contacts_questionmark">Contacts?</string>
+    <string name="contact_questionmark">Contact?</string>
+    <string name="contacts_delete_error">One of the selected contacts is currently involved in a project and can therefore not be deleted.</string>
+    <string name="delete_contacts">Delete Contacts.</string>
 
 
 </resources>
+
+

@@ -1,4 +1,3 @@
-
 package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
@@ -412,7 +411,8 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
             Tag item = (Tag) th.data;
             // transfer the name
             th.name.setText(item.name);
-            if (item.checked) th.name.setBackgroundColor(Color.CYAN);
+            if (item.checked)
+                th.name.setBackground(getResources().getDrawable(R.drawable.tag_selector_background));
         }
 
         @Override
@@ -431,7 +431,7 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
                     Tag tag = (Tag) clickHolder.data;
                     tag.checked = !tag.checked; // toggle
                     if (tag.checked) {
-                        clickHolder.name.setBackgroundColor(Color.CYAN);
+                        clickHolder.name.setBackground(getResources().getDrawable(R.drawable.tag_selector_background));
                     } else {
                         clickHolder.name.setBackgroundColor(0);
                     }
@@ -460,13 +460,3 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
         }
     }
 }
-
-
-
-
-
-
-
-
-
-

@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -105,6 +106,8 @@ public class FirstScreen extends ActionBarActivity {
 
                     // Go back to main activity
                     finish();
+                } else {
+                    Toast.makeText(FirstScreen.this, getString(R.string.username_error_message), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -135,3 +138,4 @@ public class FirstScreen extends ActionBarActivity {
         //do nothing
     }
 }
+
