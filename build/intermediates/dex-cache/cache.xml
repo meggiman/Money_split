@@ -37,5 +37,17 @@
         jumboMode="false"
         revision="20.0.0"
         sha1="e128103d5281ddd26195a7f980b36d0d005a4e56"/>
+    <item
+        dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\library-2.4.0-b35f2e380be97255512847996c0c97cd3c08c877.jar"
+        jar="C:\Users\Manuel\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb"/>
+    <item
+        dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\classes-d4995d96353028311527197f2fc77e3c03f748d2.jar"
+        jar="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\exploded-aar\com.rengwuxian.materialedittext\library\1.5.0\classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="7d6bd3ea4d3dce622b6be6c953067af64e0a2835"/>
 
 </pre-dex-items>

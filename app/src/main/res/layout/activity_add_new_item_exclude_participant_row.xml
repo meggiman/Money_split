@@ -11,7 +11,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Username"
         android:id="@+id/textViewUsername"
-        android:layout_weight="2" />
+        android:layout_weight="2"
+        style="@style/AppTheme.normalText"
+        android:layout_margin="@dimen/global_margins"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -20,11 +22,15 @@
         android:layout_weight="1"
         android:hint="@string/share_ratio"
         android:inputType="number"
-        android:imeOptions="actionDone" />
+        android:imeOptions="actionDone"
+        style="@style/AppTheme.normalText"
+        android:layout_margin="@dimen/global_margins"/>
 
     <ImageButton
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:id="@+id/imageButtonDelete"
-        android:src="@drawable/ic_action_remove" />
+        android:src="@drawable/ic_action_remove"
+        android:background="@android:color/transparent"
+        android:layout_margin="@dimen/global_margins"/>
 </LinearLayout>

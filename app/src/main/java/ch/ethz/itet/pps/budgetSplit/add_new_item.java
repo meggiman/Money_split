@@ -204,7 +204,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         tagsTextView = (TextView) findViewById(R.id.textView_tags);
 
 
-
         //Get default Currency data
         defaultCurrencyId = Long.parseLong(preferences.getString(getString(R.string.pref_default_currency), "-1"));
         Uri defaultCurrencyUri = ContentUris.withAppendedId(budgetSplitContract.currencies.CONTENT_URI, defaultCurrencyId);
@@ -234,8 +233,17 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_save:
+                if (excludeItemsNotAdded.size() == 0) {
+                    Animation shake = AnimationUtils.loadAnimation(getBaseContext(), R.anim.shake);
+                    excludeList.startAnimation(shake);
+                    findViewById(R.id.textViewExcludeItems).startAnimation(shake);
+                    Toast.makeText(getBaseContext(), getString(R.string.warning_to_many_exclude_items), Toast.LENGTH_SHORT).show();
+                } else {
+                    new BackgroundSaver().execute();
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -558,7 +566,11 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         for (ch.ethz.itet.pps.budgetSplit.Tag tag : tagsAlreadyAdded) {
             itemTagsString.append(tag.name).append(", ");
         }
-        itemTagsString.delete(itemTagsString.length() - 2, itemTagsString.length());
+        if (itemTagsString.length() > 2) {
+            itemTagsString.delete(itemTagsString.length() - 2, itemTagsString.length());
+        } else {
+            itemTagsString.append(getString(R.string.none));
+        }
         tagsTextView.setText(itemTagsString.toString());
 
 
@@ -634,23 +646,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         //Draw item name View
         itemNameEditText.setText(cursorItem.getString(cursorItem.getColumnIndex(budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_NAME)));
         itemNameEditText.setEnabled(fullAccess); //Disable EditText if there is no full Access on Item.
-
-        //Change the Label of the "Add Item" Button and add an OnClickListener
-        Button addItemButton = (Button) findViewById(R.id.buttonAddItem);
-        addItemButton.setText(getString(R.string.save_item));
-        addItemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (excludeItemsNotAdded.size() == 0) {
-                    Animation shake = AnimationUtils.loadAnimation(getBaseContext(), R.anim.shake);
-                    excludeList.startAnimation(shake);
-                    findViewById(R.id.textViewExcludeItems).startAnimation(shake);
-                    Toast.makeText(getBaseContext(), getString(R.string.warning_to_many_exclude_items), Toast.LENGTH_SHORT).show();
-                } else {
-                    new BackgroundSaver().execute();
-                }
-            }
-        });
     }
 
     void drawGUIForNewItem() {
@@ -753,16 +748,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
             @Override
             public void onClick(View view) {
                 showExcludeItemPopup();
-            }
-        });
-
-
-        //Add Listener to AddItem-Button
-        Button addItemButton = (Button) findViewById(R.id.buttonAddItem);
-        addItemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new BackgroundSaver().execute();
             }
         });
     }

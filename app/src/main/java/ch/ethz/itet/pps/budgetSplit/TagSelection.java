@@ -18,6 +18,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +34,7 @@ import java.util.List;
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
-public class TagSelection extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class TagSelection extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // For Item or Participant
     static final String EXTRA_ID = "Id";
@@ -151,7 +152,9 @@ public class TagSelection extends Activity implements LoaderManager.LoaderCallba
                                           for (ch.ethz.itet.pps.budgetSplit.Tag tag : itemTagsToAdd) {
                                               itemTagsString.append(tag.name).append(", ");
                                           }
-                                          itemTagsString.delete(itemTagsString.length() - 2, itemTagsString.length());
+                                          if (itemTagsString.length() > 2) {
+                                              itemTagsString.delete(itemTagsString.length() - 2, itemTagsString.length());
+                                          }
                                           Intent result = new Intent();
                                           result.putParcelableArrayListExtra(RESULT_EXTRA_ITEM_TAGS_TO_DELETE, itemTagsToDelete);
                                           result.putParcelableArrayListExtra(RESULT_EXTRA_ITEM_TAGS_TO_ADD, itemTagsToAdd);

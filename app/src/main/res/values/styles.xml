@@ -27,16 +27,26 @@
         <item name="android:background">@drawable/button_selector_background</item>
     </style>
 
-    <style name="AppTheme.TextViewTitle" parent="Base.TextAppearance.AppCompat.Large">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@android:color/black</item>
+    <style name="FlatButton">
+        <item name="android:textColor">@color/flatbutton_textcolor_selector</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:minWidth">88dp</item>
+        <item name="android:height">36dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:background">@drawable/flatbutton_selector_background</item>
     </style>
 
     <style name="AlertDialogTheme" parent="Base.Theme.AppCompat.Light.Dialog">
         <item name="android:textColor">@color/accent_mint</item>
     </style>
 
-    <style name="AppTheme.TextViewTitle.TextViewSubtitle">
+    <style name="AppThemeTextViewSubtitle">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">@dimen/textView_normal_textViews</item>
+    </style>
+
+    <style name="AppTheme.normalText">
+        <item name="android:textColor">@color/secondary_text</item>
         <item name="android:textSize">@dimen/textView_normal_textViews</item>
     </style>
 </resources>

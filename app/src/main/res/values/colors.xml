@@ -9,4 +9,6 @@
     <color name="accent_light_mint">#b9f6ca</color>
 
     <color name="divider_grey">#ffe1e1e1</color>
+    <color name="text">#ff222222</color>
+    <color name="secondary_text">#ff757575</color>
 </resources>

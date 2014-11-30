@@ -20,7 +20,7 @@
     <string name="username_summary">Choose your name to be used by Budget Split</string>
     <string name="enter_username">Enter your Name.</string>
     <string name="date_added">Date</string>
-    <string name="item_name">Item</string>
+    <string name="item_name">Item name</string>
     <string name="creator">Creator</string>
     <string name="price">Price</string>
     <string name="add_new_item">Add new Item</string>
@@ -136,5 +136,5 @@
     <string name="new_tag">New Tag</string>
     <string name="title_activity_item_tag_chooser">Choose Tags</string>
     <string name="edit_tags">Edit Tags</string>
-
+    <string name="none">none</string>
 </resources>
