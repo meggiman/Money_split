@@ -18,7 +18,8 @@
         android:layout_alignStart="@+id/textViewAdmin"
         android:layout_margin="@dimen/global_margins"
         android:layout_below="@+id/summary_listview_expences"
-        android:layout_alignParentLeft="true"/>
+        android:layout_alignParentLeft="true"
+        style="@style/AppTheme.normalText"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,7 +29,8 @@
         android:id="@+id/textViewCreator"
         android:layout_below="@+id/textViewAdmin"
         android:layout_alignParentLeft="true"
-        android:layout_margin="@dimen/global_margins"/>
+        android:layout_margin="@dimen/global_margins"
+        style="@style/AppThemeTextViewSubtitle"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,7 +41,8 @@
         android:layout_toEndOf="@+id/textViewCreator"
         android:layout_toRightOf="@+id/textViewCreator"
         android:layout_alignBaseline="@+id/textViewCreator"
-        android:layout_margin="@dimen/global_margins"/>
+        android:layout_margin="@dimen/global_margins"
+        style="@style/AppTheme.normalText"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -49,7 +52,8 @@
         android:id="@+id/textViewAdmin"
         android:layout_alignParentLeft="true"
         android:layout_margin="@dimen/global_margins"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        style="@style/AppThemeTextViewSubtitle"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -59,7 +63,8 @@
         android:id="@+id/administrator"
         android:layout_toRightOf="@id/textViewAdmin"
         android:layout_alignBaseline="@+id/textViewAdmin"
-        android:layout_margin="@dimen/global_margins"></TextView>
+        android:layout_margin="@dimen/global_margins"
+        style="@style/AppTheme.normalText"></TextView>
 
     <TextView
         android:layout_width="wrap_content"
@@ -70,7 +75,8 @@
         android:layout_below="@+id/textViewCreator"
         android:layout_alignStart="@+id/textViewCreator"
         android:layout_alignParentLeft="true"
-        android:layout_margin="@dimen/global_margins"/>
+        android:layout_margin="@dimen/global_margins"
+        style="@style/AppThemeTextViewSubtitle"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -81,7 +87,8 @@
         android:layout_toRightOf="@+id/summary_listview_expences"
         android:layout_toEndOf="@+id/projectDescription"
         android:layout_alignBaseline="@+id/summary_listview_expences"
-        android:layout_margin="@dimen/global_margins"/>
+        android:layout_margin="@dimen/global_margins"
+        style="@style/AppTheme.normalText"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -90,7 +97,8 @@
         android:id="@+id/buttonFinalize"
         android:layout_toLeftOf="@+id/buttonAddItem"
         android:layout_margin="@dimen/global_margins"
-        android:layout_below="@+id/projectDescription"/>
+        android:layout_below="@+id/projectDescription"
+        android:enabled="false"/>
 
     <Button
         android:layout_width="wrap_content"

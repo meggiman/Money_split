@@ -707,6 +707,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                 startActivityForResult(intent, REQUEST_EDIT_TAGS);
             }
         });
+        tagsTextView.setText(getString(R.string.none));
 
         //Draw Payer GUI elements
         payersToAdd = new ArrayList<Payer>();

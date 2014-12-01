@@ -100,6 +100,7 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
         defaultCurrencyCursor.moveToFirst();
         defaultCurrencyExchange = defaultCurrencyCursor.getDouble(defaultCurrencyCursor.getColumnIndex(budgetSplitContract.currencies.COLUMN_EXCHANGE_RATE));
         defaultCurrencyCode = defaultCurrencyCursor.getString(defaultCurrencyCursor.getColumnIndex(budgetSplitContract.currencies.COLUMN_CURRENCY_CODE));
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -203,18 +204,27 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
             }
         });
 
-        //Configure Button
-        Button addItemButton = (Button) fragmentLayout.findViewById(R.id.btnAddNewItem);
-        addItemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        return fragmentLayout;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.project_items, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_add_item:
                 Intent newItemIntent = new Intent(getActivity(), add_new_item.class);
                 newItemIntent.putExtra(add_new_item.EXTRA_PROJECT_DETAILS_URI, projectUri);
                 startActivityForResult(newItemIntent, REQUEST_CREATE_ITEM);
-            }
-        });
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
 
-        return fragmentLayout;
+        }
     }
 
     @Override

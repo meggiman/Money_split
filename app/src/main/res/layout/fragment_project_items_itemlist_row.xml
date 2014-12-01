@@ -1,39 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="1.1.1900"
-        android:id="@+id/textViewDateAdded"
-        android:layout_weight="1"/>
-
-    <TextView
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Item name"
         android:id="@+id/textViewItemName"
-        android:layout_weight="2"/>
+        android:layout_weight="0"
+        style="@style/AppTheme.normalText"
+        android:layout_marginLeft="@dimen/global_margins"
+        android:layout_marginRight="@dimen/global_margins"
+        />
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Creator"
-        android:id="@+id/textViewCreator"
-        android:layout_weight="1"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Price"
-        android:id="@+id/textViewAdmin"
-        android:layout_weight="1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="1.1.1900"
+            android:id="@+id/textViewDateAdded"
+            android:layout_weight="1"
+            style="@style/AppTheme.normalText"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/global_margins"
+            android:layout_marginRight="@dimen/global_margins"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Creator"
+            android:id="@+id/textViewCreator"
+            android:layout_weight="1"
+            style="@style/AppTheme.normalText"
+            android:layout_marginLeft="@dimen/global_margins"
+            android:layout_marginRight="@dimen/global_margins"
+            android:layout_gravity="center_vertical"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Price"
+            android:id="@+id/textViewAdmin"
+            android:layout_weight="1"
+            style="@style/AppTheme.normalText"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/global_margins"
+            android:layout_marginRight="@dimen/global_margins"
+            android:textStyle="italic"/>
+    </LinearLayout>
+
 </LinearLayout>
