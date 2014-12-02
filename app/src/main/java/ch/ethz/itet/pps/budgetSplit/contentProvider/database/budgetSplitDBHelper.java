@@ -39,7 +39,7 @@ public class budgetSplitDBHelper extends SQLiteOpenHelper {
         budgetSplitDBSchema.projectParticipants_view.onCreate(database);
         budgetSplitDBSchema.participantTags_view.onCreate(database);
 
-        budgetSplitDBSchema.projectsParticipants.onCreateTrigger(database);
+        //budgetSplitDBSchema.projectsParticipants.onCreateTrigger(database);
     }
 
     @Override

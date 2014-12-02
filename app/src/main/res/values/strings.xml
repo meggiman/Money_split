@@ -149,4 +149,6 @@
     <string name="delete_contacts">Delete Contacts.</string>
     <string name="tag_filter_semi">Tagfilter:</string>
     <string name="spent_semi">Spent:</string>
+    <string name="select_participant">Select Participant</string>
+    <string name="save_project">Save Project</string>
 </resources>

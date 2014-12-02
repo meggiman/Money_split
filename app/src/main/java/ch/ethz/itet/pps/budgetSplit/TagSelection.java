@@ -65,7 +65,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
     ArrayList<IdHolder> tagIds;
     List<Tag> data = new ArrayList<Tag>();
     TagAdapter tagsGridAdapter;
-    char[] oldTitle;
+    String oldTitle;
 
 
     Button newTag;
@@ -86,9 +86,9 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
         tagGrid = (GridView) findViewById(R.id.tag_selection_gridView_tags);
         if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
             getLoaderManager().initLoader(LOADER_TAGS_PARTICIPANTS, null, this);
-            oldTitle = intent.getStringExtra(EXTRA_TITLE).toCharArray();
-            char[] titleName = (oldTitle);
-            title.setText(titleName, 0, titleName.length);
+            oldTitle = intent.getStringExtra(EXTRA_TITLE);
+            String titleName = oldTitle;
+            title.setText(titleName);
         } else {
             title.setVisibility(View.INVISIBLE);
             itemTagsAlreadyAdded = intent.getParcelableArrayListExtra(EXTRA_ITEM_TAGS_ALREADY_ADDED);
@@ -118,27 +118,13 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
                 // coming from a Contacts Activity
                 if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
                     // Check if title has been changed
-                    char[] newTitle = title.getText().toString().toCharArray();
-                    if (newTitle.length == oldTitle.length) {
-                        boolean different = false;
-                        for (int i = 0; i < oldTitle.length; i++) {
-                            if (newTitle[i] != oldTitle[i]) {
-                                different = true;
-                                break;
-                            }
-                        }
-                        if (different) {
+                    String newTitle = title.getText().toString();
+                    if (!title.getText().toString().equals(oldTitle)) {
                             ContentValues name = new ContentValues();
                             Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI, intent.getLongExtra(EXTRA_ID, -1));
-                            name.put(budgetSplitContract.participants.COLUMN_NAME, newTitle.toString());
+                        name.put(budgetSplitContract.participants.COLUMN_NAME, newTitle);
                             getContentResolver().update(input, name, null, null);
                         }
-                    } else {
-                        ContentValues name = new ContentValues();
-                        Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI, intent.getLongExtra(EXTRA_ID, -1));
-                        name.put(budgetSplitContract.participants.COLUMN_NAME, newTitle.toString());
-                        getContentResolver().update(input, name, null, null);
-                    }
                     for (int i = 0; i < data.size(); i++) {
                         if (data.get(i).checked) {
                             boolean insert = true;

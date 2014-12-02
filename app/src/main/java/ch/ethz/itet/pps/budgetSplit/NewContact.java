@@ -69,8 +69,35 @@ public class NewContact extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        return false;
+        getMenuInflater().inflate(R.menu.new_contact, menu);
+        return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_save:
+                String name = newContactName.getText().toString();
 
+                if (name.trim().length() > 0) {
+                    ContentValues newContactParticipant = new ContentValues();
+                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_NAME, newContactName.getText().toString().trim());
+                    newContactParticipant.put(budgetSplitContract.participants.COLUMN_ISVIRTUAL, 1);
+                    nameUri = getContentResolver().insert(budgetSplitContract.participants.CONTENT_URI, newContactParticipant);
+
+                    // Add Id to Global Array
+                    long contactId = ContentUris.parseId(nameUri);
+                    GlobalStuffHelper.addParticipantsIds(contactId);
+                    setResult(RESULT_OK);// overgives that the contact has succesfully been created to the activity new project
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.enter_a_name), Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
 }

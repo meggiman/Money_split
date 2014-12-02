@@ -63,7 +63,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
                 participantNamestoList.add(participantHelper);
                 participantNamestoSpinner.remove(participantHelper);
                 // Ajust ID Memory
-                long selectedId = GlobalStuffHelper.popParticipantIds(position);
+                long selectedId = id;
                 GlobalStuffHelper.addParticipantIdsToProject(selectedId);
 
                 //
@@ -119,8 +119,66 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        return false;
+        getMenuInflater().inflate(R.menu.new_project, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int opid = item.getItemId();
+        switch (opid) {
+            case R.id.action_save:
+                // Do not create a Nameless Project
+                if (projectName.getText().toString().trim().length() == 0) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.name_your_project), Toast.LENGTH_SHORT).show();
+                } else {
+
+
+                    // load your own Information for the project owner data
+
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+                    long adminId = preferences.getLong(getString(R.string.pref_user_id), -1);
+
+
+                    // create new Project in Database
+                    ContentValues projectValues = new ContentValues();
+                    projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_NAME, projectName.getText().toString().trim());
+                    projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_DESCRIPTION, projectDescription.getText().toString());
+                    projectValues.put(budgetSplitContract.projects.COLUMN_PROJECT_OWNER, adminId);
+                    projectUri = getContentResolver().insert(budgetSplitContract.projects.CONTENT_URI, projectValues);
+
+
+                    // create Junktions in Database
+
+                    long projectId = ContentUris.parseId(projectUri);
+                    ContentValues junktionValues = new ContentValues();
+
+                    while (GlobalStuffHelper.sizeParticipantIdsToProject() > 0) {
+                        junktionValues.put(budgetSplitContract.projectParticipants.COLUMN_PROJECTS_ID, projectId);
+                        junktionValues.put(budgetSplitContract.projectParticipants.COLUMN_PARTICIPANTS_ID, GlobalStuffHelper.popParticipantIdsToProject(0));
+                        getContentResolver().insert(budgetSplitContract.projectParticipants.CONTENT_URI, junktionValues);
+                        junktionValues.clear();
+                    }
+
+                    SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    long id = preferences1.getLong(getString(R.string.pref_user_id), -1);
+
+                    junktionValues.put(budgetSplitContract.projectParticipants.COLUMN_PROJECTS_ID, projectId);
+                    junktionValues.put(budgetSplitContract.projectParticipants.COLUMN_PARTICIPANTS_ID, id);
+                    getContentResolver().insert(budgetSplitContract.projectParticipants.CONTENT_URI, junktionValues);
+
+                    setResult(RESULT_OK);
+                    finish();
+                }
+                return true;
+            case R.id.action_add_contact:
+                Intent intentNewContact = new Intent(NewProject.this, NewContact.class);
+                startActivityForResult(intentNewContact, REQUEST_CREATE_CONTACT);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -339,14 +397,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
         // Clear Old Arrays
         GlobalStuffHelper.clearSpinnerArray();
         participantNamestoSpinner.clear();
-        //participantNamestoSpinner.add("+ Contact");
-        // Debugg
-        participantNamestoSpinner.add("Jessie");
-        GlobalStuffHelper.participantIds.add(0l);
-        participantNamestoSpinner.add("Manu");
-        GlobalStuffHelper.participantIds.add(1l);
-        participantNamestoSpinner.add("Josephine");
-        GlobalStuffHelper.participantIds.add(2l);
+        participantNamestoSpinner.add(getString(R.string.select_participant));
 
         if (cursor.getCount() > 0) {
 
