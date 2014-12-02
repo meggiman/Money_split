@@ -58,17 +58,19 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
             if (firstselect) {
                 firstselect = false;
             } else {
-                String participantHelper = (String) parent.getItemAtPosition(position);
-                // Remove Name from SpinnerList and add it to ListViewList
-                participantNamestoList.add(participantHelper);
-                participantNamestoSpinner.remove(participantHelper);
-                // Ajust ID Memory
-                long selectedId = id;
-                GlobalStuffHelper.addParticipantIdsToProject(selectedId);
-
-                //
-                updateContactsList();
-                contactsSpinner.setSelection(0);
+                if (position != 0) {
+                    String participantHelper = (String) parent.getItemAtPosition(position);
+                    // Remove Name from SpinnerList and add it to ListViewList
+                    participantNamestoList.add(participantHelper);
+                    participantNamestoSpinner.remove(participantHelper);
+                    // Ajust ID Memory
+                    int pos = GlobalStuffHelper.participantNames.indexOf(participantHelper);
+                    long selectedId = GlobalStuffHelper.getParticipantIds(pos);
+                    GlobalStuffHelper.addParticipantIdsToProject(selectedId);
+                    //
+                    updateContactsList();
+                    contactsSpinner.setSelection(0);
+                }
             }
         }
 
@@ -398,14 +400,18 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
         GlobalStuffHelper.clearSpinnerArray();
         participantNamestoSpinner.clear();
         participantNamestoSpinner.add(getString(R.string.select_participant));
+        GlobalStuffHelper.participantNames.clear();
 
         if (cursor.getCount() > 0) {
 
             // Refill spinner and Id List
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 if (cursor != null) {
-                    participantNamestoSpinner.add(cursor.getString(cursor.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME)));
-                    GlobalStuffHelper.addParticipantsIds(cursor.getLong(cursor.getColumnIndex(budgetSplitContract.participants._ID)));
+                    String name = cursor.getString(cursor.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME));
+                    long id = cursor.getLong(cursor.getColumnIndex(budgetSplitContract.participants._ID));
+                    participantNamestoSpinner.add(name);
+                    GlobalStuffHelper.participantNames.add(name);
+                    GlobalStuffHelper.addParticipantsIds(id);
                 }
             }
 
@@ -416,6 +422,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
             // and from Id Memory
             long id = preferences.getLong(getString(R.string.pref_user_id), -1);
             GlobalStuffHelper.popParticipantIds(id);
+            GlobalStuffHelper.participantNames.remove(adminName);
 
 
         }
@@ -424,9 +431,8 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
 
 
         if (participantNamestoList.size() > 0 && participantNamestoSpinner.size() > 0) {
-            for (int i = 0; i < participantNamestoList.size(); i++) {
-                participantNamestoSpinner.remove(participantNamestoList.get(i));
-                GlobalStuffHelper.popParticipantIds(GlobalStuffHelper.getParticipantIdsToProject(i));
+            for (String participant : participantNamestoList) {
+                participantNamestoSpinner.remove(participant);
             }
         }
 
@@ -468,6 +474,7 @@ class GlobalStuffHelper {
     static long virtualCounter = 15;
     static ArrayList<Long> participantIds = new ArrayList<Long>();
     static ArrayList<Long> participantIdsToProject = new ArrayList<Long>();
+    static ArrayList<String> participantNames = new ArrayList<String>();
 
     public static void raiseVirtualCounterByOne() {
         virtualCounter++;
