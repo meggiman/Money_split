@@ -242,7 +242,9 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onStop() {
         getLoaderManager().destroyLoader(LOADER_ITEMS);
-        progressDialog.dismiss();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
         super.onStop();
     }
 

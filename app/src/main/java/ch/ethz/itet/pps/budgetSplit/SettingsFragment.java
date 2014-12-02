@@ -1,6 +1,7 @@
 package ch.ethz.itet.pps.budgetSplit;
 
 
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
@@ -26,11 +27,28 @@ import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
  */
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    OnDefaultCurrencyChangedListener mcallback;
+
+    interface OnDefaultCurrencyChangedListener {
+        void onDefaultCurrencyChanged();
+    }
+
 
     public SettingsFragment() {
         // Required empty public constructor
     }
 
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mcallback = (OnDefaultCurrencyChangedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnDefaultCurrencyChangedListener");
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +80,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             ContentValues values = new ContentValues();
             values.put(budgetSplitContract.participants.COLUMN_NAME, sharedPreferences.getString(getString(R.string.pref_userName), ""));
             getActivity().getContentResolver().update(contentUri, values, null, null);
+        } else if (key.equals(getString(R.string.pref_default_currency))) {
+            mcallback.onDefaultCurrencyChanged();
         }
 
     }

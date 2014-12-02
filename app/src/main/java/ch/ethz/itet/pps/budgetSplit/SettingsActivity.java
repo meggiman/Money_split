@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.os.Build;
 
 
-public class SettingsActivity extends ActionBarActivity {
+public class SettingsActivity extends ActionBarActivity implements SettingsFragment.OnDefaultCurrencyChangedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,4 +33,8 @@ public class SettingsActivity extends ActionBarActivity {
         return false;
     }
 
+    @Override
+    public void onDefaultCurrencyChanged() {
+        setResult(ProjectNavigation.RESULT_DEFAULT_CURRENCY_CHANGED);
+    }
 }

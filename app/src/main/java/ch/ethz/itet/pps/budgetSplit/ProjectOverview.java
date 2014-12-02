@@ -102,6 +102,9 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
             }
         });
 
+
+        getLoaderManager().initLoader(LOADER_EXPENSES, null, this);
+        getLoaderManager().initLoader(LOADER_PROJECT, null, this);
         return myView;
     }
 
@@ -205,17 +208,4 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        getLoaderManager().initLoader(LOADER_EXPENSES, null, this);
-        getLoaderManager().initLoader(LOADER_PROJECT, null, this);
-    }
-
-    @Override
-    public void onPause() {
-        getLoaderManager().destroyLoader(LOADER_PROJECT);
-        getLoaderManager().destroyLoader(LOADER_EXPENSES);
-        super.onStop();
-    }
 }

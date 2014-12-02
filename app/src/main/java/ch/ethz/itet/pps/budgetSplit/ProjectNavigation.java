@@ -31,6 +31,9 @@ public class ProjectNavigation extends ActionBarActivity implements android.supp
      */
     public final static String EXTRA_CONTENT_URI = "projectContentUri"; // Information mitgegeben mit Intent
     public final static String EXTRA_PROJECT_TITLE = "projectTitle";
+    final static int REQUEST_SETTINGS = 1;
+    final static int RESULT_DEFAULT_CURRENCY_CHANGED = 1;
+
     /**
      * Integer constants to identify the sections of our SectionAdapter
      */
@@ -156,7 +159,7 @@ public class ProjectNavigation extends ActionBarActivity implements android.supp
                 return true;
             case R.id.action_settings:
                 intent = new Intent(this, SettingsActivity.class);
-                startActivityForResult(intent, 0);
+                startActivityForResult(intent, REQUEST_SETTINGS);
                 return true;
             case R.id.Tags:
                 Intent tagIntent = new Intent(this, Tags.class);
@@ -168,6 +171,16 @@ public class ProjectNavigation extends ActionBarActivity implements android.supp
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_SETTINGS:
+                if (resultCode == RESULT_DEFAULT_CURRENCY_CHANGED) {
+                    recreate();
+                }
+                break;
+        }
+    }
 
     @Override
     public void onTabSelected(android.support.v7.app.ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
