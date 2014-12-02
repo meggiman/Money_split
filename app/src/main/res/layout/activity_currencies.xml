@@ -3,7 +3,8 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="@dimen/global_margins">
 
     <ListView
         android:layout_width="match_parent"
@@ -11,12 +12,9 @@
         android:id="@+id/listViewCurrencies"
         android:layout_weight="1"
         tools:listitem="@layout/activity_currencies_row"
-        android:choiceMode="singleChoice"/>
+        android:choiceMode="singleChoice"
+        android:layout_margin="@dimen/global_margins"
+        android:divider="@color/divider_grey"
+        android:dividerHeight="1dp"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_currency"
-        android:id="@+id/buttonAddCurrency"
-        android:layout_gravity="right"/>
 </LinearLayout>

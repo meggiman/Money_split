@@ -42,15 +42,6 @@ public class ContactsList extends ActionBarActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_contacts__list);
 
         progressBar = (ProgressBar) findViewById(R.id.contacts_list_progressbar);
-        addContact = (Button) findViewById(R.id.contact_list_add_contact);
-        addContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent createContactIntent = new Intent(ContactsList.this, NewContact.class);
-                startActivityForResult(createContactIntent, 0);
-            }
-        });
-
 
         getLoaderManager().initLoader(0, null, this);
     }
