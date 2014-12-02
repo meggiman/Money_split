@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 
     <TextView
@@ -11,17 +11,17 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Name"
-        android:id="@+id/textView_tags_title"
+        android:id="@+id/contact_list_row_name"
         android:layout_weight="3"
-
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp" />
 
     <ImageView
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginRight="20dp"
+        android:layout_marginTop="6dp"
         android:id="@+id/contact_list_row_edit"
-        android:src="@drawable/ic_action_edit"/>
+        android:src="@drawable/ic_action_edit" />
 
 
 </LinearLayout>

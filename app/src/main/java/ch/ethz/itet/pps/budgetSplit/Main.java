@@ -45,6 +45,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
     //Adapter to fill the listview with Data
     SimpleCursorAdapter simpleCursorAdapter;
 
+    
     //Inicializing the button and listview (local inicialization in onCreate produced a crash)
     Button addProjectButton;
     ListView listView;

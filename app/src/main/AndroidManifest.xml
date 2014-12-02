@@ -6,15 +6,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/balance_2"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
             android:name="ch.ethz.itet.pps.budgetSplit.Main"
             android:label="@string/projects">
             <intent-filter android:label="@string/app_name">
-                <action android:name="android.intent.action.MAIN"/>
-
+            <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -26,12 +25,12 @@
             android:exported="false"/>
 
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.ProjectNavigation"
+            android:name=".ProjectNavigation"
             android:exported="true"
             android:label="@string/title_activity_project_navigation"
-            android:parentActivityName="ch.ethz.itet.pps.budgetSplit.Main"/>
+            android:parentActivityName=".Main"/>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.add_new_item"
+            android:name=".add_new_item"
             android:label="@string/title_activity_add_new_item"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
@@ -40,10 +39,10 @@
                 android:value="ch.ethz.itet.pps.budgetSplit.ProjectNavigation"/>
         </activity>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.NewProject"
+            android:name=".NewProject"
             android:exported="true"
             android:label="@string/title_activity_new_project"
-            android:parentActivityName="ch.ethz.itet.pps.budgetSplit.Main"
+            android:parentActivityName=".Main"
             android:windowSoftInputMode="adjustPan">
             <action android:name="android.intent.action.NEWPROJECT"/>
 
@@ -52,10 +51,10 @@
                 android:value="ch.ethz.itet.pps.budgetSplit.Main"/>
         </activity>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.NewContact"
+            android:name=".NewContact"
             android:label="@string/title_activity_new_contact"
             android:noHistory="true"
-            android:parentActivityName="ch.ethz.itet.pps.budgetSplit.NewProject">
+            android:parentActivityName=".NewProject">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ethz.itet.pps.budgetSplit.NewProject"/>
@@ -63,38 +62,38 @@
             <action android:name="android.intent.action.NEWCONTACT"/>
         </activity>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.FirstScreen"
+            android:name=".FirstScreen"
             android:label="@string/title_activity_first_screen"
             android:noHistory="true"/>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"/>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.Transactions"
+            android:name=".Transactions"
             android:label="@string/title_activity_transactions"/>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.Finalize"
+            android:name=".Finalize"
             android:label="@string/title_activity_finalize"/>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.Tags"
+            android:name=".Tags"
             android:label="@string/title_activity_tags"/>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.currencies"
+            android:name=".currencies"
             android:label="@string/title_activity_currencies"/>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.activity_tags_gridview_layout"
+            android:name=".activity_tags_gridview_layout"
             android:label="@string/title_activity_activity_tags_gridview_layout"/>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.ContactsList"
+            android:name=".ContactsList"
             android:label="@string/title_activity_contacts__list"
-            android:parentActivityName="ch.ethz.itet.pps.budgetSplit.Main">
+            android:parentActivityName=".Main">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ethz.itet.pps.budgetSplit.Main"/>
         </activity>
         <activity
-            android:name="ch.ethz.itet.pps.budgetSplit.TagSelection"
-            android:label="@string/title_activity_tag_selection"/>
+            android:name=".TagSelection"
+            android:label="@string/title_activity_tag_selection"></activity>
     </application>
 
 </manifest>

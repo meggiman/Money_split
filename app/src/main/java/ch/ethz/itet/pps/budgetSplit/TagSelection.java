@@ -61,11 +61,11 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
     private ArrayList<ch.ethz.itet.pps.budgetSplit.Tag> itemTagsToDelete;
     private StringBuffer itemTagsString;
 
-
     ProgressBar progressBar;
     ArrayList<IdHolder> tagIds;
     List<Tag> data = new ArrayList<Tag>();
     TagAdapter tagsGridAdapter;
+    char[] oldTitle;
 
 
     Button newTag;
@@ -73,7 +73,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
     AlertDialog tagCreatePopup;
     GridView tagGrid;
     TextView tagfilter;
-    TextView title;
+    EditText title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +85,15 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
 
         if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
             getLoaderManager().initLoader(LOADER_TAGS_PARTICIPANTS, null, this);
+            oldTitle = intent.getStringExtra(EXTRA_TITLE).toCharArray();
+
+            title = (EditText) findViewById(R.id.tag_selection_variable);
+
+            char[] titleName = (oldTitle);
+
+            title.setText(titleName, 0, titleName.length);
         } else {
+            title.setVisibility(View.GONE);
             itemTagsAlreadyAdded = intent.getParcelableArrayListExtra(EXTRA_ITEM_TAGS_ALREADY_ADDED);
             itemTagsToAdd = intent.getParcelableArrayListExtra(EXTRA_ITEM_TAGS_TO_ADD);
             itemTagsToDelete = intent.getParcelableArrayListExtra(EXTRA_ITEM_TAGS_TO_DELETE);
@@ -94,12 +102,37 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
         }
         getLoaderManager().initLoader(LOADER_TAGS_ALL, null, this);
 
+        
+        
         ok = (Button) findViewById(R.id.tag_selection_ok);
         ok.setOnClickListener(new View.OnClickListener() {
                                   @Override
                                   public void onClick(View view) {
                                       // coming from a Contacts Activity
                                       if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
+                                          // Check if title has been changed
+                                          char[] newTitle = title.getText().toString().toCharArray();
+                                          if(newTitle.length == oldTitle.length){
+                                              boolean different = false;
+                                              for(int i = 0; i<oldTitle.length;i++){
+                                                  if(newTitle[i]!=oldTitle[i]){
+                                                      different = true;
+                                                      break;
+                                                  }
+                                              }
+                                              if(different){
+                                                  ContentValues name = new ContentValues();
+                                                  Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI,intent.getLongExtra(EXTRA_ID,-1));
+                                                  name.put(budgetSplitContract.participants.COLUMN_NAME,newTitle.toString());
+                                                  getContentResolver().update(input,name,null,null);
+                                              }
+                                          }
+                                          else{
+                                              ContentValues name = new ContentValues();
+                                              Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI,intent.getLongExtra(EXTRA_ID,-1));
+                                              name.put(budgetSplitContract.participants.COLUMN_NAME,newTitle.toString());
+                                              getContentResolver().update(input,name,null,null);
+                                          }
                                           for (int i = 0; i < data.size(); i++) {
                                               if (data.get(i).checked) {
                                                   boolean insert = true;
@@ -144,9 +177,33 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
 
                                       // coming from an Items Activity (tagfilterVisible==false)
                                       else {
-                                          for (ch.ethz.itet.pps.budgetSplit.Tag tag : itemTagsAlreadyAdded) {
-                                              if (!itemTagsToDelete.contains(tag)) {
-                                                  itemTagsString.append(tag.name).append(", ");
+                                          for (int i = 0; i < data.size(); i++) {
+                                              if (data.get(i).checked) {
+                                                  boolean insert = true;
+                                                  for (int j = 0; j < tagIds.size(); j++) {
+                                                      if (data.get(i).id == tagIds.get(j).tagId) {
+                                                          // Item was already Checked and thus stays in the Tagfilter
+                                                          // do nothing especially no insert
+                                                          insert = false;
+                                                      }
+                                                  }
+                                                  if (insert == true) {
+                                                      // The right junktion does not yet exist -> insert
+                                                      ContentValues cv = new ContentValues();
+                                                      cv.put(budgetSplitContract.itemsTags.COLUMN_ITEM_ID, intent.getLongExtra(EXTRA_ID, -1));
+                                                      cv.put(budgetSplitContract.itemsTags.COLUMN_TAGS_ID, data.get(i).id);
+                                                      getContentResolver().insert(budgetSplitContract.itemsTags.CONTENT_URI, cv);
+                                                  }
+                                              } else { // data.checked == false
+                                                  boolean delete = false;
+                                                  List<Long> toDeleteList = new ArrayList<Long>();
+                                                  for (int j = 0; j < tagIds.size(); j++) {
+                                                      if (data.get(i).id == tagIds.get(j).tagId) {
+                                                          // The Tag was checked before but isn't anmore -> delete
+                                                          toDeleteList.add(tagIds.get(j).tableId);
+                                                          break;
+                                                      }
+                                                  }
                                               }
                                           }
                                           for (ch.ethz.itet.pps.budgetSplit.Tag tag : itemTagsToAdd) {
@@ -191,24 +248,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
 
         );
 
-        tagfilter = (TextView)
 
-                findViewById(R.id.tag_selection_tagfilter);
-
-        tagfilter.setVisibility(View.VISIBLE);
-        if (!intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, false))
-
-        {
-            tagfilter.setVisibility(View.GONE);
-        }
-
-        title = (TextView)
-
-                findViewById(R.id.tag_selection_variable);
-
-        char[] titleName = (intent.getStringExtra(EXTRA_TITLE)).toCharArray();
-
-        title.setText(titleName, 0, titleName.length);
     }
 
     @Override
@@ -409,7 +449,8 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
             Tag item = (Tag) th.data;
             // transfer the name
             th.name.setText(item.name);
-            if (item.checked) th.name.setBackgroundColor(Color.CYAN);
+            if (item.checked)
+                th.name.setBackground(getResources().getDrawable(R.drawable.tag_selector_background));
         }
 
         @Override
@@ -428,7 +469,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
                     Tag tag = (Tag) clickHolder.data;
                     tag.checked = !tag.checked; // toggle
                     if (tag.checked) {
-                        clickHolder.name.setBackgroundColor(Color.CYAN);
+                        clickHolder.name.setBackground(getResources().getDrawable(R.drawable.tag_selector_background));
                     } else {
                         clickHolder.name.setBackgroundColor(0);
                     }
@@ -471,13 +512,3 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
         }
     }
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,19 +1,32 @@
 package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.os.RemoteException;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,8 +34,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -42,7 +57,125 @@ public class ContactsList extends ActionBarActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_contacts__list);
 
         progressBar = (ProgressBar) findViewById(R.id.contacts_list_progressbar);
+        
+        list = (ListView) findViewById(R.id.contact_list_listwiev);
+        list.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+        list.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
 
+            /**
+             * Called when an item is checked or unchecked during selection mode.
+             *
+             * @param mode     The {@link android.view.ActionMode} providing the selection mode
+             * @param position Adapter position of the item that was checked or unchecked
+             * @param id       Adapter ID of the item that was checked or unchecked
+             * @param checked  <code>true</code> if the item is now checked, <code>false</code>
+             */
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                //
+            }
+
+            /**
+             * Called when action mode is first created. The menu supplied will be used to
+             * generate action buttons for the action mode.
+             *
+             * @param mode ActionMode being created
+             * @param menu Menu used to populate action buttons
+             * @return true if the action mode should be created, false if entering this
+             * mode should be aborted.
+             */
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                MenuInflater menuInflater = mode.getMenuInflater();
+                menuInflater.inflate(R.menu.project_participants_select, menu);
+                return true;
+            }
+
+            /**
+             * Called to refresh an action mode's action menu whenever it is invalidated.
+             *
+             * @param mode ActionMode being prepared
+             * @param menu Menu used to populate action buttons
+             * @return true if the menu or action mode was updated, false otherwise.
+             */
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            /**
+             * Called to report a user click on an action button.
+             *
+             * @param mode The current ActionMode
+             * @param item The item that was clicked
+             * @return true if this callback handled the event, false if the standard MenuItem
+             * invocation should continue.
+             */
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                AlertDialog.Builder myDialogBuilder = new AlertDialog.Builder(ContactsList.this);
+                myDialogBuilder.setTitle(getString(R.string.delete_contacts));
+                if (list.getCheckedItemCount() > 1) {
+                    myDialogBuilder.setMessage(getString(R.string.delete_) + " " + list.getCheckedItemCount() + " " + getString(R.string.contacts_questionmark));
+                } else {
+                    myDialogBuilder.setMessage(getString(R.string.delete_) + " " + list.getCheckedItemCount() + " " + getString(R.string.contact_questionmark));
+                }
+                myDialogBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    /**
+                     * This method will be invoked when a button in the dialog is clicked.
+                     *
+                     * @param dialog The dialog that received the click.
+                     * @param which  The button that was clicked (e.g.
+                     *               {@link android.content.DialogInterface#BUTTON1}) or the position
+                     */
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ArrayList<ContentProviderOperation> deleteOperations = new ArrayList<ContentProviderOperation>();
+                        ArrayList<String> contactsToDelete = new ArrayList<String>();
+                        SparseBooleanArray checkedItems = list.getCheckedItemPositions();
+                        for (int k = 0; k < list.getAdapter().getCount(); k++) {
+                            if (checkedItems.get(k)) {
+                                Contact toDelete = (Contact) list.getItemAtPosition(k);
+                                long id = toDelete.id;
+                                Uri uriToDelete = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI, id);
+                                contactsToDelete.add(toDelete.name);
+                                deleteOperations.add(ContentProviderOperation.newDelete(uriToDelete).build());
+                            }
+                        }
+                        try {
+                            ContentProviderResult[] operationResult = getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, deleteOperations);
+
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        } catch (OperationApplicationException e) {
+                            e.printStackTrace();
+                        } catch (SQLiteConstraintException e) {
+                            Toast.makeText(ContactsList.this, getString(R.string.contacts_delete_error), Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                });
+
+                myDialogBuilder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Do nothing
+                    }
+                });
+                myDialogBuilder.create().show();
+                return true;
+            }
+
+            /**
+             * Called when an action mode is about to be exited and destroyed.
+             *
+             * @param mode The current ActionMode being destroyed
+             */
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                //
+            }
+        });
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -182,7 +315,7 @@ public class ContactsList extends ActionBarActivity implements LoaderManager.Loa
                 row = inflater.inflate(layoutResourceId, parent, false);
 
                 holder = new ContactHolder();
-                holder.name = (TextView) row.findViewById(R.id.textView_tags_title);
+                holder.name = (TextView) row.findViewById(R.id.contact_list_row_name);
                 holder.edit = (ImageView) row.findViewById(R.id.contact_list_row_edit);
 
                 row.setTag(holder);
