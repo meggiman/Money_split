@@ -45,6 +45,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
     ArrayList<String> participantNamestoList = new ArrayList<String>();
     ArrayList<String> participantNamestoSpinner = new ArrayList<String>();
     Uri projectUri;
+    Boolean firstselect = true;
 
     static final int REQUEST_CREATE_CONTACT = 1;
 
@@ -54,14 +55,15 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
             //Ignore first Selection
-            if (position == 0) {
+            if (firstselect) {
+                firstselect = false;
             } else {
                 String participantHelper = (String) parent.getItemAtPosition(position);
                 // Remove Name from SpinnerList and add it to ListViewList
                 participantNamestoList.add(participantHelper);
                 participantNamestoSpinner.remove(participantHelper);
                 // Ajust ID Memory
-                long selectedId = GlobalStuffHelper.popParticipantIds(position - 1);
+                long selectedId = GlobalStuffHelper.popParticipantIds(position);
                 GlobalStuffHelper.addParticipantIdsToProject(selectedId);
 
                 //
@@ -86,8 +88,6 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
         getLoaderManager().initLoader(0, null, this);
 
         contactsProjectList = (ListView) findViewById(R.id.activity_new_project_listView2);
-
-        participantNamestoSpinner.add("+ Contacts");
 
         // Initialization
         setButtons();
@@ -274,7 +274,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
             contactsListAdapter = new ArrayAdapter<String>(this, R.layout.activity_new_project_contacts_list, R.id.projectName, participantNamestoList);
             contactsProjectList.setAdapter(contactsListAdapter);
         }
-
+        firstselect = true;
 
     }
 
@@ -287,6 +287,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
 
             contactsSpinner.setAdapter(contactsSpinnerAdapter);
         }
+        firstselect = true;
 
 
     }
@@ -351,7 +352,14 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
         // Clear Old Arrays
         GlobalStuffHelper.clearSpinnerArray();
         participantNamestoSpinner.clear();
-        participantNamestoSpinner.add("+ Contact");
+        //participantNamestoSpinner.add("+ Contact");
+        // Debugg
+        participantNamestoSpinner.add("Jessie");
+        GlobalStuffHelper.participantIds.add(0l);
+        participantNamestoSpinner.add("Manu");
+        GlobalStuffHelper.participantIds.add(1l);
+        participantNamestoSpinner.add("Josephine");
+        GlobalStuffHelper.participantIds.add(2l);
 
         if (cursor.getCount() > 0) {
 
@@ -420,7 +428,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
 class GlobalStuffHelper {
 
     static long virtualCounter = 15;
-    static ArrayList<Long> participantIds = new ArrayList<Long>(); // still needs to be properly implemented
+    static ArrayList<Long> participantIds = new ArrayList<Long>();
     static ArrayList<Long> participantIdsToProject = new ArrayList<Long>();
 
     public static void raiseVirtualCounterByOne() {
