@@ -36,6 +36,13 @@ public final class budgetSplitDBSchema {
                 + " FOREIGN KEY (" + COLUMN_ADMIN + ") REFERENCES " + participants.TABLE_PARTICIPANTS + "(" + _ID + ") ON DELETE RESTRICT ON UPDATE CASCADE"
                 + ");";
 
+        private static final String TRIGGER_DELETE_ALL_ITEMS_ON_DELETE = "triggerDeleteAllItemsOnDelete";
+        private static final String TRIGGER_CREATE = "CREATE TRIGGER "
+                + TRIGGER_DELETE_ALL_ITEMS_ON_DELETE + " BEFORE DELETE ON " + TABLE_PROJECTS
+                + " FOR EACH ROW BEGIN"
+                + " DELETE FROM " + items.TABLE_ITEMS + " WHERE " + items.TABLE_ITEMS + "." + items.COLUMN_PROJECT_ID + " = OLD." + _ID + ";"
+                + " END;";
+
         /**
          * Static Method to be called by SQLiteOpenHelper class for better readability.
          *
@@ -43,6 +50,10 @@ public final class budgetSplitDBSchema {
          */
         public static void onCreate(SQLiteDatabase database) {
             database.execSQL(TABLE_CREATE);
+        }
+
+        public static void onCreateTrigger(SQLiteDatabase database) {
+            database.execSQL(TRIGGER_CREATE);
         }
 
         /**
