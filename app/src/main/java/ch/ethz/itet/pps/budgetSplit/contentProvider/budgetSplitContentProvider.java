@@ -555,8 +555,9 @@ public class budgetSplitContentProvider extends ContentProvider {
 
             //Query Table projectParticipantsDetailsRO
             case budgetSplitContract.projectParticipantsDetailsCalculateRO.PROJECT_PARTICIPANTS_DETAILS_CALCULATE:
-                return budgetSplitContract.projectParticipantsDetailsCalculateRO.query(db, ContentUris.parseId(uri), projection, selection, selectionArgs, sortOrder);
-
+                Cursor cursor = budgetSplitContract.projectParticipantsDetailsCalculateRO.query(db, ContentUris.parseId(uri), projection, selection, selectionArgs, sortOrder);
+                cursor.setNotificationUri(getContext().getContentResolver(), uri);
+                return cursor;
             //Query Table ParticipantTagsDetails
             case budgetSplitContract.participantsTagsDetails.PARTICIPANTS_TAGS_DETAILS:
                 builder.setTables(budgetSplitDBSchema.participantTags_view.VIEW_PARTICIPANTS_TAGS);

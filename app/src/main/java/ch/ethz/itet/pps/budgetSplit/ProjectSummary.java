@@ -35,11 +35,9 @@ import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
  * create an instance of this fragment.
  */
 public class ProjectSummary extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String PROJECT_URI = "projectUri";
 
-    // TODO: Rename and change types of parameters
     private Uri projectUri;
     private double defaultExchangeRate;
     private String defaultCurrencyCode;
