@@ -3,20 +3,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/global_margins">
+                android:layout_height="wrap_content"
+                android:padding="@dimen/global_margins">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Participant"
         android:id="@+id/summary_listview_participant_name"
-        style="@style/AppTheme.TextViewTitle.TextViewSubtitle"
+        style="@style/AppThemeTextViewSubtitle"
         android:padding="@dimen/global_margins"
         android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/textView"
         android:layout_alignStart="@+id/textView"
-        android:layout_marginLeft="55dp" />
+        android:layout_marginLeft="55dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
         android:layout_gravity="center_horizontal"
         android:padding="@dimen/global_margins"
         android:textStyle="italic"
-        android:layout_below="@+id/summary_listview_expences" />
+        android:layout_below="@+id/summary_listview_expences"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
         android:layout_toStartOf="@+id/summary_listview_participant_name"
         android:layout_alignTop="@+id/textView"
         android:layout_toRightOf="@+id/textView"
-        android:layout_toLeftOf="@+id/summary_variable" />
+        android:layout_toLeftOf="@+id/summary_variable"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -52,7 +52,7 @@
         android:padding="@dimen/global_margins"
         android:layout_below="@+id/summary_listview_participant_name"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
         android:id="@+id/summary_variable"
         android:padding="@dimen/global_margins"
         android:layout_alignTop="@+id/summary_listview_expences"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,6 +74,6 @@
         android:padding="@dimen/global_margins"
         android:layout_alignTop="@+id/summary_variable"
         android:layout_toRightOf="@+id/summary_variable"
-        android:textStyle="italic" />
+        android:textStyle="italic"/>
 
 </RelativeLayout>

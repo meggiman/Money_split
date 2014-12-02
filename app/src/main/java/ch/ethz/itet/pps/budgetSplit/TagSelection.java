@@ -82,18 +82,15 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
 
 
         intent = getIntent();
-
+        title = (EditText) findViewById(R.id.tag_selection_variable);
+        tagGrid = (GridView) findViewById(R.id.tag_selection_gridView_tags);
         if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
             getLoaderManager().initLoader(LOADER_TAGS_PARTICIPANTS, null, this);
             oldTitle = intent.getStringExtra(EXTRA_TITLE).toCharArray();
-
-            title = (EditText) findViewById(R.id.tag_selection_variable);
-
             char[] titleName = (oldTitle);
-
             title.setText(titleName, 0, titleName.length);
         } else {
-            title.setVisibility(View.GONE);
+            title.setVisibility(View.INVISIBLE);
             itemTagsAlreadyAdded = intent.getParcelableArrayListExtra(EXTRA_ITEM_TAGS_ALREADY_ADDED);
             itemTagsToAdd = intent.getParcelableArrayListExtra(EXTRA_ITEM_TAGS_TO_ADD);
             itemTagsToDelete = intent.getParcelableArrayListExtra(EXTRA_ITEM_TAGS_TO_DELETE);
@@ -101,160 +98,12 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
             getLoaderManager().initLoader(LOADER_TAGS_ITEM, null, this);
         }
         getLoaderManager().initLoader(LOADER_TAGS_ALL, null, this);
-
-        
-        
-        ok = (Button) findViewById(R.id.tag_selection_ok);
-        ok.setOnClickListener(new View.OnClickListener() {
-                                  @Override
-                                  public void onClick(View view) {
-                                      // coming from a Contacts Activity
-                                      if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
-                                          // Check if title has been changed
-                                          char[] newTitle = title.getText().toString().toCharArray();
-                                          if(newTitle.length == oldTitle.length){
-                                              boolean different = false;
-                                              for(int i = 0; i<oldTitle.length;i++){
-                                                  if(newTitle[i]!=oldTitle[i]){
-                                                      different = true;
-                                                      break;
-                                                  }
-                                              }
-                                              if(different){
-                                                  ContentValues name = new ContentValues();
-                                                  Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI,intent.getLongExtra(EXTRA_ID,-1));
-                                                  name.put(budgetSplitContract.participants.COLUMN_NAME,newTitle.toString());
-                                                  getContentResolver().update(input,name,null,null);
-                                              }
-                                          }
-                                          else{
-                                              ContentValues name = new ContentValues();
-                                              Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI,intent.getLongExtra(EXTRA_ID,-1));
-                                              name.put(budgetSplitContract.participants.COLUMN_NAME,newTitle.toString());
-                                              getContentResolver().update(input,name,null,null);
-                                          }
-                                          for (int i = 0; i < data.size(); i++) {
-                                              if (data.get(i).checked) {
-                                                  boolean insert = true;
-                                                  for (int j = 0; j < tagIds.size(); j++) {
-                                                      if (data.get(i).id == tagIds.get(j).tagId) {
-                                                          // Item was already Checked and thus stays in the Tagfilter
-                                                          // do nothing especially no insert
-                                                          insert = false;
-                                                      }
-                                                  }
-                                                  if (insert == true) {
-                                                      // The right junktion does not yet exist -> insert
-                                                      ContentValues cv = new ContentValues();
-                                                      cv.put(budgetSplitContract.tagFilter.COLUMN_PARTICIPANTS_ID, intent.getLongExtra(EXTRA_ID, -1));
-                                                      cv.put(budgetSplitContract.tagFilter.COLUMN_TAG_ID, data.get(i).id);
-                                                      cv.put(budgetSplitContract.tagFilter.COLUMN_SHARE_RATIO, 0);
-                                                      getContentResolver().insert(budgetSplitContract.tagFilter.CONTENT_URI, cv);
-                                                  }
-                                              } else { // data.checked == false
-                                                  for (int j = 0; j < tagIds.size(); j++) {
-                                                      if (data.get(i).id == tagIds.get(j).tagId) {
-                                                          // The Tag was checked before but isn't anmore -> delete
-                                                          toDeleteList.add(tagIds.get(j).tableId);
-                                                      }
-                                                  }
-                                              }
-                                          }
-                                          Uri toDelete;
-                                          ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
-                                          for (int k = 0; k < toDeleteList.size(); k++) {
-                                              toDelete = ContentUris.withAppendedId(budgetSplitContract.tagFilter.CONTENT_URI, toDeleteList.get(k));
-                                              operations.add(ContentProviderOperation.newDelete(toDelete).build());
-                                          }
-                                          try {
-                                              getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, operations);
-                                          } catch (RemoteException e) {
-                                              e.printStackTrace();
-                                          } catch (OperationApplicationException e) {
-                                              e.printStackTrace();
-                                          }
-                                      }
-
-                                      // coming from an Items Activity (tagfilterVisible==false)
-                                      else {
-                                          for (int i = 0; i < data.size(); i++) {
-                                              if (data.get(i).checked) {
-                                                  boolean insert = true;
-                                                  for (int j = 0; j < tagIds.size(); j++) {
-                                                      if (data.get(i).id == tagIds.get(j).tagId) {
-                                                          // Item was already Checked and thus stays in the Tagfilter
-                                                          // do nothing especially no insert
-                                                          insert = false;
-                                                      }
-                                                  }
-                                                  if (insert == true) {
-                                                      // The right junktion does not yet exist -> insert
-                                                      ContentValues cv = new ContentValues();
-                                                      cv.put(budgetSplitContract.itemsTags.COLUMN_ITEM_ID, intent.getLongExtra(EXTRA_ID, -1));
-                                                      cv.put(budgetSplitContract.itemsTags.COLUMN_TAGS_ID, data.get(i).id);
-                                                      getContentResolver().insert(budgetSplitContract.itemsTags.CONTENT_URI, cv);
-                                                  }
-                                              } else { // data.checked == false
-                                                  boolean delete = false;
-                                                  List<Long> toDeleteList = new ArrayList<Long>();
-                                                  for (int j = 0; j < tagIds.size(); j++) {
-                                                      if (data.get(i).id == tagIds.get(j).tagId) {
-                                                          // The Tag was checked before but isn't anmore -> delete
-                                                          toDeleteList.add(tagIds.get(j).tableId);
-                                                          break;
-                                                      }
-                                                  }
-                                              }
-                                          }
-                                          for (ch.ethz.itet.pps.budgetSplit.Tag tag : itemTagsToAdd) {
-                                              itemTagsString.append(tag.name).append(", ");
-                                          }
-                                          if (itemTagsString.length() > 2) {
-                                              itemTagsString.delete(itemTagsString.length() - 2, itemTagsString.length());
-                                          }
-                                          Intent result = new Intent();
-                                          result.putParcelableArrayListExtra(RESULT_EXTRA_ITEM_TAGS_TO_DELETE, itemTagsToDelete);
-                                          result.putParcelableArrayListExtra(RESULT_EXTRA_ITEM_TAGS_TO_ADD, itemTagsToAdd);
-                                          result.putExtra(RESULT_EXTRA_ITEM_TAGS_STRING, itemTagsString.toString());
-                                          setResult(RESULT_OK, result);
-                                      }
-                                      finish();
-                                  }
-                              }
-
-        );
-        newTag = (Button)
-
-                findViewById(R.id.tag_selection_button_add_tag1);
-
-        newTag.setOnClickListener(new View.OnClickListener()
-
-                                  {
-                                      @Override
-                                      public void onClick(View view) {
-                                          showCreateTagPopup(view);
-                                      }
-                                  }
-
-        );
-        tagGrid = (GridView)
-
-                findViewById(R.id.tag_selection_gridView_tags);
-        // Sets the selection colours
-        //tagGrid.setSelector(R.drawable.gridview_item_background);
-        tagGrid.setAdapter(new
-
-                        TagAdapter(this, R.layout.activity_tag_selection_checkable_row, data)
-
-        );
-
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.tags, menu);
+        getMenuInflater().inflate(R.menu.tag_selection, menu);
         return true;
     }
 
@@ -264,13 +113,99 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_save:
+                // coming from a Contacts Activity
+                if (intent.getBooleanExtra(EXTRA_TAGFILTER_VISIBLE, true)) {
+                    // Check if title has been changed
+                    char[] newTitle = title.getText().toString().toCharArray();
+                    if (newTitle.length == oldTitle.length) {
+                        boolean different = false;
+                        for (int i = 0; i < oldTitle.length; i++) {
+                            if (newTitle[i] != oldTitle[i]) {
+                                different = true;
+                                break;
+                            }
+                        }
+                        if (different) {
+                            ContentValues name = new ContentValues();
+                            Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI, intent.getLongExtra(EXTRA_ID, -1));
+                            name.put(budgetSplitContract.participants.COLUMN_NAME, newTitle.toString());
+                            getContentResolver().update(input, name, null, null);
+                        }
+                    } else {
+                        ContentValues name = new ContentValues();
+                        Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI, intent.getLongExtra(EXTRA_ID, -1));
+                        name.put(budgetSplitContract.participants.COLUMN_NAME, newTitle.toString());
+                        getContentResolver().update(input, name, null, null);
+                    }
+                    for (int i = 0; i < data.size(); i++) {
+                        if (data.get(i).checked) {
+                            boolean insert = true;
+                            for (int j = 0; j < tagIds.size(); j++) {
+                                if (data.get(i).id == tagIds.get(j).tagId) {
+                                    // Item was already Checked and thus stays in the Tagfilter
+                                    // do nothing especially no insert
+                                    insert = false;
+                                }
+                            }
+                            if (insert == true) {
+                                // The right junktion does not yet exist -> insert
+                                ContentValues cv = new ContentValues();
+                                cv.put(budgetSplitContract.tagFilter.COLUMN_PARTICIPANTS_ID, intent.getLongExtra(EXTRA_ID, -1));
+                                cv.put(budgetSplitContract.tagFilter.COLUMN_TAG_ID, data.get(i).id);
+                                cv.put(budgetSplitContract.tagFilter.COLUMN_SHARE_RATIO, 0);
+                                getContentResolver().insert(budgetSplitContract.tagFilter.CONTENT_URI, cv);
+                            }
+                        } else { // data.checked == false
+                            for (int j = 0; j < tagIds.size(); j++) {
+                                if (data.get(i).id == tagIds.get(j).tagId) {
+                                    // The Tag was checked before but isn't anmore -> delete
+                                    toDeleteList.add(tagIds.get(j).tableId);
+                                }
+                            }
+                        }
+                    }
+                    Uri toDelete;
+                    ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+                    for (int k = 0; k < toDeleteList.size(); k++) {
+                        toDelete = ContentUris.withAppendedId(budgetSplitContract.tagFilter.CONTENT_URI, toDeleteList.get(k));
+                        operations.add(ContentProviderOperation.newDelete(toDelete).build());
+                    }
+                    try {
+                        getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, operations);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    } catch (OperationApplicationException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // coming from an Items Activity (tagfilterVisible==false)
+                else {
+                    for (ch.ethz.itet.pps.budgetSplit.Tag tag : itemTagsToAdd) {
+                        itemTagsString.append(tag.name).append(", ");
+                    }
+                    if (itemTagsString.length() > 2) {
+                        itemTagsString.delete(itemTagsString.length() - 2, itemTagsString.length());
+                    }
+                    Intent result = new Intent();
+                    result.putParcelableArrayListExtra(RESULT_EXTRA_ITEM_TAGS_TO_DELETE, itemTagsToDelete);
+                    result.putParcelableArrayListExtra(RESULT_EXTRA_ITEM_TAGS_TO_ADD, itemTagsToAdd);
+                    result.putExtra(RESULT_EXTRA_ITEM_TAGS_STRING, itemTagsString.toString());
+                    setResult(RESULT_OK, result);
+                }
+                finish();
+                return true;
+            case R.id.action_add_tag:
+                showCreateTagPopup();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
-    void showCreateTagPopup(final View view) {
+    void showCreateTagPopup() {
         if (tagCreatePopup == null) {
             AlertDialog.Builder myDialogBuilder = new AlertDialog.Builder(this);
             myDialogBuilder.setTitle(getString(R.string.create_a_new_tag));

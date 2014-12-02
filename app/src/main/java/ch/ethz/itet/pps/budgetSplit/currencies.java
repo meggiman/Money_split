@@ -141,14 +141,25 @@ public class currencies extends ActionBarActivity implements LoaderManager.Loade
                 return true;
             }
         });
-        Button addCurrency = (Button) findViewById(R.id.buttonAddCurrency);
-        addCurrency.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.currencies, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_add_currencies:
                 createCurrency = null;
                 showCreateCurrencyDialog();
-            }
-        });
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

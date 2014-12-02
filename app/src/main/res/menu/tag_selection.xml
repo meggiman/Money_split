@@ -1,9 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ch.ethz.itet.pps.budgetSplit.TagSelection">
+      xmlns:tools="http://schemas.android.com/tools"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      tools:context="ch.ethz.itet.pps.budgetSplit.TagSelection">
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+        android:id="@+id/action_save"
+        android:title="@string/save"
+        android:icon="@drawable/ic_action_save"
+        android:orderInCategory="99"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_add_tag"
+        android:title="@string/add_tag"
+        android:icon="@drawable/ic_action_new_white"
         android:orderInCategory="100"
-        android:showAsAction="never" />
+        app:showAsAction="ifRoom"/>
 </menu>
