@@ -13,11 +13,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -124,6 +127,12 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
                             Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI, intent.getLongExtra(EXTRA_ID, -1));
                         name.put(budgetSplitContract.participants.COLUMN_NAME, newTitle);
                             getContentResolver().update(input, name, null, null);
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                        if (preferences.getLong(getString(R.string.pref_user_id), -1) == intent.getLongExtra(EXTRA_ID, -2)) {
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString(getString(R.string.pref_userName), newTitle);
+                            editor.commit();
+                        }
                         }
                     for (int i = 0; i < data.size(); i++) {
                         if (data.get(i).checked) {

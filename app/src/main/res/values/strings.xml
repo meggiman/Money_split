@@ -102,9 +102,9 @@
     <string name="participants_questionmark">participants?</string>
     <string name="title_activity_currencies">Currencies</string>
     <string name="add_currency">Add currency</string>
-    <string name="currency_code">Code (CHF)</string>
+    <string name="currency_code">Currency Code</string>
     <string name="currency_name">Currency Name</string>
-    <string name="rate">Rate</string>
+    <string name="rate">Exchange Rate</string>
     <string name="create_new_currency">Create new Currency</string>
     <string name="create">Create</string>
     <string name="please_enter_valid_currency_code">Please enter a valid Currencycode.</string>

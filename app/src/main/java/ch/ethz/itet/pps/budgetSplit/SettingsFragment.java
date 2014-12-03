@@ -4,12 +4,14 @@ package ch.ethz.itet.pps.budgetSplit;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -70,6 +72,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         ListPreference defaultCurrency = (ListPreference) findPreference(getResources().getString(R.string.pref_default_currency));
         defaultCurrency.setEntries(currencyCodes);
         defaultCurrency.setEntryValues(currencyIds);
+
+        Preference tagfilter = (Preference) findPreference(getString(R.string.pref_tagfilter));
+        long id = PreferenceManager.getDefaultSharedPreferences(getActivity()).getLong(getString(R.string.pref_user_id), -1);
+        String name = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(getString(R.string.pref_userName), "not found");
+        Intent intent = new Intent(getActivity(), TagSelection.class);
+        intent.putExtra(TagSelection.EXTRA_TAGFILTER_VISIBLE, true);
+        intent.putExtra(TagSelection.EXTRA_ID, id);
+        intent.putExtra(TagSelection.EXTRA_TITLE, name);
+        tagfilter.setIntent(intent);
     }
 
     @Override

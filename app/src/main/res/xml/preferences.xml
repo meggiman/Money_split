@@ -11,11 +11,9 @@
         android:summary="Set the default currency to use for new items"
         android:title="@string/default_currency"/>
     <Preference
+        android:key="@string/pref_tagfilter"
         android:title="@string/tagfilter"
         android:summary="@string/summary_tagfilter_preference">
-        <intent
-            android:targetPackage="@string/package_name"
-            android:targetClass="ch.ethz.itet.pps.budgetSplit.TagFilter"/>
     </Preference>
 
 

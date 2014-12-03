@@ -1,43 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
     >
 
-    <EditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/editTextCode"
         android:layout_gravity="center_vertical"
-        android:hint="@string/currency_code"
+        android:hint="CHF"
+        app:floatingLabelText="@string/currency_code"
+        app:floatingLabel="normal"
         android:layout_weight="2"
         android:inputType="textCapCharacters"
         android:imeOptions="actionNext"
         style="@android:style/DeviceDefault.ButtonBar.AlertDialog"
         android:layout_margin="@dimen/global_margins"/>
 
-    <EditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/editTextCurrencyName"
         android:layout_gravity="center_vertical"
-        android:hint="@string/currency_name"
+        android:hint="@string/swiss_franc"
+        app:floatingLabelText="@string/currency_name"
+        app:floatingLabel="normal"
         android:layout_weight="3"
         android:imeOptions="actionNext"
         android:inputType="text"
         style="@android:style/DeviceDefault.ButtonBar.AlertDialog"
         android:layout_margin="@dimen/global_margins"/>
 
-    <EditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/editTextCurrencyRate"
         android:layout_gravity="center_vertical"
-        android:hint="@string/rate"
+        android:hint="1"
+        app:floatingLabelText="@string/rate"
+        app:floatingLabel="normal"
         android:layout_weight="2"
         android:imeOptions="actionDone"
         style="@android:style/DeviceDefault.ButtonBar.AlertDialog"
