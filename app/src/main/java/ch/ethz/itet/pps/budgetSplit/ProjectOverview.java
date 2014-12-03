@@ -70,11 +70,10 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             projectUri = getArguments().getParcelable(PROJECT_CONTENT_URI);
         }
-
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -208,4 +207,10 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
 
     }
 
+    @Override
+    public void onDestroy() {
+        getLoaderManager().destroyLoader(LOADER_EXPENSES);
+        getLoaderManager().destroyLoader(LOADER_PROJECT);
+        super.onDestroy();
+    }
 }

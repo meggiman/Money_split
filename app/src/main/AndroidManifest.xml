@@ -28,7 +28,8 @@
             android:name=".ProjectNavigation"
             android:exported="true"
             android:label="@string/title_activity_project_navigation"
-            android:parentActivityName=".Main"/>
+            android:parentActivityName=".Main"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".add_new_item"
             android:label="@string/title_activity_add_new_item"
