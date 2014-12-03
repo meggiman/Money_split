@@ -593,6 +593,7 @@ public final class budgetSplitDBSchema {
         public static final String COLUMN_PARTICIPANT_NAME = "participantName";
         public static final String COLUMN_PARTICIPANT_UNIQUE_ID = "participantUniqueId";
         public static final String COLUMN_PARTICIPANT_IS_VIRTUAL = "participantIsVirtual";
+        public static final String COLUMN_PROJECT_ID = "projectId";
         public static final String COLUMN_CURRENCY_ID = "currencyId";
         public static final String COLUMN_CURRENCY_CODE = "currencyCode";
         public static final String COLUMN_AMOUNT_PAYED = "amountPayed";
@@ -606,6 +607,7 @@ public final class budgetSplitDBSchema {
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_NAME + " AS " + COLUMN_PARTICIPANT_NAME + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_UNIQUEID + " AS " + COLUMN_PARTICIPANT_UNIQUE_ID + ", "
                 + participants.TABLE_PARTICIPANTS + "." + participants.COLUMN_ISVIRTUAL + " AS " + COLUMN_PARTICIPANT_IS_VIRTUAL + ", "
+                + items.TABLE_ITEMS + "." + items.COLUMN_PROJECT_ID + " AS " + COLUMN_PROJECT_ID + ", "
                 + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_CURRENCY_ID + " AS " + COLUMN_CURRENCY_ID + ", "
                 + currencies.TABLE_CURRENCIES + "." + currencies.COLUMN_CURRENCY_CODE + " AS " + COLUMN_CURRENCY_CODE + ", "
                 + currencies.TABLE_CURRENCIES + "." + currencies.COLUMN_EXCHANGE_RATE + " AS " + COLUMN_CURRENCY_EXCHANGE_RATE + ", "
@@ -653,9 +655,11 @@ public final class budgetSplitDBSchema {
 
         private static final String SUB_SELECT_TOTAL_PAYED = "SELECT "
                 + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_PARTICIPANT_ID + ", "
-                + "total(" + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_AMOUNT_PAYED + "*" + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_CURRENCY_EXCHANGE_RATE + ") AS totalPayed"
+                + "total(" + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_AMOUNT_PAYED + "*" + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_CURRENCY_EXCHANGE_RATE + ") AS totalPayed, "
+                + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_PROJECT_ID
                 + " FROM " + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS
-                + " GROUP BY " + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_PARTICIPANT_ID;
+                + " GROUP BY " + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_PARTICIPANT_ID
+                + ", " + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_PROJECT_ID;
 
         private static final String VIEW_SELECT = "SELECT "
                 + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + ".rowid AS " + _ID + ", "
@@ -670,6 +674,7 @@ public final class budgetSplitDBSchema {
                 + " LEFT OUTER JOIN " + projects.TABLE_PROJECTS + " ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PROJECTS_ID + " = " + projects.TABLE_PROJECTS + "." + projects._ID
                 + " LEFT OUTER JOIN " + participants.TABLE_PARTICIPANTS + " ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PARTICIPANTS_ID + " = " + participants.TABLE_PARTICIPANTS + "." + participants._ID
                 + " LEFT OUTER JOIN (" + SUB_SELECT_TOTAL_PAYED + ") AS 'sub' ON " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PARTICIPANTS_ID + " = sub." + itemsParticipants_view.COLUMN_PARTICIPANT_ID
+                + " AND " + projectsParticipants.TABLE_PROJECTS_PARTICIPANTS + "." + projectsParticipants.COLUMN_PROJECTS_ID + " = sub." + COLUMN_PROJECT_ID
                 + ";";
 
         private static final String VIEW_CREATE = "CREATE VIEW "

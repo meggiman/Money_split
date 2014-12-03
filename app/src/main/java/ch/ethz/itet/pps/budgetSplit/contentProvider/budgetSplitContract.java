@@ -229,7 +229,7 @@ public class budgetSplitContract {
     public static final class itemsParticipantsDetailsRO implements BaseColumns {
         static final String TABLE_ITEMS_PARTICIPANTS_DETAILS_RO = "itemsParticipantsDetailsRO";
         static final String TABLE_ITEM_PARTICIPANTS_DETAILS_RO = TABLE_ITEMS_PARTICIPANTS_DETAILS_RO + "/item";
-        static final String TABLE_ITEMS_PARTICIPANT_DETAILS_RO = TABLE_ITEMS_PARTICIPANTS_DETAILS_RO + "/tag";
+        static final String TABLE_ITEMS_PARTICIPANT_DETAILS_RO = TABLE_ITEMS_PARTICIPANTS_DETAILS_RO + "/participant";
         static final int ITEMS_PARTICIPANTS_DETAILS = 140;
         static final int ITEM_PARTICIPANTS_DETAILS = 141;
         static final int ITEMS_PARTICIPANT_DETAILS = 142;
@@ -246,11 +246,12 @@ public class budgetSplitContract {
         public static final String COLUMN_PARTICIPANT_NAME = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_NAME;
         public static final String COLUMN_PARTICIPANT_UNIQUE_ID = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_UNIQUE_ID;
         public static final String COLUMN_PARTICIPANT_IS_VIRTUAL = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PARTICIPANT_IS_VIRTUAL;
+        public static final String COLUMN_PROJECT_ID = budgetSplitDBSchema.itemsParticipants_view.COLUMN_PROJECT_ID;
         public static final String COLUMN_CURRENCY_ID = budgetSplitDBSchema.itemsParticipants_view.COLUMN_CURRENCY_ID;
         public static final String COLUMN_CURRENCY_CODE = budgetSplitDBSchema.itemsParticipants_view.COLUMN_CURRENCY_CODE;
         public static final String COLUMN_CURRENCY_EXCHANGE_RATE = budgetSplitDBSchema.itemsParticipants_view.COLUMN_CURRENCY_EXCHANGE_RATE;
         public static final String COLUMN_AMOUNT_PAYED = budgetSplitDBSchema.itemsParticipants_view.COLUMN_AMOUNT_PAYED;
-        public static final String[] PROJECTION_ALL = {_ID, COLUMN_ITEM_ID, COLUMN_ITEM_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_CURRENCY_ID, COLUMN_CURRENCY_CODE, COLUMN_CURRENCY_EXCHANGE_RATE, COLUMN_AMOUNT_PAYED};
+        public static final String[] PROJECTION_ALL = {_ID, COLUMN_ITEM_ID, COLUMN_ITEM_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PROJECT_ID, COLUMN_CURRENCY_ID, COLUMN_CURRENCY_CODE, COLUMN_CURRENCY_EXCHANGE_RATE, COLUMN_AMOUNT_PAYED};
     }
 
     public static class projectsParticipantsDetailsRO implements BaseColumns {
