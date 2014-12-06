@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -124,6 +125,19 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
         // Inflate the layout for this fragment
         View fragmentLayout = inflater.inflate(R.layout.fragment_project_participants, container, false);
         participantsList = (ListView) fragmentLayout.findViewById(R.id.listView);
+        participantsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getActivity(), TagSelection.class);
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(i);
+                long id = cursor.getLong(cursor.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID));
+                String name = cursor.getString(cursor.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME));
+                intent.putExtra(TagSelection.EXTRA_ID, id);
+                intent.putExtra(TagSelection.EXTRA_TITLE, name);
+                intent.putExtra(TagSelection.EXTRA_TAGFILTER_VISIBLE, true);
+                startActivityForResult(intent, 0);
+            }
+        });
         getLoaderManager().initLoader(LOADER_PROJECT_PARTICIPANTS, null, this);
         getLoaderManager().initLoader(LOADER_PROJECT, null, this);
 

@@ -253,7 +253,7 @@ public class ContactsList extends ActionBarActivity implements LoaderManager.Loa
                 tagSelectionIntent.putExtra(TagSelection.EXTRA_ID, contactId);
                 tagSelectionIntent.putExtra(TagSelection.EXTRA_TITLE, name);
                 tagSelectionIntent.putExtra(TagSelection.EXTRA_TAGFILTER_VISIBLE, true);
-                startActivity(tagSelectionIntent);
+                startActivityForResult(tagSelectionIntent, 0);
             }
         });
 
