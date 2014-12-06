@@ -2,6 +2,7 @@ package ch.ethz.itet.pps.budgetSplit;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -34,6 +35,7 @@ public class ContactChooser extends ActionBarActivity implements LoaderManager.L
 
     ListView contactsList;
     CursorAdapter contactsAdapter;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,9 @@ public class ContactChooser extends ActionBarActivity implements LoaderManager.L
     @Override
     protected void onStart() {
         super.onStart();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
         getLoaderManager().initLoader(LOADER_PARTICIPANTS, null, this);
 
     }
@@ -163,6 +168,7 @@ public class ContactChooser extends ActionBarActivity implements LoaderManager.L
         for (int i = 0; i < checkedList.length; i++) {
             contactsList.setItemChecked(i, checkedList[i]);
         }
+        progressDialog.dismiss();
     }
 
     @Override

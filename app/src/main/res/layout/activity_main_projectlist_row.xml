@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/projectName"
@@ -15,10 +15,10 @@
         android:text="Name"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="20dp"
-        android:padding="@dimen/global_margins" />
+        android:padding="@dimen/global_margins"/>
 
     <TextView
-        android:id="@+id/projectowner"
+        android:id="@+id/nrOfParticipants"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/projectName"
@@ -29,7 +29,7 @@
         android:textSize="13dp"
         android:padding="@dimen/global_margins"
         android:gravity="center_horizontal"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"/>
 
 
     <ImageView
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/ic_action_person"
         android:visibility="visible"
-        android:padding="@dimen/global_margins" />
+        android:padding="@dimen/global_margins"/>
 
 
 </LinearLayout>
