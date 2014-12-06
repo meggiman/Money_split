@@ -1002,7 +1002,9 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
 
             //Write Data to Views
             holder.userName.setText(payers.get(position).payerName);
-            holder.value.setText(new DecimalFormat(",##0.00").format(payers.get(position).amountPayed));
+            if (payers.get(position).amountPayed != 0) {
+                holder.value.setText(new DecimalFormat(",##0.00").format(payers.get(position).amountPayed));
+            }
 
             SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(getContext(), //Setup Spinner
                     android.R.layout.simple_spinner_item, cursorCurrencies,
