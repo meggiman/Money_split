@@ -1,0 +1,16 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="ch.ethz.itet.pps.budgetSplit.ContactChooser"
+              android:padding="@dimen/global_margins">
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewContacts"
+        android:layout_weight="1"
+        android:layout_margin="@dimen/global_margins"
+        android:choiceMode="multipleChoice"
+        tools:listitem="@android:layout/simple_list_item_multiple_choice"/>
+</LinearLayout>

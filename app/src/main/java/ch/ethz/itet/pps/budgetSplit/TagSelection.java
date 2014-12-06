@@ -123,17 +123,17 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
                     // Check if title has been changed
                     String newTitle = title.getText().toString();
                     if (!title.getText().toString().equals(oldTitle)) {
-                            ContentValues name = new ContentValues();
-                            Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI, intent.getLongExtra(EXTRA_ID, -1));
+                        ContentValues name = new ContentValues();
+                        Uri input = ContentUris.withAppendedId(budgetSplitContract.participants.CONTENT_URI, intent.getLongExtra(EXTRA_ID, -1));
                         name.put(budgetSplitContract.participants.COLUMN_NAME, newTitle);
-                            getContentResolver().update(input, name, null, null);
+                        getContentResolver().update(input, name, null, null);
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                         if (preferences.getLong(getString(R.string.pref_user_id), -1) == intent.getLongExtra(EXTRA_ID, -2)) {
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putString(getString(R.string.pref_userName), newTitle);
                             editor.commit();
                         }
-                        }
+                    }
                     for (int i = 0; i < data.size(); i++) {
                         if (data.get(i).checked) {
                             boolean insert = true;

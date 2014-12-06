@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      tools:context="ch.ethz.itet.pps.budgetSplit.ContactChooser">
+    <item
+        android:id="@+id/action_save"
+        android:title="@string/save"
+        android:icon="@drawable/ic_action_save"
+        android:orderInCategory="99"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_add_contact"
+        android:title="@string/add_contact"
+        android:icon="@drawable/ic_action_add_person"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"/>
+</menu>
