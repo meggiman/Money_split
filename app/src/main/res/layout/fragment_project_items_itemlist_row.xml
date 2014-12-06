@@ -12,7 +12,7 @@
         android:text="Item name"
         android:id="@+id/textViewItemName"
         android:layout_weight="0"
-        style="@style/AppTheme.normalText"
+        style="@style/AppThemeTextViewSubtitle"
         android:layout_marginLeft="@dimen/global_margins"
         android:layout_marginRight="@dimen/global_margins"
         />
