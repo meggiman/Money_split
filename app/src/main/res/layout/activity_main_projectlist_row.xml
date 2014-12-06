@@ -17,20 +17,6 @@
         android:textSize="20dp"
         android:padding="@dimen/global_margins" />
 
-    <TextView
-        android:id="@+id/projectowner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/projectName"
-        android:layout_centerHorizontal="true"
-        android:layout_weight="0.01"
-        android:text="Description"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="13dp"
-        android:padding="@dimen/global_margins"
-        android:gravity="center_horizontal"
-        android:layout_gravity="center" />
-
 
     <ImageView
         android:id="@+id/imageView2"

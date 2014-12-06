@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import javax.microedition.khronos.opengles.GL10Ext;
@@ -41,6 +42,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
     private static final int REQUEST_CREATE_PROJECT = 2;
     //Id to identify different Loaders
     private static final int URL_LOADER_PROJECTS = 0;
+
 
     //Adapter to fill the listview with Data
     SimpleCursorAdapter simpleCursorAdapter;
@@ -117,8 +119,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
         getLoaderManager().initLoader(URL_LOADER_PROJECTS, null, this);
 
         //Create empty Cursor Adapter and attach it to the listview
-        String[] fromColumns = {budgetSplitContract.projects.COLUMN_PROJECT_NAME, budgetSplitContract.projects.COLUMN_PROJECT_OWNER};
-        int[] toViews = {R.id.projectName, R.id.projectowner};
+        String[] fromColumns = {budgetSplitContract.projects.COLUMN_PROJECT_NAME};
+        int[] toViews = {R.id.projectName};
         simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.activity_main_projectlist_row, null, fromColumns, toViews, 0);
         listView.setAdapter(simpleCursorAdapter);
 
