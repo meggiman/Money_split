@@ -235,9 +235,9 @@ public final class budgetSplitDBSchema {
                 + TRIGGER_RESTRICT_ITEM_PARTICIPANTS + " BEFORE DELETE ON " + TABLE_PROJECTS_PARTICIPANTS
                 + " FOR EACH ROW BEGIN SELECT CASE WHEN ((SELECT " + itemsParticipants.COLUMN_PARTICIPANTS_ID + " FROM " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS
                 + " WHERE " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID + " = OLD." + COLUMN_PARTICIPANTS_ID + ") NOTNULL)"
-                + " THEN RAISE(ABORT, 'Participant can not be deleted because he is still payer of some items.')"
+                + " THEN RAISE(IGNORE)"
                 + " WHEN ((SELECT " + items.COLUMN_CREATOR + " FROM " + items.TABLE_ITEMS + " WHERE " + items.TABLE_ITEMS + "." + items.COLUMN_CREATOR + " = OLD." + COLUMN_PARTICIPANTS_ID + ") NOTNULL)"
-                + " THEN RAISE(ABORT, 'Participant can not be deleted because he is still creator of some items.')"
+                + " THEN RAISE(IGNORE)"
                 + " END;"
                 + " END;";
 

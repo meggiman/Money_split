@@ -183,7 +183,7 @@ public class budgetSplitContentProvider extends ContentProvider {
     }
 
     @Override
-    synchronized public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int deletedCount = 0;
         String idString;
@@ -331,7 +331,7 @@ public class budgetSplitContentProvider extends ContentProvider {
     }
 
     @Override
-    synchronized public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(Uri uri, ContentValues values) {
         SQLiteDatabase db;
         long id;
         switch (sUriMatcher.match(uri)) {
@@ -580,7 +580,7 @@ public class budgetSplitContentProvider extends ContentProvider {
     }
 
     @Override
-    synchronized public int update(Uri uri, ContentValues values, String selection,
+    public int update(Uri uri, ContentValues values, String selection,
                                    String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int updateCount = 0;
@@ -728,7 +728,7 @@ public class budgetSplitContentProvider extends ContentProvider {
     }
 
     @Override
-    synchronized public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations) throws OperationApplicationException {
+    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations) throws OperationApplicationException {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         misInBatchMode.set(true);
         db.beginTransaction();
@@ -794,13 +794,13 @@ public class budgetSplitContentProvider extends ContentProvider {
             case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANTS:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
-                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 break;
             case budgetSplitContract.projectParticipants.PROJECT_PARTICIPANT:
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsDetailsRO.CONTENT_URI, null);
-                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 break;
 
@@ -855,7 +855,10 @@ public class budgetSplitContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_ALL, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_TAG, null);
+                getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 break;
         }
     }
+
+
 }
