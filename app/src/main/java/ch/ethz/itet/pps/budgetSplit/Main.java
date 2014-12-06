@@ -1,23 +1,16 @@
 package ch.ethz.itet.pps.budgetSplit;
 
-import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.database.CharArrayBuffer;
-import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +19,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Switch;
 import android.widget.Toast;
-
-import javax.microedition.khronos.opengles.GL10Ext;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -45,7 +35,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
     //Adapter to fill the listview with Data
     SimpleCursorAdapter simpleCursorAdapter;
 
-    
+
     //Inicializing the button and listview (local inicialization in onCreate produced a crash)
     Button addProjectButton;
     ListView listView;
@@ -90,8 +80,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
                 if (projectCursor.getCount() < 1) {
                     throw new IllegalArgumentException("No project does exist.");
                 }
-                long projectId = projectCursor.getLong(projectCursor.getColumnIndex(budgetSplitContract.projects._ID));
-                String projectTitle = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projects.COLUMN_PROJECT_NAME));
+                long projectId = projectCursor.getLong(projectCursor.getColumnIndex(budgetSplitContract.projectsDetailsRO._ID));
+                String projectTitle = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_NAME));
                 Uri projectUri = ContentUris.withAppendedId(budgetSplitContract.projectsDetailsRO.CONTENT_URI, projectId);
                 // query for project name
 
@@ -117,8 +107,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
         getLoaderManager().initLoader(URL_LOADER_PROJECTS, null, this);
 
         //Create empty Cursor Adapter and attach it to the listview
-        String[] fromColumns = {budgetSplitContract.projects.COLUMN_PROJECT_NAME, budgetSplitContract.projects.COLUMN_PROJECT_OWNER};
-        int[] toViews = {R.id.projectName, R.id.projectowner};
+        String[] fromColumns = {budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_NAME, budgetSplitContract.projectsDetailsRO.COLUMN_NR_OF_PARTICIPANTS};
+        int[] toViews = {R.id.projectName, R.id.nrOfParticipants};
         simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.activity_main_projectlist_row, null, fromColumns, toViews, 0);
         listView.setAdapter(simpleCursorAdapter);
 
@@ -186,7 +176,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
 
         switch (i) {
             case URL_LOADER_PROJECTS:
-                return new CursorLoader(getApplicationContext(), budgetSplitContract.projects.CONTENT_URI, budgetSplitContract.projects.PROJECTION_ALL, null, null, null);
+                return new CursorLoader(getApplicationContext(), budgetSplitContract.projectsDetailsRO.CONTENT_URI, budgetSplitContract.projectsDetailsRO.PROJECTION_ALL, null, null, null);
             default:
                 throw new IllegalArgumentException("The Loader id " + i + " is invalid.");
         }
