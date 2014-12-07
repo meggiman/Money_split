@@ -30,7 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -110,11 +109,6 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
         View fragmentLayout = inflater.inflate(R.layout.fragment_project_items, container, false);
         //Configure List
         itemsList = (ListView) fragmentLayout.findViewById(R.id.listView);
-        String from[] = {budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_DATE_ADDED,
-                budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_NAME,
-                budgetSplitContract.itemsDetailsRO.COLUMN_CREATOR_NAME,
-                budgetSplitContract.itemsDetailsRO.COLUMN_ITEM_PRICE};
-        int to[] = {R.id.textViewDateAdded, R.id.textViewItemName, R.id.textViewCreator, R.id.textViewAdmin};
         itemsSingleAdapter = new ItemAdapter(getActivity(), null, 0);
         View itemListHeaderView = inflater.inflate(R.layout.fragment_project_items_itemlist_header, null);
         itemsList.addHeaderView(itemListHeaderView, null, false);
@@ -153,7 +147,7 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
                         myDialogBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+                                ArrayList<ContentProviderOperation> operations = new ArrayList<>();
                                 SparseBooleanArray checkedItems = itemsList.getCheckedItemPositions();
                                 for (int k = 0; k < itemsList.getAdapter().getCount(); k++) {
                                     if (checkedItems.get(k)) {

@@ -31,7 +31,7 @@ public class ProjectNavigation extends ActionBarActivity implements android.supp
      */
     public final static String EXTRA_CONTENT_URI = "projectContentUri"; // Information mitgegeben mit Intent
     public final static String EXTRA_PROJECT_TITLE = "projectTitle";
-    final static int REQUEST_SETTINGS = 1;
+    private final static int REQUEST_SETTINGS = 1;
     final static int RESULT_DEFAULT_CURRENCY_CHANGED = 1;
 
     /**
@@ -49,17 +49,17 @@ public class ProjectNavigation extends ActionBarActivity implements android.supp
      * may be best to switch to a
      * {@link android.support.v13.app.FragmentStatePagerAdapter}.
      */
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    ViewPager mViewPager;
+    private ViewPager mViewPager;
     /**
      * Uri of the Project that is loaded at the moment.
      */
-    Uri projectContentUri;
+    private Uri projectContentUri;
 
-    AlertDialog deleteProjectDialog;
+    private AlertDialog deleteProjectDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

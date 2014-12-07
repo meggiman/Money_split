@@ -33,12 +33,12 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
     private static final int URL_LOADER_PROJECTS = 0;
 
     //Adapter to fill the listview with Data
-    SimpleCursorAdapter simpleCursorAdapter;
+    private SimpleCursorAdapter simpleCursorAdapter;
 
 
     //Inicializing the button and listview (local inicialization in onCreate produced a crash)
-    Button addProjectButton;
-    ListView listView;
+    private Button addProjectButton;
+    private ListView listView;
 
 
     @Override
@@ -119,7 +119,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
         if (!preferences.contains(getString(R.string.pref_not_first_started))) {
             Intent firstScreenIntent = new Intent(this, FirstScreen.class);
             startActivityForResult(firstScreenIntent, 0);
-        } else {
         }
 
     }
@@ -192,7 +191,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
                 throw new IllegalArgumentException("Invalid CursorID " + cursorLoader.getId());
         }
         //Hide Progressbar
-        ((ProgressBar) findViewById(R.id.projectsLoadProgressBar)).setVisibility(View.GONE);
+        findViewById(R.id.projectsLoadProgressBar).setVisibility(View.GONE);
     }
 
     @Override

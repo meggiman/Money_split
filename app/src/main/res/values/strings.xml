@@ -63,7 +63,7 @@
     <string name="couldnt_add_item_to_db">The item could not be added to the database. There was an SQL-Exception.</string>
     <string name="couldnt_update_item_in_db">The item could not be updated. There was an SQL-Exception.</string>
     <string name="item_successfully_saved">Item successfully saved.</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="items">Items</string>
     <string name="swiss_franc">Swiss franc</string>
     <string name="please_enter_value">Please enter a value.</string>
@@ -153,5 +153,6 @@
     <string name="save_project">Save Project</string>
     <string name="title_activity_choose_contact">Choose contact</string>
     <string name="warning_cant_delete_project_admin">You can\'t delete the project admin.</string>
+    <string name="description">Description</string>
 
 </resources>

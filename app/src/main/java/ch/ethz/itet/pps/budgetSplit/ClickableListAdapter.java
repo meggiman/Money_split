@@ -54,8 +54,6 @@ public abstract class ClickableListAdapter extends BaseAdapter {
         public abstract void onClick(View v, ViewHolder viewHolder);
     }
 
-    ;
-
     /**
      * The long click listener base class.
      */
@@ -84,8 +82,6 @@ public abstract class ClickableListAdapter extends BaseAdapter {
         public abstract void onLongClick(View v, ViewHolder viewHolder);
 
     }
-
-    ;
 
     /**
      * @param context The current context

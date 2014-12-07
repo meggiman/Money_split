@@ -21,9 +21,9 @@ public class NewContact extends ActionBarActivity {
 
     //Inicialization
     Button newContactVirtual;
-    EditText newContactName;
-    CheckBox isVirtual;
-    Uri nameUri;
+    private EditText newContactName;
+    private CheckBox isVirtual;
+    private Uri nameUri;
 
 
     @Override

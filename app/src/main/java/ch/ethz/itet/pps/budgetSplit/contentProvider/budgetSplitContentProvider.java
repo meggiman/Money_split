@@ -24,7 +24,7 @@ public class budgetSplitContentProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     private budgetSplitDBHelper dbHelper;
-    private final ThreadLocal<Boolean> misInBatchMode = new ThreadLocal<Boolean>();
+    private final ThreadLocal<Boolean> misInBatchMode = new ThreadLocal<>();
 
     static {
         sUriMatcher.addURI(budgetSplitContract.AUTHORITY, budgetSplitContract.projects.TABLE_PROJECTS, budgetSplitContract.projects.PROJECTS);
@@ -185,7 +185,7 @@ public class budgetSplitContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int deletedCount = 0;
+        int deletedCount;
         String idString;
         String whereString;
         switch (sUriMatcher.match(uri)) {
@@ -581,9 +581,9 @@ public class budgetSplitContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection,
-                                   String[] selectionArgs) {
+                      String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int updateCount = 0;
+        int updateCount;
         String idString;
         String whereString;
         switch (sUriMatcher.match(uri)) {
@@ -821,7 +821,6 @@ public class budgetSplitContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_SINGLE_ITEM, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, null);
-                ;
                 break;
 
             case budgetSplitContract.itemsParticipants.ITEMS_PARTICIPANTS:

@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,13 +34,13 @@ import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 public class ProjectOverview extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String PROJECT_CONTENT_URI = "projectContentUri";
-    static final int REQUEST_CREATE_ITEM = 1;
+    private static final int REQUEST_CREATE_ITEM = 1;
     static final int RESULT_CODE_ERROR = 3;
     static final String RESULT_EXTRA_ERROR_MESSAGE = "errorMessage";
 
-    static final int LOADER_PROJECT = 1;
+    private static final int LOADER_PROJECT = 1;
     private boolean loaderProjectFinished = false;
-    static final int LOADER_EXPENSES = 2;
+    private static final int LOADER_EXPENSES = 2;
     private boolean loaderExpensesFinished = false;
 
     private Uri projectUri;
@@ -66,7 +65,7 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
         // Required empty public constructor
     }
 
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

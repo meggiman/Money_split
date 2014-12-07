@@ -29,7 +29,7 @@ import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
  */
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    OnDefaultCurrencyChangedListener mcallback;
+    private OnDefaultCurrencyChangedListener mcallback;
 
     interface OnDefaultCurrencyChangedListener {
         void onDefaultCurrencyChanged();
@@ -73,7 +73,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         defaultCurrency.setEntries(currencyCodes);
         defaultCurrency.setEntryValues(currencyIds);
 
-        Preference tagfilter = (Preference) findPreference(getString(R.string.pref_tagfilter));
+        Preference tagfilter = findPreference(getString(R.string.pref_tagfilter));
         long id = PreferenceManager.getDefaultSharedPreferences(getActivity()).getLong(getString(R.string.pref_user_id), -1);
         String name = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(getString(R.string.pref_userName), "not found");
         Intent intent = new Intent(getActivity(), TagSelection.class);

@@ -96,7 +96,7 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectUri = (Uri) getArguments().getParcelable(PROJECT_CONTENT_URI);
+            projectUri = getArguments().getParcelable(PROJECT_CONTENT_URI);
         }
         if (projectUri == null) {
             throw new IllegalArgumentException("There was no project Uri.");
@@ -182,8 +182,8 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
                         myDialogBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
-                                ArrayList<String> participantNames = new ArrayList<String>();
+                                ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+                                ArrayList<String> participantNames = new ArrayList<>();
                                 SparseBooleanArray checkedItems = participantsList.getCheckedItemPositions();
                                 for (int k = 0; k < participantsList.getAdapter().getCount(); k++) {
                                     if (checkedItems.get(k)) {
@@ -249,7 +249,7 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
         int id = item.getItemId();
         switch (id) {
             case R.id.action_edit:
-                ArrayList<Participant> selectedContacts = new ArrayList<Participant>();
+                ArrayList<Participant> selectedContacts = new ArrayList<>();
                 for (cursorProjectParticipants.moveToFirst(); !cursorProjectParticipants.isAfterLast(); cursorProjectParticipants.moveToNext()) {
                     Participant newParticipant = new Participant();
                     newParticipant.name = cursorProjectParticipants.getString(cursorProjectParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME));
@@ -272,8 +272,8 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
                 if (resultCode == Activity.RESULT_OK) {
                     Participant tempParticipant = new Participant();
                     ArrayList<Participant> selectedParticipants = data.getParcelableArrayListExtra(ContactChooser.RESULT_EXTRA_SELECTED_PARTICIPANTS);
-                    ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
-                    ArrayList<String> participantsToDelete = new ArrayList<String>();
+                    ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+                    ArrayList<String> participantsToDelete = new ArrayList<>();
                     for (cursorProjectParticipants.moveToFirst(); !cursorProjectParticipants.isAfterLast(); cursorProjectParticipants.moveToNext()) {
                         tempParticipant.name = cursorProjectParticipants.getString(cursorProjectParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME));
                         tempParticipant.id = cursorProjectParticipants.getLong(cursorProjectParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID));

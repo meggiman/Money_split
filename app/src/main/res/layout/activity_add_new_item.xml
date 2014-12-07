@@ -54,7 +54,8 @@
             android:layout_marginLeft="@dimen/global_margins"
             android:layout_weight="1"
             android:layout_gravity="top"
-            style="@style/AppTheme.normalText"/>
+            style="@style/AppTheme.normalText"
+            tools:ignore="HardcodedText"/>
     </LinearLayout>
 
     <Button

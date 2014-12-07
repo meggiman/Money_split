@@ -1,6 +1,5 @@
 package ch.ethz.itet.pps.budgetSplit;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentProviderOperation;
@@ -24,7 +23,6 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,21 +40,17 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
-import java.util.zip.Inflater;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
 public class add_new_item extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    static final String LOG_TAG = "addNewItemActivity";
 
     public static final String EXTRA_ITEM_DETAILS_URI = "itemUri";
     public static final String EXTRA_PROJECT_DETAILS_URI = "projectUri";
 
-    static final int REQUEST_EDIT_TAGS = 1;
+    private static final int REQUEST_EDIT_TAGS = 1;
 
     //Define integer constants to identify the individual loaders.
     private static final int LOADER_ITEM = 0;
@@ -77,65 +71,64 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
     private boolean loaderExcludeItemsFinishedInitialLoading = false;
 
     //Project- and Item-specific Variables
-    boolean isNewItem = true;
-    Uri itemUri;
-    Uri projectUri;
-    long itemId = -1;
-    long projectId;
-    long myParticipantsId;
-    String myUniqueId;
-    long defaultCurrencyId;
-    String defaultCurrencyCode;
-    Double defaultCurrencyExchangeRate;
+    private boolean isNewItem = true;
+    private Uri itemUri;
+    private long itemId = -1;
+    private long projectId;
+    private long myParticipantsId;
+    private String myUniqueId;
+    private long defaultCurrencyId;
+    private String defaultCurrencyCode;
+    private Double defaultCurrencyExchangeRate;
 
 
     //Cursor Variables
-    Cursor cursorItem = null;
-    Cursor cursorItemParticipants = null;
-    Cursor cursorParticipants = null;
-    Cursor cursorItemTags = null;
-    Cursor cursorTags = null;
-    Cursor cursorProject = null;
-    Cursor cursorCurrencies = null;
-    Cursor cursorExcludeItems = null;
+    private Cursor cursorItem = null;
+    private Cursor cursorItemParticipants = null;
+    private Cursor cursorParticipants = null;
+    private Cursor cursorItemTags = null;
+    private Cursor cursorTags = null;
+    private Cursor cursorProject = null;
+    private Cursor cursorCurrencies = null;
+    private Cursor cursorExcludeItems = null;
 
     //View variables
-    ListView payersList;
-    ListView excludeList;
-    EditText itemNameEditText;
+    private ListView payersList;
+    private ListView excludeList;
+    private EditText itemNameEditText;
 
     //Tags Variables
-    ArrayList<Tag> tagsAlreadyAdded;
-    ArrayList<Tag> tagsToAdd;
-    ArrayList<Tag> tagsToDelete;
-    ArrayList<Tag> tagsNotAdded;
-    Button editTagsButton;
-    TextView tagsTextView;
+    private ArrayList<Tag> tagsAlreadyAdded;
+    private ArrayList<Tag> tagsToAdd;
+    private ArrayList<Tag> tagsToDelete;
+    private ArrayList<Tag> tagsNotAdded;
+    private Button editTagsButton;
+    private TextView tagsTextView;
 
 
     //Payer Variables
-    List<Payer> payersAlreadyAdded;
-    List<Payer> payersToAdd;
-    List<Payer> payersToDelete;
-    List<Payer> payersToUpdate;
-    ItemParticipantsAdapter payerAdapter;
-    AlertDialog payerChooserPopup;
-    ImageButton addNewPayerButton;
+    private List<Payer> payersAlreadyAdded;
+    private List<Payer> payersToAdd;
+    private List<Payer> payersToDelete;
+    private List<Payer> payersToUpdate;
+    private ItemParticipantsAdapter payerAdapter;
+    private AlertDialog payerChooserPopup;
+    private ImageButton addNewPayerButton;
 
     //Exclude Items Variables
-    List<ExcludeItem> excludeItemsAlreadyAdded;
-    List<ExcludeItem> excludeItemsToAdd;
-    List<ExcludeItem> excludeItemsToDelete;
-    List<ExcludeItem> excludeItemsToUpdate;
-    List<ExcludeItem> excludeItemsNotAdded;
-    ExcludeItemsAdapter excludeItemsAdapter;
-    ArrayAdapter<ExcludeItem> excludeItemChooserAdapter;
+    private List<ExcludeItem> excludeItemsAlreadyAdded;
+    private List<ExcludeItem> excludeItemsToAdd;
+    private List<ExcludeItem> excludeItemsToDelete;
+    private List<ExcludeItem> excludeItemsToUpdate;
+    private List<ExcludeItem> excludeItemsNotAdded;
+    private ExcludeItemsAdapter excludeItemsAdapter;
+    private ArrayAdapter<ExcludeItem> excludeItemChooserAdapter;
 
-    AlertDialog excludeItemsChooserPopup;
-    ImageButton excludeSomeoneButton;
+    private AlertDialog excludeItemsChooserPopup;
+    private ImageButton excludeSomeoneButton;
 
     //Variable used to restrict full privileges for non-Creating users.
-    boolean fullAccess = false;
+    private boolean fullAccess = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +136,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_add_new_item);
         //Try to get ItemUri.
         itemUri = getIntent().getParcelableExtra(EXTRA_ITEM_DETAILS_URI);
-        projectUri = getIntent().getParcelableExtra(EXTRA_PROJECT_DETAILS_URI);
+        Uri projectUri = getIntent().getParcelableExtra(EXTRA_PROJECT_DETAILS_URI);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         myParticipantsId = preferences.getLong(getString(R.string.pref_user_id), -1);
 
@@ -530,8 +523,8 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         });
 
         //Draw Tag GUI elements
-        tagsAlreadyAdded = new ArrayList<Tag>();
-        tagsNotAdded = new ArrayList<Tag>();
+        tagsAlreadyAdded = new ArrayList<>();
+        tagsNotAdded = new ArrayList<>();
         CursorJoiner joiner = new CursorJoiner(cursorTags, new String[]{budgetSplitContract.tags._ID}, cursorItemTags, new String[]{budgetSplitContract.itemsTagsDetailsRO.COLUMN_TAG_ID});
         //Add Tags to respective Array List.
         for (CursorJoiner.Result result : joiner) {
@@ -548,8 +541,8 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                     break;
             }
         }
-        tagsToAdd = new ArrayList<Tag>();
-        tagsToDelete = new ArrayList<Tag>();
+        tagsToAdd = new ArrayList<>();
+        tagsToDelete = new ArrayList<>();
         editTagsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -562,7 +555,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                 startActivityForResult(intent, REQUEST_EDIT_TAGS);
             }
         });
-        StringBuffer itemTagsString = new StringBuffer();
+        StringBuilder itemTagsString = new StringBuilder();
         for (ch.ethz.itet.pps.budgetSplit.Tag tag : tagsAlreadyAdded) {
             itemTagsString.append(tag.name).append(", ");
         }
@@ -580,11 +573,11 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         }
 
         //Draw Payer GUI elements
-        payersToAdd = new ArrayList<Payer>();
-        payersToUpdate = new ArrayList<Payer>();
-        payersToDelete = new ArrayList<Payer>();
+        payersToAdd = new ArrayList<>();
+        payersToUpdate = new ArrayList<>();
+        payersToDelete = new ArrayList<>();
         payersAlreadyAdded = payerCursorToList(cursorItemParticipants);
-        ArrayList<Payer> payersInList = new ArrayList<Payer>();
+        ArrayList<Payer> payersInList = new ArrayList<>();
         payersInList.addAll(payersAlreadyAdded);
         payerAdapter = new ItemParticipantsAdapter(getBaseContext(), R.layout.activity_add_item_participants_row, payersInList);
         payersList.setAdapter(payerAdapter);
@@ -601,11 +594,11 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         payersList.addFooterView(payersListFooter);
 
         //Draw ExcludeItem GUI elements
-        excludeItemsToAdd = new ArrayList<ExcludeItem>();
-        excludeItemsToUpdate = new ArrayList<ExcludeItem>();
-        excludeItemsToDelete = new ArrayList<ExcludeItem>();
-        excludeItemsAlreadyAdded = new ArrayList<ExcludeItem>();
-        excludeItemsNotAdded = new ArrayList<ExcludeItem>();
+        excludeItemsToAdd = new ArrayList<>();
+        excludeItemsToUpdate = new ArrayList<>();
+        excludeItemsToDelete = new ArrayList<>();
+        excludeItemsAlreadyAdded = new ArrayList<>();
+        excludeItemsNotAdded = new ArrayList<>();
         CursorJoiner joiner1 = new CursorJoiner(cursorParticipants, new String[]{budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID}, cursorExcludeItems, new String[]{budgetSplitContract.excludeItems.COLUMN_PARTICIPANTS_ID});
         for (CursorJoiner.Result result : joiner1) {
             switch (result) {
@@ -627,10 +620,10 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
             }
         }
 
-        ArrayList<ExcludeItem> excludeItemsInList = new ArrayList<ExcludeItem>();
+        ArrayList<ExcludeItem> excludeItemsInList = new ArrayList<>();
         excludeItemsInList.addAll(excludeItemsAlreadyAdded);
         excludeItemsAdapter = new ExcludeItemsAdapter(getBaseContext(), R.layout.activity_add_new_item_exclude_participant_row, excludeItemsInList);
-        excludeItemChooserAdapter = new ArrayAdapter<ExcludeItem>(getBaseContext(), android.R.layout.simple_list_item_1, excludeItemsNotAdded);
+        excludeItemChooserAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, excludeItemsNotAdded);
         excludeList.setAdapter(excludeItemsAdapter);
         View excludeItemFooter = getLayoutInflater().inflate(R.layout.activity_add_new_item_exclude_participant_footer, null);
         excludeSomeoneButton = (ImageButton) excludeItemFooter.findViewById(R.id.imageButton);
@@ -691,10 +684,10 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         });
 
         //Draw Tag GUI elements
-        tagsAlreadyAdded = new ArrayList<Tag>();
+        tagsAlreadyAdded = new ArrayList<>();
         tagsNotAdded = tagCursorToList(cursorTags);
-        tagsToAdd = new ArrayList<Tag>();
-        tagsToDelete = new ArrayList<Tag>();
+        tagsToAdd = new ArrayList<>();
+        tagsToDelete = new ArrayList<>();
         editTagsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -710,10 +703,10 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         tagsTextView.setText(getString(R.string.none));
 
         //Draw Payer GUI elements
-        payersToAdd = new ArrayList<Payer>();
-        payersToUpdate = new ArrayList<Payer>();
-        payersToDelete = new ArrayList<Payer>();
-        payersAlreadyAdded = new ArrayList<Payer>();
+        payersToAdd = new ArrayList<>();
+        payersToUpdate = new ArrayList<>();
+        payersToDelete = new ArrayList<>();
+        payersAlreadyAdded = new ArrayList<>();
         payerAdapter = new ItemParticipantsAdapter(getBaseContext(), R.layout.activity_add_item_participants_row, new ArrayList<Payer>());
         View payersListFooter = getLayoutInflater().inflate(R.layout.activity_add_item_participants_footer, null);
         payersList.addFooterView(payersListFooter);
@@ -727,11 +720,11 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         });
 
         //Draw ExcludeItem GUI elements
-        excludeItemsToAdd = new ArrayList<ExcludeItem>();
-        excludeItemsToUpdate = new ArrayList<ExcludeItem>();
-        excludeItemsToDelete = new ArrayList<ExcludeItem>();
-        excludeItemsAlreadyAdded = new ArrayList<ExcludeItem>();
-        excludeItemsNotAdded = new ArrayList<ExcludeItem>();
+        excludeItemsToAdd = new ArrayList<>();
+        excludeItemsToUpdate = new ArrayList<>();
+        excludeItemsToDelete = new ArrayList<>();
+        excludeItemsAlreadyAdded = new ArrayList<>();
+        excludeItemsNotAdded = new ArrayList<>();
         for (cursorParticipants.moveToFirst(); !cursorParticipants.isAfterLast(); cursorParticipants.moveToNext()) {
             Long participantId = cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID));
             String participantName = cursorParticipants.getString(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_NAME));
@@ -739,7 +732,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
             ExcludeItem newExcludeItem = new ExcludeItem(itemId, participantId, participantName, uniqueId, 0);
             excludeItemsNotAdded.add(newExcludeItem);
         }
-        excludeItemChooserAdapter = new ArrayAdapter<ExcludeItem>(getBaseContext(), android.R.layout.simple_list_item_1, excludeItemsNotAdded);
+        excludeItemChooserAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, excludeItemsNotAdded);
         excludeItemsAdapter = new ExcludeItemsAdapter(getBaseContext(), R.layout.activity_add_new_item_exclude_participant_row, new ArrayList<ExcludeItem>());
         View excludeItemFooter = getLayoutInflater().inflate(R.layout.activity_add_item_participants_footer, null);
         excludeList.addFooterView(excludeItemFooter);
@@ -761,7 +754,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
 
         @Override
         protected String doInBackground(Void... voids) {
-            ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+            ArrayList<ContentProviderOperation> operations = new ArrayList<>();
             ContentValues newItemValues = new ContentValues();
 
             //Check if Item Name isn't empty.
@@ -922,7 +915,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
             nameIndex = cursor.getColumnIndexOrThrow(budgetSplitContract.tags.COLUMN_NAME);
         }
 
-        ArrayList<Tag> list = new ArrayList<Tag>();
+        ArrayList<Tag> list = new ArrayList<>();
         if (cursor.getCount() > 0) {
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
@@ -938,9 +931,9 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
     //Methods to handle Payer
     class ItemParticipantsAdapter extends ArrayAdapter<Payer> {
         private ArrayList<Payer> payers;
-        Context context;
+        final Context context;
         int layoutResourceId;
-        private ArrayList<SimpleCursorAdapter> currencyAdapters = new ArrayList<SimpleCursorAdapter>();
+        private ArrayList<SimpleCursorAdapter> currencyAdapters = new ArrayList<>();
 
         public ItemParticipantsAdapter(Context context, int layoutResourceId, ArrayList<Payer> payers) {
             super(context, layoutResourceId, payers);
@@ -952,7 +945,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         @Override
         public View getView(int position, View convertView, final ViewGroup parent) {
             View row = convertView;
-            PayerHolder holder = null;
+            PayerHolder holder;
             if (row == null) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
                 row = inflater.inflate(layoutResourceId, parent, false);
@@ -1077,13 +1070,14 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                 switch (i) {
                     case EditorInfo.IME_ACTION_DONE:
                         if (textView.getText().toString().length() > 0) {
-                            Double newValue = null;
+                            double newValue = 0;
                             try {
                                 newValue = NumberFormat.getInstance().parse((textView.getText().toString().replace(defaultCurrencyCode, ""))).doubleValue();
                             } catch (ParseException e) {
                                 Animation shake = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
                                 textView.startAnimation(shake);
                                 Toast.makeText(getContext(), getString(R.string.please_enter_valid_value), Toast.LENGTH_SHORT).show();
+                                return true;
                             }
                             saveValueChanges(newValue);
                             textView.clearFocus();
@@ -1111,6 +1105,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                             Animation shake = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
                             view.startAnimation(shake);
                             Toast.makeText(getContext(), getString(R.string.please_enter_valid_value), Toast.LENGTH_SHORT).show();
+                            return;
                         }
                         saveValueChanges(newValue);
                         ((EditText) view).setText(new DecimalFormat(",##0.00").format(newValue));
@@ -1227,7 +1222,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         int exchangeRateIndex = cursor.getColumnIndexOrThrow(budgetSplitContract.itemsParticipantsDetailsRO.COLUMN_CURRENCY_EXCHANGE_RATE);
         int amountPayedIndex = cursor.getColumnIndexOrThrow(budgetSplitContract.itemsParticipantsDetailsRO.COLUMN_AMOUNT_PAYED);
         int rowid = cursor.getColumnIndexOrThrow(budgetSplitContract.itemsParticipantsDetailsRO._ID);
-        ArrayList<Payer> list = new ArrayList<Payer>();
+        ArrayList<Payer> list = new ArrayList<>();
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 list.add(new Payer(cursor.getLong(rowid),
@@ -1297,7 +1292,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
             int itemIdIndex = cursor.getColumnIndex(budgetSplitContract.excludeItems.COLUMN_ITEM_ID);
             int participantIdIndex = cursor.getColumnIndex(budgetSplitContract.excludeItems.COLUMN_PARTICIPANTS_ID);
             int shareRatioIndex = cursor.getColumnIndex(budgetSplitContract.excludeItems.COLUMN_SHARE_RATIO);
-            List<ExcludeItem> result = new ArrayList<ExcludeItem>();
+            List<ExcludeItem> result = new ArrayList<>();
             if (cursor.getCount() > 0) {
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     result.add(new ExcludeItem(cursor.getLong(rowIdIndex), cursor.getLong(itemIdIndex), cursor.getLong(participantIdIndex), cursor.getDouble(shareRatioIndex)));
@@ -1323,7 +1318,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View row = convertView;
-            ExcludeItemHolder holder = null;
+            ExcludeItemHolder holder;
             if (row == null) {
                 LayoutInflater inflater = getLayoutInflater();
                 row = inflater.inflate(resourceId, parent, false);
@@ -1357,8 +1352,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
 
             boolean enableView;
             if (!fullAccess) {
-                boolean excludeItemIsMe = excludeItems.get(position).uniqueId.equals(myUniqueId);
-                enableView = excludeItemIsMe;
+                enableView = excludeItems.get(position).uniqueId.equals(myUniqueId);
             } else {
                 enableView = true;
             }

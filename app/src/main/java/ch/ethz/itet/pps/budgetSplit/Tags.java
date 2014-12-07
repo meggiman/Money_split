@@ -1,6 +1,5 @@
 package ch.ethz.itet.pps.budgetSplit;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentProviderOperation;
@@ -39,16 +38,16 @@ import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 public class Tags extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    static final int LOADER_TAGS = 5;
-    ProgressBar progressBar;
-    SimpleCursorAdapter tagCursorAdapter;
+    private static final int LOADER_TAGS = 5;
+    private ProgressBar progressBar;
+    private SimpleCursorAdapter tagCursorAdapter;
     ArrayList<String> tags;
     ArrayAdapter<String> tagsGridAdapter;
 
 
     Button newTag;
-    AlertDialog tagCreatePopup;
-    GridView tagGrid;
+    private AlertDialog tagCreatePopup;
+    private GridView tagGrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,8 +139,8 @@ public class Tags extends ActionBarActivity implements LoaderManager.LoaderCallb
                      */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ArrayList<ContentProviderOperation> deleteOperations = new ArrayList<ContentProviderOperation>();
-                        ArrayList<String> tagsToDelete = new ArrayList<String>();
+                        ArrayList<ContentProviderOperation> deleteOperations = new ArrayList<>();
+                        ArrayList<String> tagsToDelete = new ArrayList<>();
                         SparseBooleanArray checkedItems = tagGrid.getCheckedItemPositions();
                         for (int k = 0; k < tagGrid.getAdapter().getCount(); k++) {
                             if (checkedItems.get(k)) {
@@ -153,7 +152,7 @@ public class Tags extends ActionBarActivity implements LoaderManager.LoaderCallb
                             }
                         }
                         try {
-                            ContentProviderResult[] operationResult = getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, deleteOperations);
+                            getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, deleteOperations);
 
                         } catch (RemoteException e) {
                             e.printStackTrace();
@@ -246,7 +245,7 @@ public class Tags extends ActionBarActivity implements LoaderManager.LoaderCallb
         progressBar.setVisibility(View.VISIBLE);
 
         String[] projection = {budgetSplitContract.tags.COLUMN_NAME, budgetSplitContract.tags._ID};
-        String sortOrder = new String(budgetSplitContract.tags.COLUMN_NAME + " ASC");
+        String sortOrder = budgetSplitContract.tags.COLUMN_NAME + " ASC";
 
         return new CursorLoader(this, budgetSplitContract.tags.CONTENT_URI, projection, null, null, sortOrder);
     }

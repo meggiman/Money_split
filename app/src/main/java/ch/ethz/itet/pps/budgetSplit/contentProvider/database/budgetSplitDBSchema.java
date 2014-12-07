@@ -6,6 +6,7 @@ import android.provider.BaseColumns;
 /**
  * Created by Manuel on 27.09.2014.
  */
+@SuppressWarnings("ALL")
 public final class budgetSplitDBSchema {
 
     static final String DATABASE_NAME = "budgetSplit.db";

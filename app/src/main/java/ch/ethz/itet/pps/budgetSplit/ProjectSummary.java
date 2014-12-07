@@ -24,7 +24,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
@@ -43,29 +42,29 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
     private String defaultCurrencyCode;
 
     // Loader ID's
-    static final int LOADER_PROJECT_PARTICIPANT_DETAILS_CALCULATE = 0;
+    private static final int LOADER_PROJECT_PARTICIPANT_DETAILS_CALCULATE = 0;
     private boolean projectParticipantDetailsCalculateFinished = false;
-    static final int LOADER_PARTICIPANT_TAGS_DETAILS = 1;
+    private static final int LOADER_PARTICIPANT_TAGS_DETAILS = 1;
     private boolean participantTagsDetailsFinished = false;
-    static final int LOADER_ITEMS = 2;
+    private static final int LOADER_ITEMS = 2;
     private boolean itemsDetailsFinished = false;
 
     // memory for all the loaded Data
-    Cursor projectCursor;
-    Cursor tagCursor;
+    private Cursor projectCursor;
+    private Cursor tagCursor;
 
     // Fills the Listview Adapter
-    ParticipantTagsLinker[] data;
+    private ParticipantTagsLinker[] data;
 
     // GUI elements
-    View mainView;
-    ProgressBar progressBar;
-    TextView expences;
-    TextView expences1;
-    TextView nrOfItems;
-    TextView nrOfItems1;
-    ListView list;
-    Button transactions;
+    private View mainView;
+    private ProgressBar progressBar;
+    private TextView expences;
+    private TextView expences1;
+    private TextView nrOfItems;
+    private TextView nrOfItems1;
+    private ListView list;
+    private Button transactions;
 
 
     /**
@@ -130,7 +129,6 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
         String[] projection;
         String[] selectionArgs;
         String selection;
-        String column;
 
         Long projectId = (ContentUris.parseId(projectUri));
 
@@ -143,7 +141,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
                         budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_SHARE,
                         budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_DEPTHS
                 };
-                String sortOrder = new String(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_ID + " ASC");
+                String sortOrder = budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_ID + " ASC";
                 return new CursorLoader(getActivity(), ContentUris.withAppendedId(budgetSplitContract.projectParticipantsDetailsCalculateRO.CONTENT_URI, projectId), projection, null, null, sortOrder);
 
             case LOADER_PARTICIPANT_TAGS_DETAILS:
@@ -151,7 +149,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
                         budgetSplitContract.participantsTagsDetails.COLUMN_PARTICIPANT_ID,
                         budgetSplitContract.participantsTagsDetails.COLUMN_TAG_NAME,
                 };
-                String sortOrder1 = new String(budgetSplitContract.participantsTagsDetails.COLUMN_PARTICIPANT_ID + " ASC");
+                String sortOrder1 = budgetSplitContract.participantsTagsDetails.COLUMN_PARTICIPANT_ID + " ASC";
                 return new CursorLoader(getActivity(), budgetSplitContract.participantsTagsDetails.CONTENT_URI_ALL, projection, null, null, sortOrder1);
 
             case LOADER_ITEMS:
@@ -218,7 +216,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
                 data[i].name = projectCursor.getString(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_NAME));
                 data[i].expenses = projectCursor.getDouble(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_SHARE));
                 data[i].depths = projectCursor.getDouble(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_TOTAL_DEPTHS));
-                StringBuffer tags = new StringBuffer();
+                StringBuilder tags = new StringBuilder();
                 tagCursor.moveToFirst();
                 long participantId = projectCursor.getLong(projectCursor.getColumnIndex(budgetSplitContract.projectParticipantsDetailsCalculateRO.COLUMN_PARTICIPANT_ID));
                 for (tagCursor.moveToFirst(); !tagCursor.isAfterLast(); tagCursor.moveToNext()) {
@@ -294,7 +292,7 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View row = convertView;
-            ParticipantTagsLinkerHolder holder = null;
+            ParticipantTagsLinkerHolder holder;
 
             if (row == null) {
                 LayoutInflater inflater = ((Activity) context).getLayoutInflater();

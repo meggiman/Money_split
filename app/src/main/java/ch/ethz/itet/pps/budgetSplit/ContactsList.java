@@ -37,19 +37,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
 public class ContactsList extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    ListView list;
-    ProgressBar progressBar;
+    private ListView list;
+    private ProgressBar progressBar;
     Button addContact;
 
 
-    Contact[] data;
+    private Contact[] data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +56,7 @@ public class ContactsList extends ActionBarActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_contacts__list);
 
         progressBar = (ProgressBar) findViewById(R.id.contacts_list_progressbar);
-        
+
         list = (ListView) findViewById(R.id.contact_list_listwiev);
         list.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         list.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
@@ -130,8 +129,8 @@ public class ContactsList extends ActionBarActivity implements LoaderManager.Loa
                      */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ArrayList<ContentProviderOperation> deleteOperations = new ArrayList<ContentProviderOperation>();
-                        ArrayList<String> contactsToDelete = new ArrayList<String>();
+                        ArrayList<ContentProviderOperation> deleteOperations = new ArrayList<>();
+                        ArrayList<String> contactsToDelete = new ArrayList<>();
                         SparseBooleanArray checkedItems = list.getCheckedItemPositions();
                         for (int k = 0; k < list.getAdapter().getCount(); k++) {
                             if (checkedItems.get(k)) {
@@ -143,7 +142,7 @@ public class ContactsList extends ActionBarActivity implements LoaderManager.Loa
                             }
                         }
                         try {
-                            ContentProviderResult[] operationResult = getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, deleteOperations);
+                            getContentResolver().applyBatch(budgetSplitContract.AUTHORITY, deleteOperations);
 
                         } catch (RemoteException e) {
                             e.printStackTrace();
@@ -214,7 +213,7 @@ public class ContactsList extends ActionBarActivity implements LoaderManager.Loa
         String[] projection = new String[]{
                 budgetSplitContract.participants.COLUMN_NAME,
                 budgetSplitContract.participants._ID};
-        String sortOrder = new String(budgetSplitContract.participants.COLUMN_NAME + " ASC");
+        String sortOrder = budgetSplitContract.participants.COLUMN_NAME + " ASC";
         return new CursorLoader(this, budgetSplitContract.participants.CONTENT_URI, projection, null, null, sortOrder);
     }
 
@@ -308,7 +307,7 @@ public class ContactsList extends ActionBarActivity implements LoaderManager.Loa
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View row = convertView;
-            ContactHolder holder = null;
+            ContactHolder holder;
 
             if (row == null) {
                 LayoutInflater inflater = ((Activity) context).getLayoutInflater();

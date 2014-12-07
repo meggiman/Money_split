@@ -3,7 +3,6 @@ package ch.ethz.itet.pps.budgetSplit;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -24,7 +23,7 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable {
 
     @Override
     public void setChecked(boolean b) {
-        this.isChecked = isChecked;
+        this.isChecked = b;
         if (checkableViews != null) { // careful!!
             for (Checkable c : checkableViews) {
                 // Pass the information to all the child Checkable widgets
@@ -53,7 +52,7 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable {
         super.onFinishInflate();
         final int childCount = this.getChildCount();
         for (int i = 0; i < childCount; ++i) {
-            findCheckableChildren((View) this.getChildAt(i));
+            findCheckableChildren(this.getChildAt(i));
         }
     }
 

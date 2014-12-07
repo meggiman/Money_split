@@ -1,26 +1,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="ch.ethz.itet.pps.budgetSplit.TagSelection"
-    android:padding="@dimen/global_margins">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                tools:context="ch.ethz.itet.pps.budgetSplit.TagSelection"
+                android:padding="@dimen/global_margins">
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Item-/ContactName"
         android:textStyle="bold"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:gravity="center_horizontal"
         android:id="@+id/tag_selection_variable"
         android:padding="@dimen/global_margins"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        tools:ignore="TextFields"/>
 
     <GridView
         android:layout_width="wrap_content"
@@ -35,7 +36,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/tag_selection_variable"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"/>
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -46,7 +47,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:indeterminate="false" />
+        android:indeterminate="false"/>
 
 
 </RelativeLayout>

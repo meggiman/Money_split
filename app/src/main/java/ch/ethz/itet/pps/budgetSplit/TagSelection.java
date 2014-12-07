@@ -49,34 +49,31 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
     static final String RESULT_EXTRA_ITEM_TAGS_TO_ADD = "resultItemTagsToAdd";
     static final String RESULT_EXTRA_ITEM_TAGS_TO_DELETE = "resultItemTagsToDelete";
     static final String RESULT_EXTRA_ITEM_TAGS_STRING = "resultItemTagsString";
-    static final int LOADER_TAGS_ALL = 0;
-    static final int LOADER_TAGS_PARTICIPANTS = 1;
-    static final int LOADER_TAGS_ITEM = 2;
-    boolean tagsAllFinished = false;
-    boolean tagsFinished = false;
+    private static final int LOADER_TAGS_ALL = 0;
+    private static final int LOADER_TAGS_PARTICIPANTS = 1;
+    private static final int LOADER_TAGS_ITEM = 2;
+    private boolean tagsAllFinished = false;
+    private boolean tagsFinished = false;
     boolean tagsItemFinished = false;
-    Intent intent = new Intent();
-    private List<Long> toDeleteList = new ArrayList<Long>();
-    private List<Long> toInsertList = new ArrayList<Long>();
+    private Intent intent = new Intent();
+    private List<Long> toDeleteList = new ArrayList<>();
+    private List<Long> toInsertList = new ArrayList<>();
 
     private ArrayList<ch.ethz.itet.pps.budgetSplit.Tag> itemTagsAlreadyAdded;
     private ArrayList<ch.ethz.itet.pps.budgetSplit.Tag> itemTagsToAdd;
     private ArrayList<ch.ethz.itet.pps.budgetSplit.Tag> itemTagsToDelete;
     private StringBuffer itemTagsString;
 
-    ProgressBar progressBar;
-    ArrayList<IdHolder> tagIds;
-    List<Tag> data = new ArrayList<Tag>();
-    TagAdapter tagsGridAdapter;
-    String oldTitle;
+    private ProgressBar progressBar;
+    private ArrayList<IdHolder> tagIds;
+    private List<Tag> data = new ArrayList<>();
+    private TagAdapter tagsGridAdapter;
+    private String oldTitle;
 
 
-    Button newTag;
-    Button ok;
-    AlertDialog tagCreatePopup;
-    GridView tagGrid;
-    TextView tagfilter;
-    EditText title;
+    private AlertDialog tagCreatePopup;
+    private GridView tagGrid;
+    private EditText title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,20 +128,20 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
                         if (preferences.getLong(getString(R.string.pref_user_id), -1) == intent.getLongExtra(EXTRA_ID, -2)) {
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putString(getString(R.string.pref_userName), newTitle);
-                            editor.commit();
+                            editor.apply();
                         }
                     }
                     for (int i = 0; i < data.size(); i++) {
                         if (data.get(i).checked) {
                             boolean insert = true;
                             for (int j = 0; j < tagIds.size(); j++) {
-                                if (data.get(i).id == tagIds.get(j).tagId) {
+                                if (data.get(i).id.equals(tagIds.get(j).tagId)) {
                                     // Item was already Checked and thus stays in the Tagfilter
                                     // do nothing especially no insert
                                     insert = false;
                                 }
                             }
-                            if (insert == true) {
+                            if (insert) {
                                 // The right junktion does not yet exist -> insert
                                 ContentValues cv = new ContentValues();
                                 cv.put(budgetSplitContract.tagFilter.COLUMN_PARTICIPANTS_ID, intent.getLongExtra(EXTRA_ID, -1));
@@ -154,7 +151,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
                             }
                         } else { // data.checked == false
                             for (int j = 0; j < tagIds.size(); j++) {
-                                if (data.get(i).id == tagIds.get(j).tagId) {
+                                if (data.get(i).id.equals(tagIds.get(j).tagId)) {
                                     // The Tag was checked before but isn't anmore -> delete
                                     toDeleteList.add(tagIds.get(j).tableId);
                                 }
@@ -162,7 +159,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
                         }
                     }
                     Uri toDelete;
-                    ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+                    ArrayList<ContentProviderOperation> operations = new ArrayList<>();
                     for (int k = 0; k < toDeleteList.size(); k++) {
                         toDelete = ContentUris.withAppendedId(budgetSplitContract.tagFilter.CONTENT_URI, toDeleteList.get(k));
                         operations.add(ContentProviderOperation.newDelete(toDelete).build());
@@ -237,7 +234,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
             case LOADER_TAGS_ALL:
                 String[] projection = {budgetSplitContract.tags.COLUMN_NAME,
                         budgetSplitContract.tags._ID};
-                String sortOrder = new String(budgetSplitContract.tags.COLUMN_NAME + " ASC");
+                String sortOrder = budgetSplitContract.tags.COLUMN_NAME + " ASC";
 
                 return new CursorLoader(this, budgetSplitContract.tags.CONTENT_URI, projection, null, null, sortOrder);
 
@@ -247,7 +244,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
                         budgetSplitContract.participantsTagsDetails._ID
                 };
                 Long contactId = getIntent().getLongExtra(EXTRA_ID, -1);
-                String selection = new String(budgetSplitContract.participantsTagsDetails.COLUMN_PARTICIPANT_ID + " = " + contactId.toString());
+                String selection = budgetSplitContract.participantsTagsDetails.COLUMN_PARTICIPANT_ID + " = " + contactId.toString();
                 return new CursorLoader(this, budgetSplitContract.participantsTagsDetails.CONTENT_URI_ALL, projection1, selection, null, null);
 
             case LOADER_TAGS_ITEM:
@@ -256,7 +253,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
                         budgetSplitContract.itemsTagsDetailsRO._ID
                 };
                 Long itemId = getIntent().getLongExtra(EXTRA_ID, -1);
-                String selection1 = new String(budgetSplitContract.itemsTagsDetailsRO.COLUMN_ITEM_ID + " = " + itemId.toString());
+                String selection1 = budgetSplitContract.itemsTagsDetailsRO.COLUMN_ITEM_ID + " = " + itemId.toString();
                 return new CursorLoader(this, budgetSplitContract.itemsTagsDetailsRO.CONTENT_URI_ALL, projection2, selection1, null, null);
 
             default:
@@ -281,7 +278,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
                 break;
 
             case LOADER_TAGS_PARTICIPANTS:
-                tagIds = new ArrayList<IdHolder>();
+                tagIds = new ArrayList<>();
                 if (cursor.getCount() > 0) {
                     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                         tagIds.add(new IdHolder(cursor.getLong(cursor.getColumnIndex(budgetSplitContract.participantsTagsDetails.COLUMN_TAG_ID)), cursor.getLong(cursor.getColumnIndex(budgetSplitContract.participantsTagsDetails._ID))));
@@ -295,7 +292,7 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
         if (tagsFinished && tagsAllFinished) {
             for (int i = 0; i < data.size(); i++) {
                 for (int j = 0; j < tagIds.size(); j++) {
-                    if (data.get(i).id == (Long) tagIds.get(j).tagId) {
+                    if (data.get(i).id.equals((Long) tagIds.get(j).tagId)) {
                         data.get(i).checked = true;
                     }
                 }

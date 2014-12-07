@@ -31,8 +31,8 @@ import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 public class FirstScreen extends ActionBarActivity {
 
-    ContentValues newContactParticipant;
-    String hashStringHex = "";
+    private ContentValues newContactParticipant;
+    private String hashStringHex = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +68,9 @@ public class FirstScreen extends ActionBarActivity {
                         md = MessageDigest.getInstance("SHA-256");
                         md.update(googleAccountName.getBytes("UTF-8"));
                         hashedAccountNameBytes = md.digest();
-                        StringBuffer buffer = new StringBuffer();
-                        for (int i = 0; i < hashedAccountNameBytes.length; i++) {
-                            buffer.append(Integer.toString((hashedAccountNameBytes[i] & 0xff) + 0x100, 16).substring(1));
+                        StringBuilder buffer = new StringBuilder();
+                        for (byte hashedAccountNameByte : hashedAccountNameBytes) {
+                            buffer.append(Integer.toString((hashedAccountNameByte & 0xff) + 0x100, 16).substring(1));
                         }
                         hashStringHex = buffer.toString();
 
@@ -102,7 +102,7 @@ public class FirstScreen extends ActionBarActivity {
                     editor.putLong(getString(R.string.pref_user_id), userId);
                     editor.putString(getString(R.string.pref_userName), usernameEditText.getText().toString());
                     editor.putBoolean(getString(R.string.pref_not_first_started), true);
-                    editor.commit();
+                    editor.apply();
 
                     // Go back to main activity
                     finish();

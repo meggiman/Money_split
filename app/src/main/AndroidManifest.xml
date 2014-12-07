@@ -60,8 +60,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ethz.itet.pps.budgetSplit.NewProject"/>
-
-            <action android:name="android.intent.action.NEWCONTACT"/>
         </activity>
         <activity
             android:name="ch.ethz.itet.pps.budgetSplit.FirstScreen"

@@ -1,6 +1,5 @@
 package ch.ethz.itet.pps.budgetSplit.contentProvider;
 
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -296,7 +295,7 @@ public class budgetSplitContract {
 
         static final String[] PROJECTION_DB_ALL = {_ID, COLUMN_PROJECT_ID, COLUMN_PROJECT_NAME, COLUMN_PARTICIPANT_ID, COLUMN_PARTICIPANT_NAME, COLUMN_PARTICIPANT_UNIQUE_ID, COLUMN_PARTICIPANT_IS_VIRTUAL, COLUMN_PARTICIPANT_TOTAL_PAYED};
 
-        static final Cursor query(SQLiteDatabase database, long projectId, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        static Cursor query(SQLiteDatabase database, long projectId, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
             if (database.isOpen()) {
                 String[] projectIdArgs = {Long.toString(projectId)};
 
@@ -349,12 +348,6 @@ public class budgetSplitContract {
                     database.execSQL(sqlCreateTempTable, new String[]{projectIdArgs[0], projectIdArgs[0]});
                     database.execSQL(sqlProjectParticipantCreateTempTable, projectIdArgs);
                     result = database.query("projectParticipantsDetails", projection, selection, selectionArgs, null, null, sortOrder);
-                    ArrayList<String> names = new ArrayList<String>();
-                    ArrayList<Double> totalshare = new ArrayList<Double>();
-                    for (result.moveToFirst(); !result.isAfterLast(); result.moveToNext()) {
-                        names.add(result.getString(0));
-                        totalshare.add(result.getDouble(1));
-                    }
                     database.setTransactionSuccessful();
                 } catch (SQLException e) {
                     throw e;

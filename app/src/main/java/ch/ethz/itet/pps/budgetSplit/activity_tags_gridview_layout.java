@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class activity_tags_gridview_layout extends Activity {
 
-    TextView tagGridTextView;
+    private TextView tagGridTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -33,24 +33,22 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
 
     //declarations:
 
-    Button createNewProject;
-    Button createNewContact;
-    Spinner contactsSpinner;
-    ListView contactsProjectList;
-    Cursor contactsCursor;
-    ArrayAdapter<String> contactsSpinnerAdapter;
-    ArrayAdapter<String> contactsListAdapter;
-    EditText projectName;
-    EditText projectDescription;
-    ArrayList<String> participantNamestoList = new ArrayList<String>();
-    ArrayList<String> participantNamestoSpinner = new ArrayList<String>();
-    Uri projectUri;
-    Boolean firstselect = true;
+    private Spinner contactsSpinner;
+    private ListView contactsProjectList;
+    private Cursor contactsCursor;
+    private ArrayAdapter<String> contactsSpinnerAdapter;
+    private ArrayAdapter<String> contactsListAdapter;
+    private EditText projectName;
+    private EditText projectDescription;
+    private ArrayList<String> participantNamestoList = new ArrayList<>();
+    private ArrayList<String> participantNamestoSpinner = new ArrayList<>();
+    private Uri projectUri;
+    private Boolean firstselect = true;
 
-    static final int REQUEST_CREATE_CONTACT = 1;
+    private static final int REQUEST_CREATE_CONTACT = 1;
 
 
-    AdapterView.OnItemSelectedListener onSpinner = new AdapterView.OnItemSelectedListener() {
+    private AdapterView.OnItemSelectedListener onSpinner = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -79,7 +77,6 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
         public void onNothingSelected(AdapterView<?> parent) {
         }
     };
-    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,7 +192,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
         // was passiert wenn contact richtig erstellt wurde
     }
 
-    public void setButtons() {
+    void setButtons() {
 
         // --> Add to Button in Action Bar!!!!
         // initialize actuall button
@@ -272,53 +269,13 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
         });*/
     }
 
-    /**
-     * Fills the Spinner with the Contacts saved in the database
-     */
-    public void setItemsOnSpinner() {
-        // Link Spinner
-        contactsSpinner = (Spinner) findViewById(R.id.contacts_spinner);
-
-
-        // Load all the Contact Names from Database creating cursorAdapter
-        String[] participantNames = {budgetSplitContract.participants.COLUMN_NAME};
-        contactsCursor = getContentResolver().query(budgetSplitContract.participants.CONTENT_URI, participantNames, null, null, null);
-
-
-        if (contactsCursor.getCount() > 0) {
-
-
-            for (contactsCursor.moveToFirst(); !contactsCursor.isAfterLast(); contactsCursor.moveToNext()) {
-                if (contactsCursor != null) {
-                    participantNamestoSpinner.add(contactsCursor.getString(contactsCursor.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME)));
-                }
-            }
-
-            // Remove yourself from Spinner
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            String adminName = preferences.getString(getString(R.string.pref_userName), "Error");
-            participantNamestoSpinner.remove(adminName);
-
-        }
-
-
-        contactsSpinnerAdapter = new ArrayAdapter<String>(this, R.layout.activity_new_poject_contacts_spinner_row, R.id.contacts_spinner_row_textview, participantNamestoSpinner);
-        contactsSpinnerAdapter.setDropDownViewResource(R.layout.activity_new_poject_contacts_spinner_row);
-        contactsSpinner.setAdapter(contactsSpinnerAdapter);
-
-        // Link to onItemsSelected Method
-        contactsSpinner.setOnItemSelectedListener(onSpinner);
-
-
-    }
-
-    public void updateContactsList() {
+    void updateContactsList() {
 
 
         // fill the list with the chosen names
         if (participantNamestoList.size() > 0) {
 
-            contactsListAdapter = new ArrayAdapter<String>(this, R.layout.activity_new_project_contacts_list, R.id.projectName, participantNamestoList);
+            contactsListAdapter = new ArrayAdapter<>(this, R.layout.activity_new_project_contacts_list, R.id.projectName, participantNamestoList);
             contactsProjectList.setAdapter(contactsListAdapter);
         }
         firstselect = true;
@@ -326,51 +283,17 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
     }
 
     // Call this method from Listview
-    public void updateContactsSpinner() {
+    void updateContactsSpinner() {
 
 
         if (participantNamestoSpinner.size() > 0) {
-            contactsSpinnerAdapter = new ArrayAdapter<String>(this, R.layout.activity_new_poject_contacts_spinner_row, R.id.contacts_spinner_row_textview, participantNamestoSpinner);
+            contactsSpinnerAdapter = new ArrayAdapter<>(this, R.layout.activity_new_poject_contacts_spinner_row, R.id.contacts_spinner_row_textview, participantNamestoSpinner);
 
             contactsSpinner.setAdapter(contactsSpinnerAdapter);
         }
         firstselect = true;
 
 
-    }
-
-    // Call this method after new Contact has been inserted into database
-    public void updateContactsSpinner2() {
-
-        //Initialize Loader
-        getLoaderManager().initLoader(0, null, this);
-
-        // Load all the Contact Names from Database creating cursorAdapter
-        String[] participantNames = {budgetSplitContract.participants.COLUMN_NAME};
-        contactsCursor = getContentResolver().query(budgetSplitContract.participants.CONTENT_URI, participantNames, null, null, null);
-
-        if (contactsCursor.getColumnCount() > 0) {
-            participantNamestoSpinner.clear();
-            contactsCursor.moveToFirst();
-
-            for (contactsCursor.moveToFirst(); contactsCursor.isAfterLast(); contactsCursor.moveToNext()) {
-                if (contactsCursor != null) {
-                    participantNamestoSpinner.add(contactsCursor.getString(contactsCursor.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME)));
-                }
-            }
-
-            if (participantNamestoList.size() > 0) {
-                for (int i = 0; i < participantNamestoList.size(); i++) {
-                    participantNamestoSpinner.remove(participantNamestoList.get(i));
-                }
-            }
-        }
-
-
-        contactsSpinnerAdapter = new ArrayAdapter<String>(this, R.layout.activity_new_poject_contacts_spinner_row, R.id.contacts_spinner_row_textview, participantNamestoSpinner);
-        if (contactsSpinnerAdapter != null)
-            contactsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        contactsSpinner.setAdapter(contactsSpinnerAdapter);
     }
 
 
@@ -383,7 +306,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
         GlobalStuffHelper.clearSpinnerArray();
         // Load Data
         String[] projection = {budgetSplitContract.participants._ID, budgetSplitContract.participants.COLUMN_NAME};
-        String sortOrder = new String(budgetSplitContract.participants.COLUMN_NAME + " ASC");
+        String sortOrder = budgetSplitContract.participants.COLUMN_NAME + " ASC";
         return new CursorLoader(getApplicationContext(), budgetSplitContract.participants.CONTENT_URI, projection, null, null, sortOrder);
     }
 
@@ -391,7 +314,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         //contactsSpinnerAdapter.swapCursor(cursor);
         // Hide Progress Bar
-        ((ProgressBar) findViewById(R.id.new_projects_progressBar)).setVisibility(View.GONE);
+        findViewById(R.id.new_projects_progressBar).setVisibility(View.GONE);
 
         // Link Spinner
         contactsSpinner = (Spinner) findViewById(R.id.contacts_spinner);
@@ -406,13 +329,11 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
 
             // Refill spinner and Id List
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                if (cursor != null) {
-                    String name = cursor.getString(cursor.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME));
-                    long id = cursor.getLong(cursor.getColumnIndex(budgetSplitContract.participants._ID));
-                    participantNamestoSpinner.add(name);
-                    GlobalStuffHelper.participantNames.add(name);
-                    GlobalStuffHelper.addParticipantsIds(id);
-                }
+                String name = cursor.getString(cursor.getColumnIndex(budgetSplitContract.participants.COLUMN_NAME));
+                long id = cursor.getLong(cursor.getColumnIndex(budgetSplitContract.participants._ID));
+                participantNamestoSpinner.add(name);
+                GlobalStuffHelper.participantNames.add(name);
+                GlobalStuffHelper.addParticipantsIds(id);
             }
 
             // Remove yourself from Spinner
@@ -436,7 +357,7 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
             }
         }
 
-        contactsSpinnerAdapter = new ArrayAdapter<String>(this, R.layout.activity_new_poject_contacts_spinner_row, R.id.contacts_spinner_row_textview, participantNamestoSpinner);
+        contactsSpinnerAdapter = new ArrayAdapter<>(this, R.layout.activity_new_poject_contacts_spinner_row, R.id.contacts_spinner_row_textview, participantNamestoSpinner);
         contactsSpinnerAdapter.setDropDownViewResource(R.layout.activity_new_poject_contacts_spinner_row);
         contactsSpinner.setAdapter(contactsSpinnerAdapter);
 
@@ -471,18 +392,10 @@ public class NewProject extends ActionBarActivity implements LoaderManager.Loade
  */
 class GlobalStuffHelper {
 
-    static long virtualCounter = 15;
-    static ArrayList<Long> participantIds = new ArrayList<Long>();
-    static ArrayList<Long> participantIdsToProject = new ArrayList<Long>();
-    static ArrayList<String> participantNames = new ArrayList<String>();
-
-    public static void raiseVirtualCounterByOne() {
-        virtualCounter++;
-    }
-
-    public static long getVirtualCounter() {
-        return virtualCounter;
-    }
+    private static long virtualCounter = 15;
+    private static ArrayList<Long> participantIds = new ArrayList<>();
+    private static ArrayList<Long> participantIdsToProject = new ArrayList<>();
+    static ArrayList<String> participantNames = new ArrayList<>();
 
     public static void addParticipantsIds(long value) {
         participantIds.add(value);

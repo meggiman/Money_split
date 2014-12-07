@@ -1,6 +1,5 @@
 package ch.ethz.itet.pps.budgetSplit;
 
-import android.app.Activity;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
@@ -25,17 +24,17 @@ import ch.ethz.itet.pps.budgetSplit.contentProvider.budgetSplitContract;
 
 
 public class ContactChooser extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    ArrayList<Participant> selectedParticipants;
+    private ArrayList<Participant> selectedParticipants;
     static final String EXTRA_SELECTED_PARTICIPANTS = "extraSelectedParticipants";
     static final String RESULT_EXTRA_SELECTED_PARTICIPANTS = "resultExtraParticipants";
-    static final int REQUEST_CREATE_CONTACT = 1;
+    private static final int REQUEST_CREATE_CONTACT = 1;
 
     private static final int LOADER_PARTICIPANTS = 1;
 
 
-    ListView contactsList;
-    CursorAdapter contactsAdapter;
-    ProgressDialog progressDialog;
+    private ListView contactsList;
+    private CursorAdapter contactsAdapter;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,8 +190,6 @@ class Participant implements Parcelable {
     Participant() {
     }
 
-    ;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -202,10 +199,8 @@ class Participant implements Parcelable {
 
         if (id != that.id) return false;
         if (!name.equals(that.name)) return false;
-        if (uniqueId != null ? !uniqueId.equals(that.uniqueId) : that.uniqueId != null)
-            return false;
+        return !(uniqueId != null ? !uniqueId.equals(that.uniqueId) : that.uniqueId != null);
 
-        return true;
     }
 
     @Override
@@ -222,7 +217,7 @@ class Participant implements Parcelable {
         this.id = id;
     }
 
-    Participant(Parcel in) {
+    private Participant(Parcel in) {
         name = in.readString();
         uniqueId = in.readString();
         id = in.readLong();

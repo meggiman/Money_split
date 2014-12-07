@@ -19,7 +19,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ActionMode;
+import android.support.v7.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,7 +81,7 @@ public class currencies extends ActionBarActivity implements LoaderManager.Loade
                 if (actionMode != null) {
                     return false;
                 }
-                actionMode = currencies.this.startActionMode(new ActionMode.Callback() {
+                actionMode = currencies.this.startSupportActionMode(new android.support.v7.view.ActionMode.Callback() {
                     @Override
                     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                         actionMode.getMenuInflater().inflate(R.menu.currencies_select, menu);
