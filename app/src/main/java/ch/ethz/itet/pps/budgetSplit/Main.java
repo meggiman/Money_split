@@ -73,6 +73,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle(R.string.projects);
 
 
         // Add Listeners to GUI-Elements
