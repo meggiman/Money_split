@@ -29,6 +29,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
     private static final int REQUEST_LOAD_PROJECT = 1;
     public static final int RESULT_PROJECT_DELETED = 1;
     private static final int REQUEST_CREATE_PROJECT = 2;
+    static final String RESULT_DATA_PROJECT_TO_DELETE = "projectToDelete";
     //Id to identify different Loaders
     private static final int URL_LOADER_PROJECTS = 0;
 
@@ -48,6 +49,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
                 case REQUEST_LOAD_PROJECT:
                     switch (resultCode) {
                         case RESULT_PROJECT_DELETED:
+                            Long projectToDelete = data.getLongExtra(RESULT_DATA_PROJECT_TO_DELETE, -1);
+                            getContentResolver().delete(budgetSplitContract.items.CONTENT_URI, budgetSplitContract.items.COLUMN_PROJECT + " = ?", new String[]{Long.toString(projectToDelete)});
+                            getContentResolver().delete(ContentUris.withAppendedId(budgetSplitContract.projects.CONTENT_URI, projectToDelete), null, null);
                             Toast.makeText(this, getString(R.string.project_was_deleted_message), Toast.LENGTH_SHORT).show();
                     }
                     break;

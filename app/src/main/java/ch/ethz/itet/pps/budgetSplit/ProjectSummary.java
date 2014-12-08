@@ -246,7 +246,17 @@ public class ProjectSummary extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
+        switch (cursorLoader.getId()) {
+            case LOADER_PARTICIPANT_TAGS_DETAILS:
+                participantTagsDetailsFinished = false;
+                break;
+            case LOADER_PROJECT_PARTICIPANT_DETAILS_CALCULATE:
+                projectParticipantDetailsCalculateFinished = false;
+                break;
+            case LOADER_ITEMS:
+                itemsDetailsFinished = false;
+                break;
+        }
     }
 
 

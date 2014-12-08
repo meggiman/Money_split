@@ -386,10 +386,12 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
                     participantsAdapter.swapCursor(cursorProjectParticipants);
                     progressDialog.dismiss();
                 }
-                cursor.moveToFirst();
-                adminUniqueId = cursor.getString(cursor.getColumnIndex(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID));
-                iAmAdmin = adminUniqueId.equals(myUniqueId);
-                getActivity().invalidateOptionsMenu();
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    adminUniqueId = cursor.getString(cursor.getColumnIndex(budgetSplitContract.projectsDetailsRO.COLUMN_PROJECT_ADMIN_UNIQUEID));
+                    iAmAdmin = adminUniqueId.equals(myUniqueId);
+                    getActivity().invalidateOptionsMenu();
+                }
                 break;
             case LOADER_PROJECT_PARTICIPANTS:
                 cursorProjectParticipants = cursor;
@@ -404,6 +406,15 @@ public class projectParticipants extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        switch (cursorLoader.getId()) {
+            case LOADER_PROJECT_PARTICIPANTS:
+                loaderParticipantsFinished = false;
+                participantsAdapter.swapCursor(null);
+                break;
+            case LOADER_PROJECT:
+                loaderProjectFinished = false;
+                break;
+        }
 
     }
 }

@@ -286,7 +286,7 @@ public class ProjectItems extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        itemsSingleAdapter.changeCursor(null);
+        itemsSingleAdapter.swapCursor(null);
     }
 
     private class ItemAdapter extends CursorAdapter {

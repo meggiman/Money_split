@@ -170,8 +170,6 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
                     ((TextView) getView().findViewById(R.id.projectDescription)).setText(projectDescription);
                     ((TextView) getView().findViewById(R.id.administrator)).setText(projectAdminName);
                     ((TextView) getView().findViewById(R.id.CountOfParticipants)).setText(Integer.toString(nrOfParticipants));
-                } else {
-                    throw new IllegalArgumentException("Illegal Content-Uri. The returned Cursor for Project-Overview was either empty or contained more than one row.");
                 }
                 loaderProjectFinished = true;
                 break;
@@ -203,13 +201,12 @@ public class ProjectOverview extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    @Override
-    public void onDestroy() {
-        getLoaderManager().destroyLoader(LOADER_EXPENSES);
-        getLoaderManager().destroyLoader(LOADER_PROJECT);
-        super.onDestroy();
+        switch (cursorLoader.getId()) {
+            case LOADER_EXPENSES:
+                loaderExpensesFinished = false;
+                break;
+            case LOADER_PROJECT:
+                loaderProjectFinished = false;
+        }
     }
 }
