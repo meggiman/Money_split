@@ -154,5 +154,6 @@
     <string name="title_activity_choose_contact">Choose contact</string>
     <string name="warning_cant_delete_project_admin">You can\'t delete the project admin.</string>
     <string name="description">Description</string>
+    <string name="warning_tag_exists">This Tag already exists</string>
 
 </resources>

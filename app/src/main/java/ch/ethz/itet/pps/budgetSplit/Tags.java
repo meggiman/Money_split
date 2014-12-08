@@ -12,6 +12,7 @@ import android.content.Loader;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -229,7 +230,11 @@ public class Tags extends ActionBarActivity implements LoaderManager.LoaderCallb
                 public void onClick(DialogInterface dialogInterface, int i) {
                     ContentValues newTag = new ContentValues();
                     newTag.put(budgetSplitContract.tags.COLUMN_NAME, editText.getText().toString().trim());
-                    getContentResolver().insert(budgetSplitContract.tags.CONTENT_URI, newTag);
+                    try {
+                        getContentResolver().insert(budgetSplitContract.tags.CONTENT_URI, newTag);
+                    } catch (SQLiteException e) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.warning_tag_exists), Toast.LENGTH_SHORT).show();
+                    }
                     dialogInterface.dismiss();
                 }
             });
