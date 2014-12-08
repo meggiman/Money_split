@@ -234,10 +234,14 @@ public final class budgetSplitDBSchema {
         private static final String TRIGGER_RESTRICT_ITEM_PARTICIPANTS = "restrictItemParticipants";
         private static final String TRIGGER_CREATE = "CREATE TRIGGER "
                 + TRIGGER_RESTRICT_ITEM_PARTICIPANTS + " BEFORE DELETE ON " + TABLE_PROJECTS_PARTICIPANTS
-                + " FOR EACH ROW BEGIN SELECT CASE WHEN ((SELECT " + itemsParticipants.COLUMN_PARTICIPANTS_ID + " FROM " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS
-                + " WHERE " + itemsParticipants.TABLE_ITEMS_PARTICIPANTS + "." + itemsParticipants.COLUMN_PARTICIPANTS_ID + " = OLD." + COLUMN_PARTICIPANTS_ID + ") NOTNULL)"
+                + " FOR EACH ROW BEGIN SELECT CASE WHEN ((SELECT " + itemsParticipants_view.COLUMN_PARTICIPANT_ID + " FROM " + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS
+                + " WHERE " + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_PARTICIPANT_ID + " = OLD." + COLUMN_PARTICIPANTS_ID + " AND "
+                + itemsParticipants_view.VIEW_ITEMS_PARTICIPANTS + "." + itemsParticipants_view.COLUMN_PROJECT_ID + " = OLD." + COLUMN_PROJECTS_ID
+                + ") NOTNULL)"
                 + " THEN RAISE(IGNORE)"
-                + " WHEN ((SELECT " + items.COLUMN_CREATOR + " FROM " + items.TABLE_ITEMS + " WHERE " + items.TABLE_ITEMS + "." + items.COLUMN_CREATOR + " = OLD." + COLUMN_PARTICIPANTS_ID + ") NOTNULL)"
+                + " WHEN ((SELECT " + items.COLUMN_CREATOR + " FROM " + items.TABLE_ITEMS + " WHERE " + items.TABLE_ITEMS + "." + items.COLUMN_CREATOR + " = OLD." + COLUMN_PARTICIPANTS_ID
+                + " AND " + items.COLUMN_PROJECT_ID + " = OLD." + COLUMN_PROJECTS_ID
+                + ") NOTNULL)"
                 + " THEN RAISE(IGNORE)"
                 + " END;"
                 + " END;";
