@@ -376,8 +376,11 @@ public class TagSelection extends ActionBarActivity implements LoaderManager.Loa
             Tag item = (Tag) th.data;
             // transfer the name
             th.name.setText(item.name);
-            if (item.checked)
+            if (item.checked) {
                 th.name.setBackground(getResources().getDrawable(R.drawable.tag_selector_background));
+            } else {
+                th.name.setBackground(null);
+            }
         }
 
         @Override
