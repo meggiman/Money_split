@@ -66,6 +66,10 @@ public class Main extends ActionBarActivity implements View.OnClickListener, Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle(R.string.projects);
+/*        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.balance_2);*/
 
 
         // Add Listeners to GUI-Elements
