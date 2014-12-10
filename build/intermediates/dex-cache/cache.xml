@@ -10,14 +10,6 @@
             dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\classes-aa0700e21fa1ca04102668f68291c5ddc9cc3b3b.jar"/>
     </item>
     <item
-        jar="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\exploded-aar\com.rengwuxian.materialedittext\library\1.5.0\classes.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="7d6bd3ea4d3dce622b6be6c953067af64e0a2835">
-        <dex
-            dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\classes-d4995d96353028311527197f2fc77e3c03f748d2.jar"/>
-    </item>
-    <item
         jar="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.2\classes.jar"
         jumboMode="false"
         revision="20.0.0"
@@ -32,6 +24,14 @@
         sha1="962e8b12569c56dbdcf8367eb4eac8bb129cd18f">
         <dex
             dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.2-f7b67e43190d1713f6b9b768ed2421093d07a01b.jar"/>
+    </item>
+    <item
+        jar="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\exploded-aar\com.rengwuxian.materialedittext\library\1.5.0\classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="7d6bd3ea4d3dce622b6be6c953067af64e0a2835">
+        <dex
+            dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\classes-d4995d96353028311527197f2fc77e3c03f748d2.jar"/>
     </item>
     <item
         jar="C:\Users\Manuel\AppData\Local\Android\android-sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.2\support-annotations-21.0.2.jar"
@@ -50,20 +50,20 @@
             dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\classes-d08c13ecc335459f2f4ff7572f4e08295f7dccd5.jar"/>
     </item>
     <item
-        jar="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\libs\internal_impl-20.0.0.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="27bbd3982cdfe4468a9bf99c8c773734a9049e33">
-        <dex
-            dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-477ba2bc261be19e592612b60c5bc5a25dbd6483.jar"/>
-    </item>
-    <item
         jar="C:\Users\Manuel\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
         jumboMode="false"
         revision="20.0.0"
         sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
         <dex
             dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\library-2.4.0-b35f2e380be97255512847996c0c97cd3c08c877.jar"/>
+    </item>
+    <item
+        jar="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="27bbd3982cdfe4468a9bf99c8c773734a9049e33">
+        <dex
+            dex="C:\Users\Manuel\AndroidStudioProjects\budgetSplit\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-477ba2bc261be19e592612b60c5bc5a25dbd6483.jar"/>
     </item>
 
 </items>

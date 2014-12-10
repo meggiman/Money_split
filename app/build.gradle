@@ -3,13 +3,37 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 21
     buildToolsVersion '20.0.0'
+
+    def gitTag = "git describe".execute().text.trim()
+
+// Version name: must begin with character 'v' takes everything till underscore character as Version name. If Tag doesn't point to HEAD,
+// the number of additional commits and the SHA1-Hash of commit HEAD is added to Version name.
+// Version code: take digits after the first underscore
+// e.g. tag v1.2.3 beta release_15 will yield versionName 1.2.3.beta release and versionCode 15
+// or if tag wasn't pointing to HEAD versionName 1.2.3 beta release (51-73ef9ae) where 51 is the count of commits and 73ef9ae SHA1-Hash of current HEAD
+    def versionMatcher = gitTag =~ /(^v[^_]*)(_([0-9]*))(-([0-9]*-[a-zA-z0-9]*))?/
+    def tagChecker = gitTag ==~ /(^v[^_]*)(_([0-9]*))/
+    def tagCheckerBuildNumber = gitTag ==~ /(^v[^_]*)(_([0-9]*))(-([0-9]*-[a-zA-z0-9]*))/
+
+// TODO: die if building a public release with no tag instead of having defaults
+    def versionNameFromTag
+    def versionCodeFromTag
+    if (tagCheckerBuildNumber) {
+        versionNameFromTag = versionMatcher[0][1] + " (" + versionMatcher[0][5] + ")"
+        versionCodeFromTag = versionMatcher[0][3]?.toInteger()
+    } else if (tagChecker) {
+        versionNameFromTag = versionMatcher[0][1]
+        versionCodeFromTag = versionMatcher[0][3]?.toInteger()
+    }
+
     defaultConfig {
-        applicationId 'ch.ethz.itet.pps.budgetSplit'
+        applicationId 'ch.ethz.itet.pps.budgetBalance'
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 1
-        versionName '1.0'
+        versionName versionNameFromTag ?: "def"
+        versionCode versionCodeFromTag ?: 1
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -18,8 +42,8 @@ android {
     }
     productFlavors {
     }
-}
 
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-v13:20.0.0'
