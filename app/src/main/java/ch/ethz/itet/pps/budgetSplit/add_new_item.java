@@ -1110,7 +1110,6 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                         saveValueChanges(newValue);
                         ((EditText) view).setText(new DecimalFormat(",##0.00").format(newValue));
                     } else {
-                        view.requestFocus();
                         Toast.makeText(getApplicationContext(), getString(R.string.please_enter_value), Toast.LENGTH_SHORT).show();
                     }
                 }
