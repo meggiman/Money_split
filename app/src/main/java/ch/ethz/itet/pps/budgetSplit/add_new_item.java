@@ -257,7 +257,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
             case LOADER_CURRENCIES:
                 return new CursorLoader(getApplicationContext(), budgetSplitContract.currencies.CONTENT_URI, budgetSplitContract.currencies.PROJECTION_ALL, null, null, null);
             case LOADER_PARTICIPANTS:
-                return new CursorLoader(getApplicationContext(), ContentUris.withAppendedId(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, projectId), budgetSplitContract.projectsParticipantsDetailsRO.PROJECTION_ALL, null, null, null);
+                return new CursorLoader(getApplicationContext(), ContentUris.withAppendedId(budgetSplitContract.projectsParticipantsDetailsRO.CONTENT_URI, projectId), budgetSplitContract.projectsParticipantsDetailsRO.PROJECTION_ALL, null, null, budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID);
 
             case LOADER_PROJECT:
                 String[] projection = {budgetSplitContract.projectsDetailsRO._ID,
@@ -268,7 +268,7 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
                 return new CursorLoader(getApplicationContext(), budgetSplitContract.projectsDetailsRO.CONTENT_URI, projection, null, null, null);
 
             case LOADER_EXCLUDE_ITEMS:
-                return new CursorLoader(getApplicationContext(), budgetSplitContract.excludeItems.CONTENT_URI, budgetSplitContract.excludeItems.PROJECTION_ALL, budgetSplitContract.excludeItems.COLUMN_ITEM_ID + " = ?", new String[]{Long.toString(itemId)}, null);
+                return new CursorLoader(getApplicationContext(), budgetSplitContract.excludeItems.CONTENT_URI, budgetSplitContract.excludeItems.PROJECTION_ALL, budgetSplitContract.excludeItems.COLUMN_ITEM_ID + " = ?", new String[]{Long.toString(itemId)}, budgetSplitContract.excludeItems.COLUMN_PARTICIPANTS_ID);
             default:
                 throw new IllegalArgumentException("The LoaderId i didn't match with any of the defined Loaders.");
         }
@@ -599,8 +599,8 @@ public class add_new_item extends ActionBarActivity implements LoaderManager.Loa
         excludeItemsToDelete = new ArrayList<>();
         excludeItemsAlreadyAdded = new ArrayList<>();
         excludeItemsNotAdded = new ArrayList<>();
-        CursorJoiner joiner1 = new CursorJoiner(cursorParticipants, new String[]{budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID}, cursorExcludeItems, new String[]{budgetSplitContract.excludeItems.COLUMN_PARTICIPANTS_ID});
-        for (CursorJoiner.Result result : joiner1) {
+        MyCursorJoiner joiner1 = new MyCursorJoiner(cursorParticipants, new String[]{budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID}, cursorExcludeItems, new String[]{budgetSplitContract.excludeItems.COLUMN_PARTICIPANTS_ID});
+        for (MyCursorJoiner.Result result : joiner1) {
             switch (result) {
                 case LEFT:
                     Long participantId = cursorParticipants.getLong(cursorParticipants.getColumnIndex(budgetSplitContract.projectsParticipantsDetailsRO.COLUMN_PARTICIPANT_ID));
